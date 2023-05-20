@@ -11,7 +11,7 @@ import 'element-plus/dist/index.css'
 //  @ts-expect-error   注释 ts 忽略，跳过类型检测
 import zhCn from 'element-plus/dist/locale/zh-cn.mjs'
 // 引入 svg插件
-// import 'virtual:svg-icons-register'
+import 'virtual:svg-icons-register'
 
 // 接口测试
 import axios from 'axios'

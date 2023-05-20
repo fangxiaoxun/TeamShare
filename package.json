@@ -3,6 +3,8 @@
   "private": true,
   "version": "0.0.0",
   "type": "module",
+  "no-console":"off",
+  "no-unused-vars":"off",
   "scripts": {
     "dev": "vite --open",
     "build": "vue-tsc && vite build",
@@ -13,6 +15,7 @@
   "dependencies": {
     "@element-plus/icons-vue": "^2.1.0",
     "@types/js-cookie": "^3.0.3",
+    "@vue/runtime-core": "^3.3.4",
     "axios": "^1.4.0",
     "element-plus": "^2.3.4",
     "fast-glob": "^3.2.12",

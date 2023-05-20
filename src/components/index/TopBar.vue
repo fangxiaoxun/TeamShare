@@ -17,7 +17,7 @@
 </template>
           
 <script lang="ts" setup>
-import { onClickOutside } from '../hooks/clickOutside'
+import { onClickOutside } from '../../hooks/clickOutside'
    
 </script>
           

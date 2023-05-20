@@ -4,7 +4,6 @@
         <Main></Main>
     </div>      
 </template>
-          
 <script lang="ts" setup>
     import TopBar from './TopBar.vue';
     import Main from './Main.vue';

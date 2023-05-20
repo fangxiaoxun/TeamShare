@@ -1,14 +1,20 @@
-<template>
-    <div>
-        <el-button type="primary" size="default" :icon="Plus">主要按钮</el-button>
-        <el-button type="success" size="default" :icon="Edit">主要按钮</el-button>
-        <svg-icon name="phone"></svg-icon>
-    </div>
-</template>
 <script lang='ts' setup>
-import { Edit, Plus } from '@element-plus/icons-vue';
-
+import frame from '@/components/common/frame.vue';
+import file from './file.vue';
 </script>
-<style scope lang='less' scoped>
+<template>
+<frame :fileCount="100">
+    <template v-slot:title>最近</template>
+    <template v-slot:item1>文件位置</template>
+    <template v-slot:item2>创建者</template>
+    <template v-slot:item3>最后修改</template>
+    <template v-slot:file>
+        <file v-for="index in 100"></file>
+    </template>
+
+    
+</frame>
+</template>
+<style lang='less' scope>
 
 </style>
