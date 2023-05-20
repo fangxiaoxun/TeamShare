@@ -1,5 +1,5 @@
 <script lang='ts' setup>
-import Button from './Button.vue';
+import Button from '../common/Button.vue';
 </script>
 <template>
     <div class="leftBar">
@@ -115,6 +115,7 @@ svg {
 
 // 路由
 .item {
+    box-sizing: border-box;
     display: flex;
     align-items: center;
     width: @button-size;

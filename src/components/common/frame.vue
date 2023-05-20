@@ -1,13 +1,18 @@
 <script lang="ts" setup>
 import { onMounted, ref, watchEffect } from 'vue';
-import file from './file.vue';
 import { vClickOutside } from '@/hooks/clickOutside';
+import file from '@/views/file.vue';
+const props = defineProps(["fileCount"])
+const count = ref<number>(0)
+const load = (): void => {
+    if (count.value >= props.fileCount) {
+        count.value = props.fileCount;
+    } else {
+        count.value += 2
+    }
+}
 const showType = (element: HTMLElement) => {
     element.classList.contains('active') && element.classList.remove('active')
-}
-// 自定义文件类型选择事件
-function TypeSelect(ele: MouseEvent) {
-
 }
 
 // 定义类型
@@ -41,16 +46,15 @@ const typeObj: Type = {
 const typeContent = ref<HTMLElement>(document.createElement('span'))
 const iconName = ref<string>('doc');
 const TYPE = ref<HTMLElement>(document.createElement('span'))
-
-function test(e: MouseEvent) {
+const CHECK = ref<HTMLElement>(document.createElement('div'))
+// 自定义文件类型选择事件
+function TypeSelect(e: MouseEvent) {
     let type: string = (<HTMLElement>e.target).id;
     // 变化背景色
     const ele = TYPE.value;
-        console.log(typeObj[type] )
-        console.log(typeObj['default'])
-    if(typeObj[type] != typeObj['default']){
-        TYPE.value.style.backgroundColor  = "rgba(50,100,252,.1)"
-    }else{
+    if (typeObj[type] != typeObj['default']) {
+        TYPE.value.style.backgroundColor = "rgba(50,100,252,.1)"
+    } else {
         TYPE.value.style.backgroundColor = "transparent"
     }
     TYPE.value.classList.remove('active')
@@ -59,14 +63,30 @@ function test(e: MouseEvent) {
     // 更新内容
     typeContent.value.innerHTML = typeObj[type].type
     iconName.value = typeObj[type].iconName;
+
+    handleClick(type)
 }
 
+// 实现点击切换类名
+function handleClick(id: string): void {
+    // typeitem
+    console.log(id)
+    const LIST = CHECK.value.querySelectorAll('.item');
+    LIST.forEach(item => {
+        item.classList.remove('active')
+        if (item.id == id){
+            item.classList.add('active')
+        }
+    })
+}
 
 </script>
 <template>
     <div class="wrapper">
         <div class="title">
-            <h3>最近</h3><i class="icon"></i>
+            <h3>
+                <slot name="title"></slot>
+            </h3><i class="icon"></i>
         </div>
         <div class="file-list">
             <div class="desc">
@@ -75,29 +95,29 @@ function test(e: MouseEvent) {
                         <i class="icon"><svg-icon :name="iconName"></svg-icon></i>
                         <span id="keyword" ref="typeContent">全部</span>
                         <i class="icon"><svg-icon name="arrowdown" width="12px" height="12px"></svg-icon></i>
-                        <div class="option" >
+                        <div class="option">
                             <h4>文件类型</h4>
-                            <div class="typeList">
-                                <div class="item" id="default" @click="test($event)">
-                                    <div class="icon"><svg-icon name="selected" width="16px" height="16px"
+                            <div class="typeList" ref="CHECK">
+                                <div class="item active" id="default" @click="TypeSelect($event)">
+                                    <div class="icon selected"><svg-icon name="selected" width="16px" height="16px"
                                             color="#0A6CFF"></svg-icon></div>
                                     <div class="icon"><svg-icon name="doc" width="16px" height="16px"></svg-icon></div>
                                     <span>全部</span>
                                 </div>
-                                <div class="item" id="doc" @click="test($event)">
-                                    <div class="icon"><svg-icon name="selected" width="16px" height="16px"
+                                <div class="item" id="doc" @click="TypeSelect($event)">
+                                    <div class="icon selected"><svg-icon name="selected" width="16px" height="16px"
                                             color="#0A6CFF"></svg-icon></div>
                                     <div class="icon"><svg-icon name="doc" width="16px" height="16px"></svg-icon></div>
                                     <span>轻文档</span>
                                 </div>
-                                <div class="item" id="word" @click="test($event)">
-                                    <div class="icon"><svg-icon name="selected" width="16px" height="16px"
+                                <div class="item" id="word" @click="TypeSelect($event)">
+                                    <div class="icon selected"><svg-icon name="selected" width="16px" height="16px"
                                             color="#0A6CFF"></svg-icon></div>
                                     <div class="icon"><svg-icon name="word" width="16px" height="16px"></svg-icon></div>
                                     <span>word</span>
                                 </div>
-                                <div class="item" id="excel" @click="test($event)">
-                                    <div class="icon"><svg-icon name="selected" width="16px" height="16px"
+                                <div class="item" id="excel" @click="TypeSelect($event)">
+                                    <div class="icon selected"><svg-icon name="selected" width="16px" height="16px"
                                             color="#0A6CFF"></svg-icon></div>
                                     <div class="icon"><svg-icon name="excel" width="16px" height="16px"></svg-icon></div>
                                     <span>excel</span>
@@ -107,17 +127,32 @@ function test(e: MouseEvent) {
                     </span>
 
                 </div>
-                <div class="position"><span>文件位置</span></div>
-                <div class="author"><span>创建者</span></div>
-                <div class="latest"><span>最后修改</span></div>
+                <div class="position"><span>
+                        <slot name="item1"></slot>
+                    </span></div>
+                <div class="author"><span>
+                        <slot name="item2"></slot>
+                    </span></div>
+                <div class="latest"><span>
+                        <slot name="item3"></slot>
+                    </span></div>
             </div>
             <!-- 动态渲染 -->
-            <file></file>
-            <file></file>
+            <ul v-infinite-scroll="load" infinite-scroll-distance=1 class="list" style="overflow: auto">
+                <div class="inner">
+                    <!-- <slot name="file"></slot> -->
+                    <file v-for="i in count" :key="i"></file>
+                </div>
+            </ul>
+
+
         </div>
     </div>
 </template>
 <style lang="less" scoped>
+@list-top: 185px;
+@top-offset: 60px;
+
 span {
     font-size: 14px;
     color: rgba(13, 13, 13, .9);
@@ -125,6 +160,7 @@ span {
 
 .wrapper {
     padding: 24px 48px 0 48px;
+    // height: 100vh;
 }
 
 .title {
@@ -181,7 +217,6 @@ span {
     }
 
     .latest {
-        // width: 25%;
         flex: 2;
     }
 }
@@ -232,7 +267,66 @@ span {
     }
 }
 
+.item.active .selected {
+    opacity: 1;
+}
+
+.item .selected {
+    opacity: 0;
+}
+
 .item:hover {
     background-color: rgba(13, 13, 13, .06);
+}
+
+.file-list {
+    // height: calc(~"100vh - @{top-offset}");
+}
+
+.list {
+    height: calc(~"100vh - @{list-top}");
+    overflow-y: scroll;
+    // height: 300px;//不是这个高度导致溢出
+    padding: 0;
+    margin: 0;
+    list-style: none;
+
+    // 滚动条整体部分
+    &::-webkit-scrollbar {
+        width: 6px;
+        height: 6px;
+    }
+
+    // 滚动条的轨道的两端按钮，允许通过点击微调小方块的位置。
+    &::-webkit-scrollbar-button {
+        display: none;
+    }
+
+    // 滚动条的轨道（里面装有Thumb）
+    &::-webkit-scrollbar-track {
+        background: transparent;
+    }
+
+    // 滚动条的轨道（里面装有Thumb）
+    &::-webkit-scrollbar-track-piece {
+        background-color: transparent;
+    }
+
+    // 滚动条里面的小方块，能向上向下移动（或往左往右移动，取决于是垂直滚动条还是水平滚动条）
+    &::-webkit-scrollbar-thumb {
+        background: rgba(144, 147, 153, 0.3);
+        cursor: pointer;
+        border-radius: 4px;
+    }
+
+    // 边角，即两个滚动条的交汇处
+    &::-webkit-scrollbar-corner {
+        display: none;
+    }
+
+    // 两个滚动条的交汇处上用于通过拖动调整元素大小的小控件
+    &::-webkit-resizer {
+        display: none;
+    }
 }
 </style>

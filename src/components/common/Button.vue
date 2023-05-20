@@ -1,5 +1,5 @@
 <script lang='ts' setup>
-import { vClickOutside } from '../hooks/clickOutside';
+import { vClickOutside } from '@/hooks/clickOutside';
 const show = (element: HTMLElement) => {
     element.classList.contains('active') && element.classList.remove('active')
 }

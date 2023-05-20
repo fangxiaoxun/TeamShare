@@ -58,9 +58,14 @@
 </template>
           
 <script lang="ts" setup>
+<<<<<<< HEAD:src/components/TopBar.vue
 import { onClickOutside } from '../hooks/clickOutside'
 
 
+=======
+import { onClickOutside } from '../../hooks/clickOutside'
+   
+>>>>>>> master:src/components/index/TopBar.vue
 </script>
           
 <style lang="less" scoped>
