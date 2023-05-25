@@ -1,7 +1,7 @@
 // 按需引入，如果全部引入的话是引入VueRouter
 import { createRouter, createWebHashHistory } from 'vue-router'
 // 引入路由组件
-import Directory from '../components/index/Directory.vue'
+import Directory from '../components/directory/Directory.vue'
 import DeskTop from '../views/DeskTop.vue'
 import Mydoc from '../views/MyDoc.vue'
 import Trash from '../views/Trash.vue'

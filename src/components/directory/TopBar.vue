@@ -1,7 +1,7 @@
 <template>
     <header>
         <div class="logo">
-            <img src="../assets/yksg.svg">
+            <img src="../../assets/yksg.svg">
             <h3>共享文档</h3>
         </div>
         <div class="search" v-click-outside="onClickOutside">
@@ -32,7 +32,7 @@
             </div>
             <!-- 用户 -->
             <div class="user">
-                <img src="../assets/profile.png" class="profile">
+                <img src="../../assets/profile.png" class="profile">
                 <!-- 用户下拉菜单 -->
                 <div class="user-wrapper">
                     <div class="user-header">
