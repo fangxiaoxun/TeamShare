@@ -9,24 +9,9 @@ const show = (element: HTMLElement) => {
     <div class="btn" v-click-outside="show">
         <div class="wrap">
             <ul>
-                <li><i class="icon"><svg width="16px" height="16px" viewBox="0 0 16 16" fill="none">
-                            <path
-                                d="M10.25 5.99966H5.75M13.25 5.12102V12.7497C13.25 13.5781 12.5784 14.2497 11.75 14.2497H4.25C3.42157 14.2497 2.75 13.5781 2.75 12.7497V3.24969C2.75 2.42127 3.42157 1.74969 4.25 1.74969H9.87868C10.2765 1.74969 10.658 1.90773 10.9393 2.18903L12.8107 4.06035C13.092 4.34166 13.25 4.72319 13.25 5.12102Z"
-                                stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="miter"
-                                vector-effect="non-scaling-stroke"></path>
-                        </svg></i><span>上传文件</span></li>
-                <li><i class="icon"><svg width="16px" height="16px" viewBox="0 0 16 16" fill="none">
-                            <path
-                                d="M10.25 5.99966H5.75M13.25 5.12102V12.7497C13.25 13.5781 12.5784 14.2497 11.75 14.2497H4.25C3.42157 14.2497 2.75 13.5781 2.75 12.7497V3.24969C2.75 2.42127 3.42157 1.74969 4.25 1.74969H9.87868C10.2765 1.74969 10.658 1.90773 10.9393 2.18903L12.8107 4.06035C13.092 4.34166 13.25 4.72319 13.25 5.12102Z"
-                                stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="miter"
-                                vector-effect="non-scaling-stroke"></path>
-                        </svg></i><span>上传文件</span></li>
-                <li><i class="icon"><svg width="16px" height="16px" viewBox="0 0 16 16" fill="none">
-                            <path
-                                d="M10.25 5.99966H5.75M13.25 5.12102V12.7497C13.25 13.5781 12.5784 14.2497 11.75 14.2497H4.25C3.42157 14.2497 2.75 13.5781 2.75 12.7497V3.24969C2.75 2.42127 3.42157 1.74969 4.25 1.74969H9.87868C10.2765 1.74969 10.658 1.90773 10.9393 2.18903L12.8107 4.06035C13.092 4.34166 13.25 4.72319 13.25 5.12102Z"
-                                stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="miter"
-                                vector-effect="non-scaling-stroke"></path>
-                        </svg></i><span>上传文件</span></li>
+                <li><i class="icon"><svg-icon name="addicon"></svg-icon></i><span>上传文件</span></li>
+                <li><i class="icon"><svg-icon name="addicon"></svg-icon></i><span>上传文件</span></li>
+                <li><i class="icon"><svg-icon name="addicon"></svg-icon></i><span>上传文件</span></li>
             </ul>
         </div>
         <div class="wrapper">
@@ -38,19 +23,21 @@ const show = (element: HTMLElement) => {
                 <div class="list">
                     <div class="box">
                         <div class="img">
-                            <img src="../assets/images/otl.svg" alt="">
+                            <svg-icon name="otl" width="32px" height="32px"></svg-icon>
                         </div>
                         <span class="desc">文字</span>
                     </div>
                     <div class="box">
                         <div class="img">
-                            <img src="../assets/images/otl.svg" alt="">
+                            <svg-icon name="otl" width="32px" height="32px"></svg-icon>
+
                         </div>
                         <span class="desc">文字</span>
                     </div>
                     <div class="box">
                         <div class="img">
-                            <img src="../assets/images/otl.svg" alt="">
+                            <svg-icon name="otl" width="32px" height="32px"></svg-icon>
+
                         </div>
                         <span class="desc">文字</span>
                     </div>
@@ -61,19 +48,21 @@ const show = (element: HTMLElement) => {
                 <div class="list">
                     <div class="box">
                         <div class="img">
-                            <img src="../assets/images/otl.svg" alt="">
+                            <svg-icon name="otl" width="32px" height="32px"></svg-icon>
+
                         </div>
                         <span class="desc">文字</span>
                     </div>
                     <div class="box">
                         <div class="img">
-                            <img src="../assets/images/otl.svg" alt="">
+                            <svg-icon name="otl" width="32px" height="32px"></svg-icon>
+
                         </div>
                         <span class="desc">文字</span>
                     </div>
                     <div class="box">
                         <div class="img">
-                            <img src="../assets/images/otl.svg" alt="">
+                            <svg-icon name="otl" width="32px" height="32px"></svg-icon>
                         </div>
                         <span class="desc">文字</span>
                     </div>
@@ -139,7 +128,7 @@ const show = (element: HTMLElement) => {
     z-index: 2;
     transform: translateY(8px);
     background-color: #fff;
-    width: 220px;
+    width: 197px;
     padding: 8px 12px;
     margin: 0 auto;
     border-radius: 8px;
@@ -153,12 +142,12 @@ const show = (element: HTMLElement) => {
         border-radius: 4px;
 
         .icon {
+            display: inline-block;
+            transform: translateY(2px);
             margin: 5px 5px;
+            width: 16px;
+            height: 16px;
 
-            svg {
-                width: 16px;
-                height: 16px;
-            }
         }
 
         span {

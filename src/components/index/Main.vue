@@ -5,7 +5,7 @@ import LeftBar from './LeftBar.vue';
     <div class="container">
         <LeftBar></LeftBar>
         <div class="rightBar">
-            <router-view></router-view>
+        <router-view></router-view>
         </div>
     </div>
 </template>
@@ -20,7 +20,6 @@ import LeftBar from './LeftBar.vue';
 
 .rightBar {
     width: calc(~"100% - @{leftBar-size}");
-    // height: calc(~"100% - @{topBar-size}");
     height: 100%;
     margin-right: 40px;
     background-color: #fff;

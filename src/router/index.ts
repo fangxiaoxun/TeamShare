@@ -12,7 +12,7 @@ const router = createRouter({
     history: createWebHashHistory(),
     routes: [
         // 功能页路由
-
+        
         {
             path: '/desktop',
             name: 'desktop',

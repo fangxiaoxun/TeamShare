@@ -13,9 +13,12 @@ export default defineConfig({
         })
     ],
     resolve:{
-        alias: {
-            "@": path.resolve("./src")
-        }
+        alias: [
+            {
+                find:'@',
+                replacement:path.resolve("./src")
+            },
+        ]
     },
     css: {
         preprocessorOptions: {

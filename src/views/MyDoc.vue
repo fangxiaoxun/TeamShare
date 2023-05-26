@@ -1,20 +1,21 @@
-<script lang='ts' setup>
-import frame from '@/components/common/frame.vue';
-import file from './file.vue';
+<script lang='ts'>
+import A from '@/components/common/A.vue';
+import B from '@/components/common/B.vue';
+import { defineComponent } from 'vue';
+export default defineComponent({
+    name: 'Parent',
+    components: {
+        B
+    },
+    methods: {
+        onMethod() {
+            console.log('点击了组件 B 中的按钮')
+        }
+    }
+})
+
 </script>
 <template>
-<frame :fileCount="100">
-    <template v-slot:title>最近</template>
-    <template v-slot:item1>文件位置</template>
-    <template v-slot:item2>创建者</template>
-    <template v-slot:item3>最后修改</template>
-    <template v-slot:file>
-        <file v-for="index in 100"></file>
-    </template>
-
-    
-</frame>
+    <B @method="onMethod" :message="'这里是B组件的message'" ></B>
 </template>
-<style lang='less' scope>
-
-</style>
+<style lang='less' scope></style>

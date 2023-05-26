@@ -1,8 +1,8 @@
 <script lang="ts" setup>
-import { onMounted, ref, watchEffect } from 'vue';
+import { ref} from 'vue';
 import { vClickOutside } from '@/hooks/clickOutside';
 import file from '@/views/file.vue';
-const props = defineProps(["fileCount"])
+const props = defineProps(["fileCount","position","author","time","operate"])
 const count = ref<number>(0)
 const load = (): void => {
     if (count.value >= props.fileCount) {
@@ -51,11 +51,10 @@ const CHECK = ref<HTMLElement>(document.createElement('div'))
 function TypeSelect(e: MouseEvent) {
     let type: string = (<HTMLElement>e.target).id;
     // 变化背景色
-    const ele = TYPE.value;
     if (typeObj[type] != typeObj['default']) {
         TYPE.value.style.backgroundColor = "rgba(50,100,252,.1)"
     } else {
-        TYPE.value.style.backgroundColor = "transparent"
+        TYPE.value.style.backgroundColor = ""
     }
     TYPE.value.classList.remove('active')
 
@@ -69,12 +68,10 @@ function TypeSelect(e: MouseEvent) {
 
 // 实现点击切换类名
 function handleClick(id: string): void {
-    // typeitem
-    console.log(id)
     const LIST = CHECK.value.querySelectorAll('.item');
     LIST.forEach(item => {
         item.classList.remove('active')
-        if (item.id == id){
+        if (item.id == id) {
             item.classList.add('active')
         }
     })
@@ -140,8 +137,12 @@ function handleClick(id: string): void {
             <!-- 动态渲染 -->
             <ul v-infinite-scroll="load" infinite-scroll-distance=1 class="list" style="overflow: auto">
                 <div class="inner">
-                    <!-- <slot name="file"></slot> -->
-                    <file v-for="i in count" :key="i"></file>
+                    <!-- useStore -->
+                    <file v-for="i in count" :key="i"><template v-slot:li1>{{ props.position }}</template>
+                        <template v-slot:li2>{{ props.author }}</template>
+                        <template v-slot:li3>{{ props.time }}</template>
+                        <template v-slot:operate>{{ props.operate }}</template>
+                    </file>
                 </div>
             </ul>
 
@@ -159,8 +160,7 @@ span {
 }
 
 .wrapper {
-    padding: 24px 48px 0 48px;
-    // height: 100vh;
+    padding: 24px 2px 0 48px;
 }
 
 .title {
@@ -175,7 +175,9 @@ span {
     cursor: pointer;
     position: relative;
     display: flex;
-    padding-bottom: 10px;
+    // padding: 0 10 10px 10px;
+    margin-right: 55px;
+    // padding-bottom: 10px;
     border-bottom: 2px solid rgba(13, 13, 13, .06);
 
     #keyword {
@@ -214,10 +216,13 @@ span {
     .position,
     .author {
         flex: 1;
+        margin-left: -10px;
     }
 
     .latest {
         flex: 2;
+        margin-left: -10px;
+
     }
 }
 
@@ -278,11 +283,6 @@ span {
 .item:hover {
     background-color: rgba(13, 13, 13, .06);
 }
-
-.file-list {
-    // height: calc(~"100vh - @{top-offset}");
-}
-
 .list {
     height: calc(~"100vh - @{list-top}");
     overflow-y: scroll;

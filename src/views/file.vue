@@ -1,22 +1,36 @@
 <template>
-    <div class="filewrap">
+    <!-- <div class="filewrap" @click="isCheck = !isCheck" ref="FILE"> -->
+    <div class="filewrap" @click="hanldSelected(isCheck)" ref="FILE">
         <div class="filename">
-            <div class="checkBox" @click="isCheck = !isCheck">
-                <!-- <input type="checkbox" id="checked" @click=" isCheck = !isCheck"> -->
+            <div class="checkBox">
                 <div class="border" v-show="isCheck"><div class="label"></div></div>
             </div>
             <div class="fileicon"> <svg-icon name="doc" width="24px" height="24px"></svg-icon></div>
             <span>文件名</span>
             <div class="star"><svg-icon name="star"></svg-icon></div>
         </div>
-        <div class="position"><span>我的文档</span></div>
-        <div class="author"><span>我</span></div>
-        <div class="latest"><span>1天前</span></div>
+        <div class="position"><span><slot name="li1"></slot></span></div>
+        <div class="author"><span><slot name="li2"></slot></span></div>
+        <div class="latest"><span><slot name="li3"></slot></span></div>
+        <div class="button-box">
+            <div class="share btn"><span><slot name="operate"></slot></span></div>
+            <div class="delete btn"><span><svg-icon name="delete" width="24px" height="24px"></svg-icon></span></div>
+        </div>
     </div>
 </template>
 <script lang='ts' setup>
 import { ref } from 'vue';
-const isCheck = ref<boolean>(false);
+let isCheck = ref<boolean>(false);
+    const FILE = ref<HTMLElement>(document.createElement('div'));
+const hanldSelected = (check:boolean):void => {
+    if(!check){
+        FILE.value.classList.add('selected')
+    }else{
+        FILE.value.classList.remove('selected')
+    }
+    isCheck.value=!isCheck.value;
+    console.log(isCheck)
+}
 </script>
 <style scope lang='less' scoped>
 span {
@@ -27,22 +41,48 @@ span {
 .filewrap:hover{
     background-color: rgba(13,13,13,.06);
 }
+.filewrap:hover .star, .filewrap:hover .button-box{
+    opacity: 1;
+}
+.filewrap::after{
+    content: '';
+    display: block;
+    position: absolute;
+    bottom: 0;
+    width: calc(100% - 13px);
+    height: 0.8px;
+    margin: 0 auto;
+    background-color:#e7e9eb;;
+}
 .filewrap {
+    position: relative;
     display: flex;
     align-items: center;
     height: 56px;
     padding: 0 10px;
     margin-bottom: 10px;
+    margin-right: 36px;
     border-radius: 8px;
 }
-
+.filewrap.selected{
+    background-color: rgba(10, 108, 255, 0.1);
+}
 .filename {
     flex: 4;
     display: flex;
     transform: translateY(2px);
 }
 .star{
+    width: 24px;
+    height: 24px;
+    border-radius: 6px;
+    opacity: 0;
     margin-left: 10px;
+    padding: 4px;
+    box-sizing: border-box;
+}
+.star:hover{
+    background-color: rgba(13,13,13,.06);
 }
 .position,
 .author {
@@ -59,8 +99,6 @@ span {
     height: 24px;
     margin: 0 15px;
 }
-
-
 .checkBox {
     cursor: pointer;
     position: relative;
@@ -83,7 +121,6 @@ span {
 .checkBox:hover{
     border-color: @button-color;
 }
-
 .checkBox .label {
     position: relative;
     left: 6px;
@@ -97,8 +134,42 @@ span {
     background: transparent;
     transform: rotate(45deg) scaleY(1);
 }
-
 .checkBox label:hover {
     opacity: 1;
+}
+
+.button-box{
+    opacity: 0;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    right: 0;
+    position: absolute;
+    width: 180px;
+    height: 100%;
+    padding-right: 45px;
+    box-sizing: border-box;
+    span{
+        color: #fff;
+        font-size: 16px;
+        // line-height: 20px;
+    }
+}
+.btn{
+    padding: 8px 15px;
+    background-color: @button-color;
+    height: 20px;
+    border-radius: 6px;
+    
+}
+.delete{
+    padding: 8px 10px;
+    background-color: transparent;
+}
+.delete:hover,.delete:active{
+    background-color: rgba(13,13,13,.06);
+}
+.share:hover,.share:active{
+    background-color: rgb(79,135,254);
 }
 </style>
