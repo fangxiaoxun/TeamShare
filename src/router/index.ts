@@ -58,14 +58,14 @@ const router = createRouter({
     ],
 })
 
-router.beforeEach((to, from, next) => {
-    if(getCookie('token')){
-        // 如果存在，则跳转对应路由
-        next()
-    }else{
-        // 如果未登录状态，则跳转登录页
-        next('/login')
-    }
-})
+// router.beforeEach((to, from, next) => {
+//     if(getCookie('token')){
+//         // 如果存在，则跳转对应路由
+//         next()
+//     }else{
+//         // 如果未登录状态，则跳转登录页
+//         next('/login')
+//     }
+// })
 // 暴露router
 export default router
