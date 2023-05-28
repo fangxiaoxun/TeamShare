@@ -3,7 +3,7 @@ import { createRouter, createWebHashHistory } from 'vue-router'
 // 引入路由组件
 import DocIndex from '../views/DocIndex.vue'
 import Login from '../components/login/login.vue'
-// import Directory from '../components/directory/Directory.vue'
+
 import Directory from '../views/Directory.vue'
 
 import DeskTop from '../views/DeskTop.vue'
