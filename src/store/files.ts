@@ -147,10 +147,16 @@ export const useFileStore = defineStore('files',{
     }),
     getters:{
         // 获取最近所有文件
+
         
+
 
     },
     actions:{
+        // 删除文件
 
+        // 添加文件
+
+        // 获取某种类型文件
     }
 })
