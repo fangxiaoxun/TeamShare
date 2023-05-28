@@ -4,6 +4,7 @@ import { createPinia } from 'pinia'
 import App from './App.vue'
 import router from './router/index'
 import './styles/commons.less'
+import './styles/element-ui-reset.less'
 import { vClickOutside } from './hooks/clickOutside'
 
 // 引入 element-plus 插件和样式
@@ -17,17 +18,17 @@ import 'virtual:svg-icons-register'
 // 接口测试
 import axios from 'axios'
 axios({
-  url: 'https://mock.apifox.cn/m1/2733445-0-default/user/info',
-  method: 'post',
-  data: {
-    userId: '111111',
-  },
+    url: 'https://mock.apifox.cn/m1/2733445-0-default/user/info',
+    method: 'post',
+    data: {
+        userId: '111111',
+    },
 })
 
 const app = createApp(App)
 // 应用插件
 app.use(ElementPlus, {
-  locale: zhCn,
+    locale: zhCn,
 })
 app.use(router)
 app.use(createPinia())

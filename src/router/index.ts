@@ -29,32 +29,38 @@ const router = createRouter({
             component:Login
         },
         // 功能页路由
-        {
-            path:'/directory',
-            name:'directory',
-            component:Directory,
-            redirect:'/desktop',
-            children:[
-                {
-                    path: '/desktop',
-                    name: 'desktop',
-                    component: DeskTop,
-                },
-                {
-                    path: '/mydoc',
-                    name: 'mydoc',
-                    component: Mydoc,
-                },
-                {
-                    path: '/trash',
-                    name: 'trash',
-                    component: Trash,
-                },
-            ]
-        },
-       
         
+        {
+            path: '/desktop',
+            name: 'desktop',
+            component: DeskTop,
+        },
+        {
+            path: '/mydoc',
+            name: 'mydoc',
+            component: Mydoc,
+        },
+        {
+            path: '/trash',
+            name: 'trash',
+            component: Trash,
+        },
 
+        // {
+        //     path: '/desktop',
+        //     name: 'desktop',
+        //     component: DeskTop,
+        // },
+        // {
+        //     path: '/mydoc',
+        //     name: 'mydoc',
+        //     component: Mydoc,
+        // },
+        // {
+        //     path: '/trash',
+        //     name: 'trash',
+        //     component: Trash,
+        // },
     ],
 })
 

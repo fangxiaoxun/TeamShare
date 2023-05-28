@@ -1,5 +1,69 @@
 <script lang='ts' setup>
 import Button from '../common/Button.vue';
+import { Ref, ref, onMounted} from 'vue';
+import { useFolderStore } from '@/store/folder';
+// 未确认
+import { ElMessage, ElMessageBox } from 'element-plus'
+// 待更改
+// 文件夹操作
+const folderStore = useFolderStore();
+const allFolder = folderStore.getAllFolder;
+
+const activeNames = ref(['1'])
+const showFolder = ref<boolean>(false);
+const handleChange = (val: string[]) => {
+    console.log(val)
+}
+// 获取新建文件夹的位置id
+const getFolderId =(e:MouseEvent):number=>{
+    const id = (e.target as HTMLElement).getAttribute('id')!;
+    return parseInt(id)
+}
+
+const addFolder = (e:MouseEvent) => {
+    let id = getFolderId(e)
+    ElMessageBox.prompt('请输入文件夹名称', '新建文件夹', {
+        confirmButtonText: '完成',
+        cancelButtonText: '取消',
+    })
+    .then(({ value }) => {
+            ElMessage({
+                type: 'success',
+                message: `新建文件夹 ${value} 成功！`,
+            })
+            // 新建文件夹
+            folderStore.addFolder(id,value)
+        })
+        .catch(() => {
+            ElMessage({
+                type: 'info',
+                message: '取消新建文件夹',
+            })
+        })
+}
+// 获取Dom元素
+// const collapseItem = ref<HTMLElement>(document.createElement('span'));
+const folderItem = ref<Array<HTMLHeadingElement | null>>([])
+
+onMounted(() =>{
+    // 为文件夹的DOM元素添加 id 属性
+    for(let i=0;i<folderItem.value.length;i++){
+        folderItem.value[i]?.setAttribute('id',i+'')
+    }
+})
+
+const handleClick = (e:MouseEvent)=>{
+    folderItem.value.forEach(item =>{
+        item?.classList.remove('current')
+    })
+    if((e.target as HTMLElement).id){
+        (e.target as HTMLElement).classList.add('current')
+        // 显示对应文件夹的文件
+    }
+}
+
+
+
 </script>
 <template>
     <div class="leftBar">
@@ -37,31 +101,50 @@ import Button from '../common/Button.vue';
         <!-- 引入路由导航 -->
 
         <div class="router-list">
-            <router-link class="deskTop item" active-class="active" to="/desktop">
-                <i class="icon"><svg t="1683792096585" class="icon" viewBox="0 0 1024 1024" version="1.1"
-                        xmlns="http://www.w3.org/2000/svg" p-id="42732" width="128" height="128">
-                        <path
-                            d="M950.3 489.4L533.8 73c-12-12-31.5-12-43.5 0L73.9 489.4c-19.4 19.4-5.7 52.5 21.7 52.5h66.8v353.7c0 35.3 28.7 64 64 64H384V831.8c0-35.3 28.7-64 64-64h128c35.3 0 64 28.7 64 64v127.8h156.6c35.3 0 64-28.7 64-64V541.9h67.8c27.5 0 41.2-33.2 21.9-52.5z"
-                            fill="#9196a1" p-id="42733"></path>
-                    </svg></i>
+            <router-link class="deskTop item" active-class="active" to="/desktop" @click="showFolder = false">
+                <i class="icon"><svg-icon class="tab-icon" name="desktop" width="20px" height="20px"></svg-icon></i>
                 <span>桌面</span>
             </router-link>
             <router-link class="myDoc item" active-class="active" to="/mydoc">
-                <i class="icon"><svg t="1683789895685" class="icon" viewBox="0 0 1024 1024" version="1.1"
-                        xmlns="http://www.w3.org/2000/svg" p-id="40400" width="16" height="16">
-                        <path
-                            d="M855.04 385.024q19.456 2.048 38.912 10.24t33.792 23.04 21.504 37.376 2.048 54.272q-2.048 8.192-8.192 40.448t-14.336 74.24-18.432 86.528-19.456 76.288q-5.12 18.432-14.848 37.888t-25.088 35.328-36.864 26.112-51.2 10.24l-567.296 0q-21.504 0-44.544-9.216t-42.496-26.112-31.744-40.96-12.288-53.76l0-439.296q0-62.464 33.792-97.792t95.232-35.328l503.808 0q22.528 0 46.592 8.704t43.52 24.064 31.744 35.84 12.288 44.032l0 11.264-53.248 0q-40.96 0-95.744-0.512t-116.736-0.512-115.712-0.512-92.672-0.512l-47.104 0q-26.624 0-41.472 16.896t-23.04 44.544q-8.192 29.696-18.432 62.976t-18.432 61.952q-10.24 33.792-20.48 65.536-2.048 8.192-2.048 13.312 0 17.408 11.776 29.184t29.184 11.776q31.744 0 43.008-39.936l54.272-198.656q133.12 1.024 243.712 1.024l286.72 0z"
-                            p-id="40401" fill="#9196a1"></path>
-                    </svg></i>
-                <span>我的文档</span>
+                <div class="wrap " @click="showFolder = !showFolder">
+                    <i class="icon"><svg-icon class="tab-icon" name="mydoc" width="20px" height="20px"></svg-icon></i>
+                    <span>我的文档</span>
+                </div>
+                <!-- 折叠面板 -->
+                <div class="demo-collapse" v-show="showFolder">
+                    <el-collapse v-model="activeNames" @change="handleChange">
+                        <div class="li">
+                            <span class="addFolder" @click="addFolder" :key="0" id="0"><svg-icon name="add" width="12px" height="12px"
+                                    color="#3b73f0"></svg-icon></span>
+                            <el-collapse-item class="item current" title="我的云文档" name="1" >
+                                
+                                    <div 
+                                    class="folder"
+                                    ref="folderItem" 
+                                    v-for="(item,index) in allFolder[0].list" 
+                                    :key="index"
+                                    @click="handleClick">{{ item }}</div>
+                                
+                            </el-collapse-item>
+                        </div>
+                        <div class="li">
+                            <span class="addFolder" @click="addFolder" :key="0" id="1"><svg-icon name="add" width="12px" height="12px"
+                                    color="#3b73f0"></svg-icon></span>
+                            <el-collapse-item class="item" title="我的收藏" name="2">
+                            <div 
+                            class="folder"
+                            ref="folderItem" 
+                            v-for="(item,index) in allFolder[1].list" 
+                            :key="index"
+                            @click="handleClick">{{ item }}</div>
+                        </el-collapse-item>
+                        </div>
+                    </el-collapse>
+                </div>
+
             </router-link>
-            <router-link class="trash item" active-class="active" to="/trash">
-                <i class="icon"><svg t="1683792244745" class="icon" viewBox="0 0 1024 1024" version="1.1"
-                        xmlns="http://www.w3.org/2000/svg" p-id="44327" width="16" height="16">
-                        <path
-                            d="M238.08 846.848c0 54.272 48.64 98.816 108.032 98.816h331.776c59.904 0 108.032-44.032 108.032-98.816l50.688-516.096H186.88l51.2 516.096z m463.36-672.256h-71.68v-70.656c0-13.824-11.264-25.088-25.088-25.088H419.328c-13.824 0-25.088 11.264-25.088 25.088v70.656H133.12v98.816h757.76v-98.816H701.44zM465.92 140.8h92.16v33.28h-92.16V140.8z"
-                            p-id="44328" fill="#9196a1"></path>
-                    </svg></i>
+            <router-link class="trash item" active-class="active" to="/trash" @click="showFolder = false">
+                <i class="icon"><svg-icon class="tab-icon" name="trash" width="20px" height="20px"></svg-icon></i>
                 <span>回收站</span>
             </router-link>
         </div>
@@ -98,21 +181,6 @@ svg {
     }
 }
 
-.newset {
-    top: 0;
-    left: 250px;
-}
-
-.newset,
-.add {
-    display: none;
-}
-
-.newset.active,
-.add.active {
-    display: block;
-}
-
 // 路由
 .item {
     box-sizing: border-box;
@@ -124,6 +192,105 @@ svg {
     text-decoration: none;
     border-radius: 6px;
 
+    span {
+        display: block;
+        line-height: 50px;
+        color: #9195a1;
+        font-size: 14px;
+        font-weight: 700;
+    }
+}
+
+.myDoc .wrap {
+    display: flex;
+    align-items: center;
+    margin: 0;
+    padding: 0;
+    width: 100%;
+
+}
+
+.myDoc {
+    display: block;
+}
+
+// 折叠面板样式
+.demo-collapse {
+    width: 100%;
+    box-sizing: border-box;
+    background-color: transparent;
+}
+
+.demo-collapse {
+    padding-bottom: 10px;
+
+    .item {
+        display: block;
+        position: relative;
+        width: 100%;
+        color: #9195a1;
+        margin: 0;
+    }
+}
+
+.item .li {
+    position: relative;
+    .folder{
+        // 省略号
+        padding: 0 6px;
+        text-overflow: ellipsis;
+        overflow: hidden;
+        white-space: nowrap;
+    }
+}
+
+.item .addFolder {
+    display: flex;
+    justify-content: center;
+    line-height: 18px;
+    width: 18px;
+    height: 18px;
+    border-radius: 4px;
+    position: absolute;
+    z-index: 3;
+    right: 6px;
+    top: 6px;
+    transition: .1s all;
+}
+
+.item .addFolder:hover {
+    background-color: rgba(13, 13, 13, 0.06);
+}
+.current{
+    color: @button-color;
+}
+</style>
+<!-- 修改icon样式 -->
+<style lang="less">
+// 显示白色
+.router-list {
+    .active {
+        background-color: rgba(10, 108, 255, .1);
+
+        i.icon {
+            background-color: @button-color;
+
+            .tab-icon {
+                svg {
+                    transform: translateY(-22px);
+                }
+            }
+        }
+
+        span {
+            color: rgb(10, 108, 255);
+        }
+
+    }
+}
+
+// 显示灰色
+.item {
     i.icon {
         overflow: hidden;
         display: flex;
@@ -136,43 +303,27 @@ svg {
         border-radius: 10px;
         background-color: #ebebeb;
 
-        svg {
-            transform: translateY(0px);
-            width: 16px;
-            height: 16px;
-            filter: drop-shadow(0px 22px 0 #fff);
+        .tab-icon {
+            .svg {
+                transform: translateY(2px);
+                width: 16px;
+                height: 16px;
+                filter: drop-shadow(0px 24px 0 #fff);
 
-        }
-    }
-
-    span {
-        display: block;
-        line-height: 50px;
-        color: #9195a1;
-        font-size: 14px;
-        font-weight: 700;
-    }
-}
-
-.item:hover {
-    // background-color: rgba(13,13,13,.06);
-}
-
-.router-list {
-    .active {
-        background-color: rgba(10, 108, 255, .1);
-
-        i {
-            background-color: @button-color;
-
-            svg {
-                transform: translateY(-22px);
             }
         }
-
-        span {
-            color: rgb(10, 108, 255);
-        }
-
     }
-}</style>
+}
+
+// 修改elementplus组件样式
+.demo-collapse {
+    .item {
+        div {
+            background-color: transparent;
+        }
+    }
+}
+.addFolder *{
+    pointer-events: none;
+}
+</style>

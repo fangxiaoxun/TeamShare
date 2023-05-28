@@ -3,8 +3,7 @@
     <router-view></router-view>
 </template>
 <script lang="ts" setup>
-
-import Directory from './components/directory/Directory.vue';
+// import Directory from './components/index/Directory.vue';
 
 </script>
 

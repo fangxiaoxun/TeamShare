@@ -19,7 +19,8 @@
             "DOM"
         ],
         "skipLibCheck": true,
-        "noEmit": true
+        "noEmit": true,
+        "types": ["vite"]
     },
     "include": [
         "src/**/*.ts",
