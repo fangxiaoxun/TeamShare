@@ -1,6 +1,6 @@
 <script lang='ts' setup>
 import Button from '../common/Button.vue';
-import { Ref, ref, onMounted} from 'vue';
+import { Ref, ref, onMounted, getCurrentInstance } from 'vue';
 import { useFolderStore } from '@/store/folder';
 // 未确认
 import { ElMessage, ElMessageBox } from 'element-plus'
@@ -14,25 +14,27 @@ const showFolder = ref<boolean>(false);
 const handleChange = (val: string[]) => {
     console.log(val)
 }
-// 获取新建文件夹的位置id
-const getFolderId =(e:MouseEvent):number=>{
+// 获取新建文件夹的所在位置id
+const getFolderId = (e: MouseEvent): number => {
     const id = (e.target as HTMLElement).getAttribute('id')!;
     return parseInt(id)
 }
 
-const addFolder = (e:MouseEvent) => {
+const addFolder = (e: MouseEvent) => {
     let id = getFolderId(e)
     ElMessageBox.prompt('请输入文件夹名称', '新建文件夹', {
         confirmButtonText: '完成',
         cancelButtonText: '取消',
     })
-    .then(({ value }) => {
+        .then(({ value }) => {
             ElMessage({
                 type: 'success',
                 message: `新建文件夹 ${value} 成功！`,
             })
             // 新建文件夹
-            folderStore.addFolder(id,value)
+            folderStore.addFolder(id, value);
+            setFileId();
+
         })
         .catch(() => {
             ElMessage({
@@ -41,27 +43,29 @@ const addFolder = (e:MouseEvent) => {
             })
         })
 }
+const instance = getCurrentInstance()!;
+const component = instance.proxy;
 // 获取Dom元素
-// const collapseItem = ref<HTMLElement>(document.createElement('span'));
 const folderItem = ref<Array<HTMLHeadingElement | null>>([])
-
-onMounted(() =>{
-    // 为文件夹的DOM元素添加 id 属性
-    for(let i=0;i<folderItem.value.length;i++){
-        folderItem.value[i]?.setAttribute('id',i+'')
-    }
-})
-
-const handleClick = (e:MouseEvent)=>{
-    folderItem.value.forEach(item =>{
+// 为每个文件夹设置id
+async function setFileId(): Promise<void> {
+    await component!.$nextTick(() => {
+        for (let i = 0; i < folderItem.value.length; i++) {
+            console.log(folderItem.value[i])
+            folderItem.value[i]?.setAttribute('id', i + '')
+        }
+    });
+}
+const handleClick = (e: MouseEvent) => {
+    folderItem.value.forEach(item => {
         item?.classList.remove('current')
     })
-    if((e.target as HTMLElement).id){
+    if ((e.target as HTMLElement).id) {
         (e.target as HTMLElement).classList.add('current')
         // 显示对应文件夹的文件
     }
 }
-
+setFileId();
 
 
 </script>
@@ -114,30 +118,22 @@ const handleClick = (e:MouseEvent)=>{
                 <div class="demo-collapse" v-show="showFolder">
                     <el-collapse v-model="activeNames" @change="handleChange">
                         <div class="li">
-                            <span class="addFolder" @click="addFolder" :key="0" id="0"><svg-icon name="add" width="12px" height="12px"
-                                    color="#3b73f0"></svg-icon></span>
-                            <el-collapse-item class="item current" title="我的云文档" name="1" >
-                                
-                                    <div 
-                                    class="folder"
-                                    ref="folderItem" 
-                                    v-for="(item,index) in allFolder[0].list" 
-                                    :key="index"
+                            <span class="addFolder" @click="addFolder" :key="0" id="0"><svg-icon name="add" width="12px"
+                                    height="12px" color="#3b73f0"></svg-icon></span>
+                            <el-collapse-item class="item current" title="我的云文档" name="1">
+
+                                <div class="folder" ref="folderItem" v-for="(item, index) in allFolder[0].list" :key="index"
                                     @click="handleClick">{{ item }}</div>
-                                
+
                             </el-collapse-item>
                         </div>
                         <div class="li">
-                            <span class="addFolder" @click="addFolder" :key="0" id="1"><svg-icon name="add" width="12px" height="12px"
-                                    color="#3b73f0"></svg-icon></span>
+                            <span class="addFolder" @click="addFolder" :key="0" id="1"><svg-icon name="add" width="12px"
+                                    height="12px" color="#3b73f0"></svg-icon></span>
                             <el-collapse-item class="item" title="我的收藏" name="2">
-                            <div 
-                            class="folder"
-                            ref="folderItem" 
-                            v-for="(item,index) in allFolder[1].list" 
-                            :key="index"
-                            @click="handleClick">{{ item }}</div>
-                        </el-collapse-item>
+                                <div class="folder" ref="folderItem" v-for="(item, index) in allFolder[1].list" :key="index"
+                                    @click="handleClick">{{ item }}</div>
+                            </el-collapse-item>
                         </div>
                     </el-collapse>
                 </div>
@@ -235,7 +231,8 @@ svg {
 
 .item .li {
     position: relative;
-    .folder{
+
+    .folder {
         // 省略号
         padding: 0 6px;
         text-overflow: ellipsis;
@@ -261,7 +258,8 @@ svg {
 .item .addFolder:hover {
     background-color: rgba(13, 13, 13, 0.06);
 }
-.current{
+
+.current {
     color: @button-color;
 }
 </style>
@@ -323,7 +321,8 @@ svg {
         }
     }
 }
-.addFolder *{
+
+.addFolder * {
     pointer-events: none;
 }
 </style>
