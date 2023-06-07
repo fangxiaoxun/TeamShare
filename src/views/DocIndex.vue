@@ -30,20 +30,20 @@ let timer: NodeJS.Timeout | null = null
 let popTimer: NodeJS.Timeout | null = null
 function type(): void {
     if (text.value === title[i]) {
-        console.log('yimer', i);
+        // console.log('yimer', i);
         clearInterval(Number(timer))
         popTimer = setInterval(popText, 250)
 
     } else {
-        console.log('title', i);
+        // console.log('title', i);
         text.value = title[i].substring(0, index++)
     }
-    console.log(text.value);
+    // console.log(text.value);
 }
 function popText(): void {
     if (text.value === '') {
         clearInterval(Number(popTimer))
-        console.log('i', i);
+        // console.log('i', i);
         i++
         i = i >= title.length ? i % title.length : i
         timer = setInterval(type, 250)

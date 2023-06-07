@@ -38,7 +38,7 @@ export const useFolderStore = defineStore("folders", {
     actions: {
         // 删除文件夹
         deleteFolder(index: number, folderName: string) {
-            this.data[index].list = this.data[index].list.filter((item) => { item != folderName })
+            this.data[index].list = this.data[index].list.filter(item => item != folderName)
         },
         // 添加文件夹
         addFolder(index: number, folderName: string) {
