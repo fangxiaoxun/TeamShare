@@ -2,6 +2,7 @@
 import { createRouter, createWebHashHistory } from 'vue-router'
 // 引入路由组件
 import DocIndex from '../views/DocIndex.vue'
+import Draw from '../views/Draw.vue'
 import Login from '../components/login/login.vue'
 
 import Directory from '../views/Directory.vue'
@@ -27,6 +28,12 @@ const router = createRouter({
             path: '/login',
             name: 'login',
             component: Login
+        },
+        // 画板路由
+        {
+            path:'/draw',
+            name:'draw',
+            component:Draw
         },
         // 功能页路由
         {
