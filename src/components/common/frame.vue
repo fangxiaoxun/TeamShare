@@ -1,20 +1,14 @@
 <script lang="ts" setup>
-import { ref} from 'vue';
+import { ref } from 'vue';
 import { vClickOutside } from '@/hooks/clickOutside';
 import file from '@/views/file.vue';
-const props = defineProps(["fileCount","position","author","time","operate"])
+// import { isEmpty } from 'element-plus/es/utils';
+const props = defineProps(["fileList", "operate","isEmpty"]);
+console.log(props.isEmpty)
 const count = ref<number>(0)
-const load = (): void => {
-    if (count.value >= props.fileCount) {
-        count.value = props.fileCount;
-    } else {
-        count.value += 2
-    }
-}
 const showType = (element: HTMLElement) => {
     element.classList.contains('active') && element.classList.remove('active')
 }
-
 // 定义类型
 // 类型变化
 interface Type {
@@ -65,6 +59,7 @@ function TypeSelect(e: MouseEvent) {
 
     handleClick(type)
 }
+const isShow: boolean = true
 
 // 实现点击切换类名
 function handleClick(id: string): void {
@@ -77,6 +72,15 @@ function handleClick(id: string): void {
     })
 }
 
+const load = (): void => {
+    if (count.value >= props.fileList.length) {
+        count.value = props.fileList.length;
+        return
+    } else {
+        count.value += 2
+    }
+    // load()
+}
 </script>
 <template>
     <div class="wrapper">
@@ -137,12 +141,20 @@ function handleClick(id: string): void {
             <!-- 动态渲染 -->
             <ul v-infinite-scroll="load" infinite-scroll-distance=1 class="list" style="overflow: auto">
                 <div class="inner">
-                    <!-- useStore -->
-                    <file v-for="i in count" :key="i"><template v-slot:li1>{{ props.position }}</template>
-                        <template v-slot:li2>{{ props.author }}</template>
-                        <template v-slot:li3>{{ props.time }}</template>
-                        <template v-slot:operate>{{ props.operate }}</template>
-                    </file>
+                    <!-- <template> -->
+                        <el-empty  description="描述文字" v-if="props.isEmpty"></el-empty>
+                        <file v-else v-for="i in props.fileList.length" :key="i">
+                            <template v-slot:li1>{{ props.fileList[i - 1].location }}</template>
+                            <template v-slot:fileName>{{ props.fileList[i - 1].fileName }}</template>
+                            <template v-slot:li2>{{ props.fileList[i - 1].author }}</template>
+                            <template v-slot:li3>{{ props.fileList[i - 1].time }}</template>
+                            <template v-slot:operate>{{ props.operate }}</template>
+                        </file>
+
+
+                        <!-- <file v-for="i in count" :key="i">{{ props.fileList[i-1] }}</file> -->
+                        <!-- <div>{{ props.fileList }}</div> -->
+                    <!-- </template> -->
                 </div>
             </ul>
 
@@ -283,6 +295,7 @@ span {
 .item:hover {
     background-color: rgba(13, 13, 13, .06);
 }
+
 .list {
     height: calc(~"100vh - @{list-top}");
     overflow-y: scroll;

@@ -112,7 +112,7 @@ const show = (element: HTMLElement) => {
 }
 
 .blue-btn:hover {
-    background: rgb(59, 137, 255; );
+    background: @button-hover-color;
 }
 
 #newsetBtn.active .wrapper,

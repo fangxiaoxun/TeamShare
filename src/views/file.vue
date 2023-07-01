@@ -6,7 +6,7 @@
                 <div class="border" v-show="isCheck"><div class="label"></div></div>
             </div>
             <div class="fileicon"> <svg-icon name="doc" width="24px" height="24px"></svg-icon></div>
-            <span>文件名</span>
+            <span><slot name="fileName"></slot></span>
             <div class="star"><svg-icon name="star"></svg-icon></div>
         </div>
         <div class="position"><span><slot name="li1"></slot></span></div>
@@ -65,7 +65,7 @@ span {
     border-radius: 8px;
 }
 .filewrap.selected{
-    background-color: rgba(10, 108, 255, 0.1);
+    background-color: @bgColorBase;
 }
 .filename {
     flex: 4;
@@ -167,9 +167,9 @@ span {
     background-color: transparent;
 }
 .delete:hover,.delete:active{
-    background-color: rgba(13,13,13,.06);
+    background-color: @primaryLight;
 }
 .share:hover,.share:active{
-    background-color: rgb(79,135,254);
+    background-color: @button-hover-color;
 }
 </style>
