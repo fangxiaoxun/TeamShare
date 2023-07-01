@@ -8,7 +8,7 @@
           
 <script lang="ts" setup>
      import {ref,onMounted,onUnmounted,toRefs} from 'vue'
-     import {useMouse} from '../hooks/mouse'
+    //  import {useMouse} from '../hooks/mouse'
 </script>
           
 <style lang="less">
