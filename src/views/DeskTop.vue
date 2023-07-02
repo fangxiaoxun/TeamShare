@@ -10,7 +10,7 @@ let latest = fileStore.getLatestFiles
 </script>
 <template>
     <!-- 传入文件显示类型 -->
-<frame :fileList="latest.list" operate="分享" :fileCount="latest.list.length">
+<frame :fileList="latest.list" operate="分享" :fileCount="latest.list.length" :isEmpty="latest.list.length">
     <template v-slot:title>最近</template>
     <template v-slot:item1>文件位置</template>
     <template v-slot:item2>创建者</template>
