@@ -6,6 +6,7 @@ import Draw from '../views/Draw.vue'
 import Login from '../components/login/login.vue'
 
 import Directory from '../views/Directory.vue'
+import DocView from '../views/DocView.vue'
 
 import DeskTop from '../views/DeskTop.vue'
 import Mydoc from '../views/MyDoc.vue'
@@ -57,7 +58,14 @@ const router = createRouter({
                     name: 'trash',
                     component: Trash,
                 },
+
             ]
+        },
+        // 编辑器页面路由
+        {
+            path: '/docView',
+            name: 'docView',
+            component: DocView,
         }
     ]
 })
