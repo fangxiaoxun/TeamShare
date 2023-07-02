@@ -141,7 +141,6 @@ const load = (): void => {
             <!-- 动态渲染 -->
             <ul v-infinite-scroll="load" infinite-scroll-distance=1 class="list" style="overflow: auto">
                 <div class="inner">
-                    <!-- <template> -->
                         <el-empty  description="描述文字" v-if="props.isEmpty"></el-empty>
                         <file v-else v-for="i in props.fileList.length" :key="i">
                             <template v-slot:li1>{{ props.fileList[i - 1].location }}</template>
@@ -150,11 +149,6 @@ const load = (): void => {
                             <template v-slot:li3>{{ props.fileList[i - 1].time }}</template>
                             <template v-slot:operate>{{ props.operate }}</template>
                         </file>
-
-
-                        <!-- <file v-for="i in count" :key="i">{{ props.fileList[i-1] }}</file> -->
-                        <!-- <div>{{ props.fileList }}</div> -->
-                    <!-- </template> -->
                 </div>
             </ul>
 

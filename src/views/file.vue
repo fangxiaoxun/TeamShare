@@ -1,12 +1,11 @@
 <template>
-    <!-- <div class="filewrap" @click="isCheck = !isCheck" ref="FILE"> -->
     <div class="filewrap" @click="hanldSelected(isCheck)" ref="FILE">
         <div class="filename">
             <div class="checkBox">
                 <div class="border" v-show="isCheck"><div class="label"></div></div>
             </div>
             <div class="fileicon"> <svg-icon name="doc" width="24px" height="24px"></svg-icon></div>
-            <span><slot name="fileName"></slot></span>
+            <router-link to="/docView"><span><slot name="fileName"></slot></span></router-link>
             <div class="star"><svg-icon name="star"></svg-icon></div>
         </div>
         <div class="position"><span><slot name="li1"></slot></span></div>
