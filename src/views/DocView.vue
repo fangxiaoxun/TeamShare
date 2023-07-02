@@ -1,3 +1,4 @@
+
 <template>
     <section>
         <header>
@@ -82,9 +83,9 @@
                         </svg>
                         <div class="current-color"></div>
                     </label>
-                    <label title="文字 — T 或 8"><svg aria-hidden="true" focusable="false" role="img"
-                            viewBox="0 0 24 24" class="" fill="none" stroke-width="2" stroke="currentColor"
-                            stroke-linecap="round" stroke-linejoin="round">
+                    <label title="文字 — T 或 8"><svg aria-hidden="true" focusable="false" role="img" viewBox="0 0 24 24"
+                            class="" fill="none" stroke-width="2" stroke="currentColor" stroke-linecap="round"
+                            stroke-linejoin="round">
                             <g stroke-width="1.5">
                                 <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
                                 <line x1="4" y1="20" x2="7" y2="20"></line>
@@ -94,9 +95,8 @@
                                 <polyline points="5 20 11 4 13 4 20 20"></polyline>
                             </g>
                         </svg></label>
-                    <label title="插入图像 — 9"><svg aria-hidden="true" focusable="false" role="img"
-                            viewBox="0 0 20 20" class="" fill="none" stroke="currentColor" stroke-linecap="round"
-                            stroke-linejoin="round">
+                    <label title="插入图像 — 9"><svg aria-hidden="true" focusable="false" role="img" viewBox="0 0 20 20"
+                            class="" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
                             <g stroke-width="1.25">
                                 <path d="M12.5 6.667h.01"></path>
                                 <path
@@ -122,12 +122,93 @@
                 </div>
             </TopBar>
         </header>
+        <main>
+            <nav class="leftBar" ref="LEFTNAV">
+                <div class="title">
+                    <h2 class="folderName">文件名</h2>
+                    <div class="fold-btn" ref="foldBtn"><svg-icon name="fold" width="28px" height="28px"></svg-icon></div>
+                </div>
+                <el-collapse v-model="activeNames" @change="handleChange" class="collapse">
+                    <el-collapse-item title="目录" name="1" class="el-collapse-item">
+                        <div class="file">文件1</div>
+                        <div class="file">文件2</div>
+                    </el-collapse-item>
+                </el-collapse>
+
+
+
+                <!-- 树形控件 -->
+                <el-tree :data="data" :props="defaultProps" @node-click="handleNodeClick" />
+            </nav>
+            <div class="unfold-btn" ref="unfoldBtn"><svg-icon name="fold" width="28px" height="28px"></svg-icon></div>
+            <div class="display">
+
+            </div>
+        </main>
     </section>
 </template>
-          
+    
 <script lang="ts" setup>
-import TopBar from '../components/common/ToolBar.vue'    
+import { onMounted } from 'vue';
+import { ref } from 'vue'
+import TopBar from '../components/common/ToolBar.vue'
+const handleChange = (val: any) => {
+    console.log(val);
+}
+const activeNames = ['1']
+const LEFTNAV = ref<HTMLElement>(document.createElement('div'))
+const foldBtn = ref<HTMLElement>(document.createElement('div'))
+const unfoldBtn = ref<HTMLElement>(document.createElement('div'))
+
+console.log(LEFTNAV.value)
+onMounted(() => {
+    console.log(LEFTNAV.value)
+    foldBtn.value.addEventListener('click', () => {
+        LEFTNAV.value.classList.add('active')
+        unfoldBtn.value.style.display = 'block'
+    })
+    unfoldBtn.value.addEventListener('click', () => {
+        LEFTNAV.value.classList.remove('active')
+        unfoldBtn.value.style.display = 'none'
+
+    })
+
+})
+
+
+// 树形空间data
+interface Tree {
+    label: string
+    children?: Tree[]
+}
+
+const handleNodeClick = (data: Tree) => {
+    console.log(data)
+}
+
+const data: Tree[] = [
+    {
+        label: 'Level one 1',
+        children: [
+            {
+                label: '文件1',
+            },
+            {
+                label: '文件2',
+            },
+            {
+                label: '文件3',
+            },
+        ],
+    },
+]
+
+const defaultProps = {
+    children: 'children',
+    label: 'label',
+}
 </script>
+
           
 <style lang="less" scoped>
 section {
@@ -136,7 +217,7 @@ section {
 
     header {
         padding: 16px;
-        background-color: palegoldenrod;
+        // background-color: palegoldenrod;
 
         .toolList {
             display: flex;
@@ -167,7 +248,8 @@ section {
                     color: #3d3d3d;
                 }
 
-                .current-color,.high-light {
+                .current-color,
+                .high-light {
                     position: absolute;
                     bottom: 7px;
                     height: 3px;
@@ -175,7 +257,7 @@ section {
                     background-color: @button-color;
                 }
 
-                .high-light{
+                .high-light {
                     bottom: 6;
                     background-color: rgb(255, 255, 0);
                     border: 1px solid rgba(0, 0, 0, 0.12)
@@ -191,4 +273,82 @@ section {
             }
         }
     }
-}</style>
+
+    main {
+        display: flex;
+        width: 100%;
+        height: 100%;
+        position: absolute;
+        top: 0;
+        .leftBar {
+            width: @leftBar-size;
+            height: 100vh;
+            background-color: #fff;
+            padding: 20px;
+            box-shadow: 0 1px 4px rgba(13, 13, 13, 0.1);
+            transition: .3s all ease-in;
+        }
+
+        .leftBar.active {
+            margin-left: -@leftBar-size;
+        }
+
+        .title {
+            display: flex;
+            align-content: center;
+            justify-content: space-between;
+            margin-bottom: 30px;
+        }
+
+        .fold-btn,
+        .unfold-btn {
+            cursor: pointer;
+            width: 30px;
+            height: 30px;
+            transition: .2s all;
+            border-radius: 5px;
+            display: flex;
+            justify-content: center;
+            align-content: center;
+        }
+
+        .fold-btn:hover {
+            background-color: @hover-gray;
+        }
+
+        .unfold-btn:hover {
+            background-color: #e5e5e5;
+        }
+
+        .unfold-btn {
+            display: none;
+            position: absolute;
+            top: 20px;
+            left: 40px;
+            transform: rotate(180deg);
+        }
+
+        .file {
+            cursor: pointer;
+            padding-left: 30px;
+            line-height: 35px;
+            border-radius: 5px;
+            transition: all .2s;
+        }
+
+        .file:hover {
+            background-color: @hover-gray;
+        }
+
+        .display {
+            width: 100%;
+            height: 100vh;
+            background-color: @bgPrimary;
+
+        }
+    }
+
+}
+</style>
+
+

@@ -141,7 +141,7 @@ const load = (): void => {
             <!-- 动态渲染 -->
             <ul v-infinite-scroll="load" infinite-scroll-distance=1 class="list" style="overflow: auto">
                 <div class="inner">
-                        <el-empty  description="描述文字" v-if="props.isEmpty"></el-empty>
+                        <el-empty  description="文件夹是空的" v-if="props.isEmpty"></el-empty>
                         <file v-else v-for="i in props.fileList.length" :key="i">
                             <template v-slot:li1>{{ props.fileList[i - 1].location }}</template>
                             <template v-slot:fileName>{{ props.fileList[i - 1].fileName }}</template>

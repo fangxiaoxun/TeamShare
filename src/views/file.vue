@@ -5,7 +5,7 @@
                 <div class="border" v-show="isCheck"><div class="label"></div></div>
             </div>
             <div class="fileicon"> <svg-icon name="doc" width="24px" height="24px"></svg-icon></div>
-            <router-link to="/docView"><span><slot name="fileName"></slot></span></router-link>
+            <span><router-link to="/docView"><slot name="fileName"></slot></router-link></span>
             <div class="star"><svg-icon name="star"></svg-icon></div>
         </div>
         <div class="position"><span><slot name="li1"></slot></span></div>
@@ -23,6 +23,7 @@ let isCheck = ref<boolean>(false);
     const FILE = ref<HTMLElement>(document.createElement('div'));
 const hanldSelected = (check:boolean):void => {
     if(!check){
+        console.log(FILE.value)
         FILE.value.classList.add('selected')
     }else{
         FILE.value.classList.remove('selected')
