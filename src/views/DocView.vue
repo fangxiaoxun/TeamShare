@@ -77,7 +77,7 @@ const defaultProps = {
             <el-tree :data="data" :props="defaultProps" @node-click="handleNodeClick" />
         </nav>
         <div class="unfold-btn" ref="unfoldBtn"><svg-icon name="fold" width="28px" height="28px"></svg-icon></div>
-        <div class="display">
+        <div class="editor">
 
         </div>
     </main>
@@ -120,7 +120,8 @@ const defaultProps = {
 .fold-btn:hover {
     background-color: @hover-gray;
 }
-.unfold-btn:hover{
+
+.unfold-btn:hover {
     background-color: #e5e5e5;
 }
 
@@ -145,10 +146,11 @@ const defaultProps = {
 }
 
 // 编辑器内页
-main{
+main {
     background-color: @bgPrimary;
 }
-.display {
+
+.editor {
     width: 100%;
     height: 100vh;
     background-color: @bgPrimary;
