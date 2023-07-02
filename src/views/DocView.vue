@@ -121,6 +121,37 @@
                         </svg></label>
                 </div>
             </TopBar>
+            <div class="menu">
+                <button class="share">
+                    <svg width="1.2em" height="1.2em" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"
+                        data-icon="GroupOutlined">
+                        <path
+                            d="M8.5 5a2.5 2.5 0 1 0 .001 5.001A2.5 2.5 0 0 0 8.5 5ZM4 7.5a4.5 4.5 0 1 1 9 0 4.5 4.5 0 0 1-9 0ZM5.835 15C4.015 15 2.5 16.498 2.5 18.4V20h12v-1.6c0-1.901-1.515-3.4-3.335-3.4h-5.33ZM.5 18.4c0-2.982 2.39-5.4 5.335-5.4h5.33c2.945 0 5.335 2.418 5.335 5.4V20c0 1.1-.9 2-2 2h-12c-1.1 0-2-.9-2-2v-1.6Zm22 2.6h-4.135v-2H21.5v-.6c0-1.002-.845-1.9-2-1.9h-1.31a5.46 5.46 0 0 0-.985-2H19.5c2.21 0 4 1.746 4 3.9V20c.025.535-.49 1.02-1 1Zm-6-11a1.001 1.001 0 1 1 1 1c-.55 0-1-.447-1-1Zm1-3a3.001 3.001 0 0 0 0 6 3.001 3.001 0 0 0 0-6Z"
+                            fill="currentColor"></path>
+                    </svg>
+                    分享
+                </button>
+                <button class="import">
+                    <svg t="1688317675419" class="icon" viewBox="0 0 1000 1000" version="1.1"
+                        xmlns="http://www.w3.org/2000/svg" p-id="9579" data-spm-anchor-id="a313x.7781069.0.i10" width="200"
+                        height="200">
+                        <path
+                            d="M259.774 362.57v364.149c0 28.44 23.051 51.491 51.491 51.491h364.149c28.44 0 51.491-23.051 51.491-51.491s-23.051-51.491-51.491-51.491h-239.829l349.073-349.073c20.119-20.119 20.119-52.711 0-72.831s-52.711-20.119-72.831 0l-349.073 349.073v-239.829c0.001-14.202-5.754-27.093-15.076-36.415s-22.195-15.094-36.415-15.076c-28.44 0-51.491 23.051-51.491 51.491z"
+                            p-id="9580" fill="#8a8a8a" data-spm-anchor-id="a313x.7781069.0.i7" class="selected"></path>
+                    </svg>
+                </button>
+                <button class="paging">
+                    <svg t="1688318498705" class="icon" viewBox="0 0 1024 1024" version="1.1"
+                        xmlns="http://www.w3.org/2000/svg" p-id="13275" id="mx_n_1688318498705" width="200" height="200">
+                        <path
+                            d="M787.692308 157.538462a78.769231 78.769231 0 0 1 78.76923 78.76923v551.384616a78.769231 78.769231 0 0 1-78.76923 78.76923H236.307692a78.769231 78.769231 0 0 1-78.76923-78.76923V236.307692a78.769231 78.769231 0 0 1 78.76923-78.76923h551.384616z m-295.384616 39.384615H236.307692a39.384615 39.384615 0 0 0-39.108923 34.776615L196.923077 236.307692v551.384616a39.384615 39.384615 0 0 0 34.776615 39.108923L236.307692 827.076923h256V196.923077zM787.692308 196.923077h-256v630.153846H787.692308a39.384615 39.384615 0 0 0 39.108923-34.776615L827.076923 787.692308V236.307692a39.384615 39.384615 0 0 0-34.776615-39.108923L787.692308 196.923077z m-381.952 223.547077a19.692308 19.692308 0 0 1 2.284307 25.127384l-2.284307 2.756924-62.818462 62.739692 64.708923 64.748308a19.692308 19.692308 0 0 1 2.244923 25.127384l-2.244923 2.717539a19.692308 19.692308 0 0 1-25.127384 2.284307l-2.756923-2.284307-78.611693-78.611693a19.692308 19.692308 0 0 1-2.244923-25.127384l2.244923-2.756923 76.760616-76.721231a19.692308 19.692308 0 0 1 27.844923 0z m212.676923 0a19.692308 19.692308 0 0 1 27.884307 0l76.721231 76.760615 2.284308 2.717539a19.692308 19.692308 0 0 1-2.284308 25.127384l-78.611692 78.611693-2.756923 2.284307a19.692308 19.692308 0 0 1-25.088-2.284307l-2.284308-2.756923a19.692308 19.692308 0 0 1 2.284308-25.088l64.669538-64.748308-62.818461-62.739692-2.244923-2.756924a19.692308 19.692308 0 0 1 2.244923-25.127384z"
+                            fill="#515151" p-id="13276"></path>
+                    </svg>
+                </button>
+                <!-- 用户 -->
+                <User></User>
+            </div>
+
         </header>
         <main>
             <nav class="leftBar" ref="LEFTNAV">
@@ -152,6 +183,7 @@
 import { onMounted } from 'vue';
 import { ref } from 'vue'
 import TopBar from '../components/common/ToolBar.vue'
+import User from '../components/common/User.vue'
 const handleChange = (val: any) => {
     console.log(val);
 }
@@ -216,6 +248,8 @@ section {
     background-color: @bgPrimary;
 
     header {
+        display: flex;
+        position: relative;
         padding: 16px;
         // background-color: palegoldenrod;
 
@@ -272,6 +306,60 @@ section {
                 margin: 0 0.5rem;
             }
         }
+
+        .menu {
+            display: flex;
+            justify-content: space-around;
+            position: absolute;
+            right: 0;
+            z-index: 2;
+            width: 280px;
+            height: 44px;
+            button.share {
+                width: 78px;
+                background-color: @button-color;
+                height: 36px;
+                line-height: 36px;
+                text-align: center;
+                margin-left: 22px;
+                color: #fff;
+                border-radius: 8px;
+                cursor: pointer;
+
+                svg {
+                    position: relative;
+                    top: 2px;
+                }
+            }
+
+            button.import,
+            button.paging {
+                position: relative;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                width: 36px;
+                height: 36px;
+                border-radius: 8px;
+                background-color: rgba(255, 255, 255, 0.96);
+                border: 1px solid rgb(214, 214, 214);
+                z-index: 5;
+
+                svg {
+                    height: 1rem;
+                    width: 1rem;
+                }
+
+                &:hover {
+                    background-color: #f5f5f5;
+                    cursor: pointer;
+                }
+            }
+
+
+        }
+
+
     }
 
     main {
@@ -280,6 +368,7 @@ section {
         height: 100%;
         position: absolute;
         top: 0;
+
         .leftBar {
             width: @leftBar-size;
             height: 100vh;
@@ -341,6 +430,8 @@ section {
         }
 
         .display {
+            position: relative;
+            z-index: -1;
             width: 100%;
             height: 100vh;
             background-color: @bgPrimary;
@@ -348,7 +439,6 @@ section {
         }
     }
 
-}
-</style>
+}</style>
 
 
