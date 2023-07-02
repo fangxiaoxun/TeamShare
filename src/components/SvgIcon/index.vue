@@ -1,8 +1,8 @@
 <template>
     <div>
         <svg class="svg" :style="{ width: width, height: height }">
-            <!-- <use :xlink:href="prefix + name" :fill="color"></use> -->
             <use :xlink:href="`#icon-${iconName}`" :fill="color"></use>
+          
         </svg>
     </div>
 </template>
