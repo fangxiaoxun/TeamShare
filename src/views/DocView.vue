@@ -562,7 +562,7 @@ section {
 
         .display {
             position: relative;
-            z-index: -1;
+            z-index: 100;
             width: 100%;
             height: 100vh;
             background-color: @bgPrimary;
