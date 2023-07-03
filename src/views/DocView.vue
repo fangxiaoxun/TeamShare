@@ -84,25 +84,59 @@
                         <div class="current-color"></div>
                     </label>
                     <label title="对齐">
-                        <svg v-if="duiMenu[0].isSelected" width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M5 6h14v1.4H5V6zM5 11.3h8v1.4H5v-1.4z" fill="#454D5A"></path><path d="M5 16.6h14V18H5v-1.4z" fill="#454D5A"></path></svg>
-                        <svg v-else-if="duiMenu[1].isSelected" width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M5 6h14v1.4H5V6zM8 11.3h8v1.4H8v-1.4zM19 16.6H5V18h14v-1.4z" fill="#454D5A"></path></svg>
-                        <svg v-else-if="duiMenu[2].isSelected" width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M5 6h14v1.4H5V6zm6 5.3h8v1.4h-8v-1.4zm8 5.3H5V18h14v-1.4z" fill="#454D5A"></path></svg>
-                        <svg v-else-if="duiMenu[3].isSelected" width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M5 6h14v1.4H5V6zm0 5.3h14v1.4H5v-1.4zm14 5.3H5V18h14v-1.4z" fill="#454D5A"></path></svg>
+                        <svg v-if="duiMenu[0].isSelected" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                            xmlns="http://www.w3.org/2000/svg">
+                            <path fill-rule="evenodd" clip-rule="evenodd" d="M5 6h14v1.4H5V6zM5 11.3h8v1.4H5v-1.4z"
+                                fill="#454D5A"></path>
+                            <path d="M5 16.6h14V18H5v-1.4z" fill="#454D5A"></path>
+                        </svg>
+                        <svg v-else-if="duiMenu[1].isSelected" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                            xmlns="http://www.w3.org/2000/svg">
+                            <path d="M5 6h14v1.4H5V6zM8 11.3h8v1.4H8v-1.4zM19 16.6H5V18h14v-1.4z" fill="#454D5A"></path>
+                        </svg>
+                        <svg v-else-if="duiMenu[2].isSelected" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                            xmlns="http://www.w3.org/2000/svg">
+                            <path fill-rule="evenodd" clip-rule="evenodd"
+                                d="M5 6h14v1.4H5V6zm6 5.3h8v1.4h-8v-1.4zm8 5.3H5V18h14v-1.4z" fill="#454D5A"></path>
+                        </svg>
+                        <svg v-else-if="duiMenu[3].isSelected" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                            xmlns="http://www.w3.org/2000/svg">
+                            <path fill-rule="evenodd" clip-rule="evenodd"
+                                d="M5 6h14v1.4H5V6zm0 5.3h14v1.4H5v-1.4zm14 5.3H5V18h14v-1.4z" fill="#454D5A"></path>
+                        </svg>
                         <div class="arrow-contain">
                             <div class="arrow"></div>
                         </div>
                         <ul class="dui-menu">
-                            <li :class="duiMenu[0].isSelected?'dui-selected':''" @click="changeDui(0o1)">
-                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M5 6h14v1.4H5V6zM5 11.3h8v1.4H5v-1.4z" fill="#454D5A"></path><path d="M5 16.6h14V18H5v-1.4z" fill="#454D5A"></path></svg>
+                            <li :class="duiMenu[0].isSelected ? 'dui-selected' : ''" @click="changeDui(0o1)">
+                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none"
+                                    xmlns="http://www.w3.org/2000/svg">
+                                    <path fill-rule="evenodd" clip-rule="evenodd" d="M5 6h14v1.4H5V6zM5 11.3h8v1.4H5v-1.4z"
+                                        fill="#454D5A"></path>
+                                    <path d="M5 16.6h14V18H5v-1.4z" fill="#454D5A"></path>
+                                </svg>
                             </li>
-                            <li :class="duiMenu[1].isSelected?'dui-selected':''" @click="changeDui(0o2)">
-                               <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M5 6h14v1.4H5V6zM8 11.3h8v1.4H8v-1.4zM19 16.6H5V18h14v-1.4z" fill="#454D5A"></path></svg>
+                            <li :class="duiMenu[1].isSelected ? 'dui-selected' : ''" @click="changeDui(0o2)">
+                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none"
+                                    xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M5 6h14v1.4H5V6zM8 11.3h8v1.4H8v-1.4zM19 16.6H5V18h14v-1.4z" fill="#454D5A">
+                                    </path>
+                                </svg>
                             </li>
-                            <li :class="duiMenu[2].isSelected?'dui-selected':''" @click="changeDui(0o3)">
-                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M5 6h14v1.4H5V6zm6 5.3h8v1.4h-8v-1.4zm8 5.3H5V18h14v-1.4z" fill="#454D5A"></path></svg>
+                            <li :class="duiMenu[2].isSelected ? 'dui-selected' : ''" @click="changeDui(0o3)">
+                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none"
+                                    xmlns="http://www.w3.org/2000/svg">
+                                    <path fill-rule="evenodd" clip-rule="evenodd"
+                                        d="M5 6h14v1.4H5V6zm6 5.3h8v1.4h-8v-1.4zm8 5.3H5V18h14v-1.4z" fill="#454D5A"></path>
+                                </svg>
                             </li>
-                            <li :class="duiMenu[3].isSelected?'dui-selected':''" @click="changeDui(0o4)">
-                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M5 6h14v1.4H5V6zm0 5.3h14v1.4H5v-1.4zm14 5.3H5V18h14v-1.4z" fill="#454D5A"></path></svg>
+                            <li :class="duiMenu[3].isSelected ? 'dui-selected' : ''" @click="changeDui(0o4)">
+                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none"
+                                    xmlns="http://www.w3.org/2000/svg">
+                                    <path fill-rule="evenodd" clip-rule="evenodd"
+                                        d="M5 6h14v1.4H5V6zm0 5.3h14v1.4H5v-1.4zm14 5.3H5V18h14v-1.4z" fill="#454D5A">
+                                    </path>
+                                </svg>
                             </li>
                         </ul>
                     </label>
@@ -165,136 +199,59 @@
 
         </header>
         <main>
-            <nav class="leftBar" ref="LEFTNAV">
-                <div class="title">
-                    <h2 class="folderName">文件名</h2>
-                    <div class="fold-btn" ref="foldBtn"><svg-icon name="fold" width="28px" height="28px"></svg-icon></div>
-                </div>
-                <el-collapse v-model="activeNames" @change="handleChange" class="collapse">
-                    <el-collapse-item title="目录" name="1" class="el-collapse-item">
-                        <div class="file">文件1</div>
-                        <div class="file">文件2</div>
-                    </el-collapse-item>
-                </el-collapse>
+            <LeftBar></LeftBar>
+            <DocContent></DocContent>
 
-
-
-                <!-- 树形控件 -->
-                <el-tree :data="data" :props="defaultProps" @node-click="handleNodeClick" />
-            </nav>
-            <div class="unfold-btn" ref="unfoldBtn"><svg-icon name="fold" width="28px" height="28px"></svg-icon></div>
-            <div class="display">
-                <div contenteditable="true">
-
-                    <p>这是一个子段落</p>
-
-                    <p>这是一个子段落</p>
-
-                    </div>
-                </div>
         </main>
     </section>
 </template>
     
 <script lang="ts" setup>
-import { onMounted } from 'vue';
-import { ref,reactive } from 'vue'
-import TopBar from '../components/common/ToolBar.vue'
+import { reactive } from 'vue';
+import TopBar from '../components/common/ToolBar.vue';
+import LeftBar from '@/components/editor/LeftBar.vue';
+import DocContent from '@/components/editor/DocContent.vue';
 import User from '../components/common/User.vue'
-const handleChange = (val: any) => {
-    console.log(val);
-}
-const activeNames = ['1']
-const LEFTNAV = ref<HTMLElement>(document.createElement('div'))
-const foldBtn = ref<HTMLElement>(document.createElement('div'))
-const unfoldBtn = ref<HTMLElement>(document.createElement('div'))
 
-console.log(LEFTNAV.value)
-onMounted(() => {
-    console.log(LEFTNAV.value)
-    foldBtn.value.addEventListener('click', () => {
-        LEFTNAV.value.classList.add('active')
-        unfoldBtn.value.style.display = 'block'
-    })
-    unfoldBtn.value.addEventListener('click', () => {
-        LEFTNAV.value.classList.remove('active')
-        unfoldBtn.value.style.display = 'none'
-
-    })
-
-})
-
-
-// 树形空间data
-interface Tree {
-    label: string
-    children?: Tree[]
-}
-
-const handleNodeClick = (data: Tree) => {
-    console.log(data)
-}
-
-const data: Tree[] = [
-    {
-        label: 'Level one 1',
-        children: [
-            {
-                label: '文件1',
-            },
-            {
-                label: '文件2',
-            },
-            {
-                label: '文件3',
-            },
-        ],
-    },
-]
-
-const defaultProps = {
-    children: 'children',
-    label: 'label',
-}
 
 
 
 let duiMenu = reactive([
-        {
-            id:0o1,
-            name:'左对齐',
-            isSelected:true
-        },{
-            id:0o2,
-            name:'居中对齐',
-            isSelected:false
-        },
-        {
-            id:0o3,
-            name:'右对齐',
-            isSelected:false
-        },{
-            
-            id:0o4,
-            name:'两端对齐',
-            isSelected:false
-        
+    {
+        id: 0o1,
+        name: '左对齐',
+        isSelected: true
+    }, {
+        id: 0o2,
+        name: '居中对齐',
+        isSelected: false
+    },
+    {
+        id: 0o3,
+        name: '右对齐',
+        isSelected: false
+    }, {
+
+        id: 0o4,
+        name: '两端对齐',
+        isSelected: false
+
+    }
+])
+
+
+function changeDui(key: number): void {
+    for (let i in duiMenu) {
+        if (key === duiMenu[i].id) {
+            duiMenu[i].isSelected = true
+        } else {
+            duiMenu[i].isSelected = false
         }
-    ])
-
-
-function changeDui(key:number):void{
-   for(let i in duiMenu){
-     if(key === duiMenu[i].id){
-        duiMenu[i].isSelected = true
-     }else{
-        duiMenu[i].isSelected = false
-     }
-   }
+    }
 }
 </script>
 
-          
+
 <style lang="less" scoped>
 section {
     box-sizing: border-box;
@@ -396,21 +353,22 @@ section {
                         cursor: pointer;
                         box-sizing: content-box;
 
-                       svg{
-                        pointer-events: none;
-                        width: 20px;
-                        height: 20px;
-                       }
+                        svg {
+                            pointer-events: none;
+                            width: 20px;
+                            height: 20px;
+                        }
                     }
 
-                    li:hover{
-                        background-color: rgba(51,77,102,.06);
+                    li:hover {
+                        background-color: rgba(51, 77, 102, .06);
                     }
 
-                    li.dui-selected{
+                    li.dui-selected {
                         position: relative;
                     }
-                    li.dui-selected::before{
+
+                    li.dui-selected::before {
                         content: "";
                         position: absolute;
                         display: inline-block;
@@ -497,80 +455,13 @@ section {
         display: flex;
         width: 100%;
         height: 100%;
-        position: absolute;
-        top: 0;
+        background-color: @bgPrimary;
 
-        .leftBar {
-            width: @leftBar-size;
-            height: 100vh;
-            background-color: #fff;
-            padding: 20px;
-            box-shadow: 0 1px 4px rgba(13, 13, 13, 0.1);
-            transition: .3s all ease-in;
-        }
 
-        .leftBar.active {
-            margin-left: -@leftBar-size;
-        }
 
-        .title {
-            display: flex;
-            align-content: center;
-            justify-content: space-between;
-            margin-bottom: 30px;
-        }
 
-        .fold-btn,
-        .unfold-btn {
-            cursor: pointer;
-            width: 30px;
-            height: 30px;
-            transition: .2s all;
-            border-radius: 5px;
-            display: flex;
-            justify-content: center;
-            align-content: center;
-        }
-
-        .fold-btn:hover {
-            background-color: @hover-gray;
-        }
-
-        .unfold-btn:hover {
-            background-color: #e5e5e5;
-        }
-
-        .unfold-btn {
-            display: none;
-            position: absolute;
-            top: 20px;
-            left: 40px;
-            transform: rotate(180deg);
-        }
-
-        .file {
-            cursor: pointer;
-            padding-left: 30px;
-            line-height: 35px;
-            border-radius: 5px;
-            transition: all .2s;
-        }
-
-        .file:hover {
-            background-color: @hover-gray;
-        }
-
-        .display {
-            position: relative;
-            z-index: 100;
-            width: 100%;
-            height: 100vh;
-            background-color: @bgPrimary;
-
-        }
     }
+}</style>
 
-}
-</style>
 
 
