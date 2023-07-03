@@ -155,7 +155,6 @@
         </header>
         <main>
             <LeftBar></LeftBar>
-            <!-- <div class="unfold-btn" ref="unfoldBtn"><svg-icon name="fold" width="28px" height="28px"></svg-icon></div> -->
             <div class="editor">
                 <DocContent></DocContent>
             </div>
@@ -298,13 +297,13 @@ section {
 
         
 
-        // // 编辑器内页
-        .editor {
-            width: 100%;
-            height: calc(100vh - 76px);
+        // // // 编辑器内页
+        // .editor {
+        //     width: 100%;
+        //     height: calc(100vh - 76px);
 
-            background-color: @bgPrimary;
-        }
+        //     background-color: @bgPrimary;
+        // }
     }
 }
 </style>
