@@ -83,18 +83,29 @@
                         </svg>
                         <div class="current-color"></div>
                     </label>
-                    <label title="文字 — T 或 8"><svg aria-hidden="true" focusable="false" role="img" viewBox="0 0 24 24"
-                            class="" fill="none" stroke-width="2" stroke="currentColor" stroke-linecap="round"
-                            stroke-linejoin="round">
-                            <g stroke-width="1.5">
-                                <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-                                <line x1="4" y1="20" x2="7" y2="20"></line>
-                                <line x1="14" y1="20" x2="21" y2="20"></line>
-                                <line x1="6.9" y1="15" x2="13.8" y2="15"></line>
-                                <line x1="10.2" y1="6.3" x2="16" y2="20"></line>
-                                <polyline points="5 20 11 4 13 4 20 20"></polyline>
-                            </g>
-                        </svg></label>
+                    <label title="对齐">
+                        <svg v-if="duiMenu[0].isSelected" width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M5 6h14v1.4H5V6zM5 11.3h8v1.4H5v-1.4z" fill="#454D5A"></path><path d="M5 16.6h14V18H5v-1.4z" fill="#454D5A"></path></svg>
+                        <svg v-else-if="duiMenu[1].isSelected" width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M5 6h14v1.4H5V6zM8 11.3h8v1.4H8v-1.4zM19 16.6H5V18h14v-1.4z" fill="#454D5A"></path></svg>
+                        <svg v-else-if="duiMenu[2].isSelected" width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M5 6h14v1.4H5V6zm6 5.3h8v1.4h-8v-1.4zm8 5.3H5V18h14v-1.4z" fill="#454D5A"></path></svg>
+                        <svg v-else-if="duiMenu[3].isSelected" width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M5 6h14v1.4H5V6zm0 5.3h14v1.4H5v-1.4zm14 5.3H5V18h14v-1.4z" fill="#454D5A"></path></svg>
+                        <div class="arrow-contain">
+                            <div class="arrow"></div>
+                        </div>
+                        <ul class="dui-menu">
+                            <li :class="duiMenu[0].isSelected?'dui-selected':''" @click="changeDui(0o1)">
+                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M5 6h14v1.4H5V6zM5 11.3h8v1.4H5v-1.4z" fill="#454D5A"></path><path d="M5 16.6h14V18H5v-1.4z" fill="#454D5A"></path></svg>
+                            </li>
+                            <li :class="duiMenu[1].isSelected?'dui-selected':''" @click="changeDui(0o2)">
+                               <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M5 6h14v1.4H5V6zM8 11.3h8v1.4H8v-1.4zM19 16.6H5V18h14v-1.4z" fill="#454D5A"></path></svg>
+                            </li>
+                            <li :class="duiMenu[2].isSelected?'dui-selected':''" @click="changeDui(0o3)">
+                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M5 6h14v1.4H5V6zm6 5.3h8v1.4h-8v-1.4zm8 5.3H5V18h14v-1.4z" fill="#454D5A"></path></svg>
+                            </li>
+                            <li :class="duiMenu[3].isSelected?'dui-selected':''" @click="changeDui(0o4)">
+                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M5 6h14v1.4H5V6zm0 5.3h14v1.4H5v-1.4zm14 5.3H5V18h14v-1.4z" fill="#454D5A"></path></svg>
+                            </li>
+                        </ul>
+                    </label>
                     <label title="插入图像 — 9"><svg aria-hidden="true" focusable="false" role="img" viewBox="0 0 20 20"
                             class="" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
                             <g stroke-width="1.25">
@@ -173,15 +184,21 @@
             </nav>
             <div class="unfold-btn" ref="unfoldBtn"><svg-icon name="fold" width="28px" height="28px"></svg-icon></div>
             <div class="display">
+                <div contenteditable="true">
 
-            </div>
+                    <p>这是一个子段落</p>
+
+                    <p>这是一个子段落</p>
+
+                    </div>
+                </div>
         </main>
     </section>
 </template>
     
 <script lang="ts" setup>
 import { onMounted } from 'vue';
-import { ref } from 'vue'
+import { ref,reactive } from 'vue'
 import TopBar from '../components/common/ToolBar.vue'
 import User from '../components/common/User.vue'
 const handleChange = (val: any) => {
@@ -238,6 +255,42 @@ const data: Tree[] = [
 const defaultProps = {
     children: 'children',
     label: 'label',
+}
+
+
+
+let duiMenu = reactive([
+        {
+            id:0o1,
+            name:'左对齐',
+            isSelected:true
+        },{
+            id:0o2,
+            name:'居中对齐',
+            isSelected:false
+        },
+        {
+            id:0o3,
+            name:'右对齐',
+            isSelected:false
+        },{
+            
+            id:0o4,
+            name:'两端对齐',
+            isSelected:false
+        
+        }
+    ])
+
+
+function changeDui(key:number):void{
+   for(let i in duiMenu){
+     if(key === duiMenu[i].id){
+        duiMenu[i].isSelected = true
+     }else{
+        duiMenu[i].isSelected = false
+     }
+   }
 }
 </script>
 
@@ -296,6 +349,83 @@ section {
                     background-color: rgb(255, 255, 0);
                     border: 1px solid rgba(0, 0, 0, 0.12)
                 }
+
+                .arrow-contain {
+                    vertical-align: middle;
+                    float: right;
+                    padding: 0 3px;
+                    text-align: center;
+                    height: 24px;
+                    margin: auto;
+
+                    .arrow {
+                        background-image: url(../assets//arrow.svg);
+                        float: right;
+                        vertical-align: middle;
+                        width: 6px;
+                        height: 4px;
+                        pointer-events: none;
+                        margin: 10px 0 0 0;
+                    }
+
+                }
+
+                ul.dui-menu {
+                    position: absolute;
+                    bottom: -127px;
+                    max-height: 340px;
+                    border-radius: 4px;
+                    width: 70px;
+                    padding: 6px 0;
+                    border: 1px solid rgba(0, 0, 0, .12);
+                    box-shadow: 0 2px 12px 2px rgba(68, 73, 77, .16);
+                    background-color: hsla(0, 0%, 100%, .92);
+                    backdrop-filter: blur(16px);
+                    list-style: none;
+                    box-shadow: 0 2px 12px 2px rgba(68, 73, 77, .16);
+
+                    li {
+                        font-size: 12px;
+                        width: 100%;
+                        height: 12px;
+                        padding: 8px 0;
+                        transition: background-color .1s linear;
+                        display: flex;
+                        justify-content: center;
+                        align-items: center;
+                        cursor: pointer;
+                        box-sizing: content-box;
+
+                       svg{
+                        pointer-events: none;
+                        width: 20px;
+                        height: 20px;
+                       }
+                    }
+
+                    li:hover{
+                        background-color: rgba(51,77,102,.06);
+                    }
+
+                    li.dui-selected{
+                        position: relative;
+                    }
+                    li.dui-selected::before{
+                        content: "";
+                        position: absolute;
+                        display: inline-block;
+                        width: 16px;
+                        height: 16px;
+                        left: 8px;
+                        top: 50%;
+                        transform: translateY(-50%);
+                        background-repeat: no-repeat;
+                        background-image: url(../assets/current.svg);
+                        background-size: contain;
+                        background-position: 50%;
+                    }
+                }
+
             }
 
             .divide {
@@ -315,6 +445,7 @@ section {
             z-index: 2;
             width: 280px;
             height: 44px;
+
             button.share {
                 width: 78px;
                 background-color: @button-color;
@@ -439,6 +570,7 @@ section {
         }
     }
 
-}</style>
+}
+</style>
 
 
