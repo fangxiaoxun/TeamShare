@@ -155,9 +155,9 @@
         </header>
         <main>
             <LeftBar></LeftBar>
-            <div class="editor">
+            <!-- <div class="editor"> -->
                 <DocContent></DocContent>
-            </div>
+            <!-- </div> -->
         </main>
     </section>
 </template>
@@ -298,12 +298,12 @@ section {
         
 
         // // // 编辑器内页
-        // .editor {
-        //     width: 100%;
-        //     height: calc(100vh - 76px);
+        .editor {
+            width: 100%;
+            height: calc(100vh - 76px);
 
-        //     background-color: @bgPrimary;
-        // }
+            background-color: @bgPrimary;
+        }
     }
 }
 </style>
