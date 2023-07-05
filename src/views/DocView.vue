@@ -83,7 +83,7 @@
                         </svg>
                         <div class="current-color"></div>
                     </label>
-                    <label title="对齐">
+                    <label title="对齐" v-click-outside="onClickOutside">
                         <svg v-if="duiMenu[0].isSelected" width="24" height="24" viewBox="0 0 24 24" fill="none"
                             xmlns="http://www.w3.org/2000/svg">
                             <path fill-rule="evenodd" clip-rule="evenodd" d="M5 6h14v1.4H5V6zM5 11.3h8v1.4H5v-1.4z"
@@ -107,7 +107,7 @@
                         <div class="arrow-contain">
                             <div class="arrow"></div>
                         </div>
-                        <ul class="dui-menu">
+                        <ul class="dui-menu" ref="duiNode">
                             <li :class="duiMenu[0].isSelected ? 'dui-selected' : ''" @click="changeDui(0o1)">
                                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none"
                                     xmlns="http://www.w3.org/2000/svg">
@@ -140,7 +140,7 @@
                             </li>
                         </ul>
                     </label>
-                    <label title="插入图像 — 9"><svg aria-hidden="true" focusable="false" role="img" viewBox="0 0 20 20"
+                    <label title="插入图像"><svg aria-hidden="true" focusable="false" role="img" viewBox="0 0 20 20"
                             class="" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
                             <g stroke-width="1.25">
                                 <path d="M12.5 6.667h.01"></path>
@@ -153,17 +153,9 @@
                         </svg></label>
                     <!-- 分割线 -->
                     <div class="divide"></div>
-                    <label class="ToolIcon Shape" title="橡皮 — E 或 0"><svg aria-hidden="true" focusable="false" role="img"
-                            viewBox="0 0 24 24" class="" fill="none" stroke-width="2" stroke="currentColor"
-                            stroke-linecap="round" stroke-linejoin="round">
-                            <g stroke-width="1.5">
-                                <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-                                <path
-                                    d="M19 20h-10.5l-4.21 -4.3a1 1 0 0 1 0 -1.41l10 -10a1 1 0 0 1 1.41 0l5 5a1 1 0 0 1 0 1.41l-9.2 9.3">
-                                </path>
-                                <path d="M18 13.3l-6.3 -6.3"></path>
-                            </g>
-                        </svg></label>
+                    <label class="ToolIcon Shape" title="导出">
+                        <svg t="1688386024642" class="icon" viewBox="0 0 1000 1000" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="2312" width="200" height="200"><path d="M362.57 764.226h364.149c28.44 0 51.491-23.051 51.491-51.491v-364.149c0-28.44-23.051-51.491-51.491-51.491s-51.491 23.051-51.491 51.491v239.829l-349.073-349.073c-20.119-20.119-52.711-20.119-72.831 0s-20.119 52.711 0 72.831l349.073 349.073h-239.829c-14.202-0.001-27.093 5.754-36.415 15.076s-15.094 22.195-15.076 36.415c0 28.44 23.051 51.491 51.491 51.491z" p-id="2313" fill="#707070"></path></svg>
+                    </label>
                 </div>
             </TopBar>
             <div class="menu">
@@ -207,12 +199,13 @@
 </template>
     
 <script lang="ts" setup>
-import { reactive } from 'vue';
+import { ref,reactive } from 'vue';
 import TopBar from '../components/common/ToolBar.vue';
-import LeftBar from '@/components/editor/LeftBar.vue';
-import DocContent from '@/components/editor/DocContent.vue';
+import LeftBar from '../components/editor/LeftBar.vue';
+import DocContent from '../components/editor/DocContent.vue';
 import User from '../components/common/User.vue'
-
+import {onClickOutside} from '../hooks/clickOutside'
+import { styleType } from 'element-plus/es/components/table-v2/src/common';
 
 
 
@@ -239,6 +232,7 @@ let duiMenu = reactive([
     }
 ])
 
+let duiNode = ref()
 
 function changeDui(key: number): void {
     for (let i in duiMenu) {
@@ -328,6 +322,7 @@ section {
                 }
 
                 ul.dui-menu {
+                    opacity: 0;
                     position: absolute;
                     bottom: -127px;
                     max-height: 340px;
@@ -340,6 +335,7 @@ section {
                     backdrop-filter: blur(16px);
                     list-style: none;
                     box-shadow: 0 2px 12px 2px rgba(68, 73, 77, .16);
+                    transition: all .24s cubic-bezier(.4,0,.2,1);
 
                     li {
                         font-size: 12px;
@@ -382,6 +378,10 @@ section {
                         background-size: contain;
                         background-position: 50%;
                     }
+                }
+
+                &.active ul.dui-menu {
+                    opacity: 1;
                 }
 
             }
@@ -456,10 +456,6 @@ section {
         width: 100%;
         height: 100%;
         background-color: @bgPrimary;
-
-
-
-
     }
 }</style>
 
