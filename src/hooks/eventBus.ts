@@ -7,24 +7,11 @@ export default class EventBus {
         this.events = {}//消息队列
     }
     emit(eventName: string, ...args: any) {
-        // const cbs = this.events[eventName]
-        // if (!cbs) {
-        //     console.log('没有当前事件');
-        //     return this
-        // }
-        // // 遍历执行所有回调
-        // cbs.forEach((cb) => {
-        //     cb(...args)
-        // })
-
-        // // 链式调用
-        // return this
         if (this.events[eventName]) {
             this.events[eventName].forEach(function(fn) {
                 fn(...args);
             });
         }
-
     }
     // 监听，执行回调
     on(eventName: string, fn: any) {
@@ -35,14 +22,6 @@ export default class EventBus {
     }
     // 移除监听回调
     off(eventName: string, fn: any) {
-        // if (this.events[eventName]) {
-        //     for (let i = 0; i < this.events[eventName].length; i++) {
-        //         if (this.events[eventName][i] === fn) {
-        //             this.events[eventName].splice(i, 1);
-        //             break;
-        //         }
-        //     }
-        // }
         const func = (...args:unknown[]) => {
             this.off(eventName,func)
             fn(...args)
