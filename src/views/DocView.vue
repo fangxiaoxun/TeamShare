@@ -192,8 +192,10 @@
         </header>
         <main>
             <LeftBar></LeftBar>
-            <DocContent></DocContent>
-
+            <DocContent>
+                
+            </DocContent>
+            
         </main>
     </section>
 </template>

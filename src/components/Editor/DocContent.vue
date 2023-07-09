@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import { ref } from 'vue'
+import Word from './word.vue'
 const editor = ref<HTMLElement>(document.createElement('div'))
 
 // onMounted(async () => {
@@ -158,6 +159,7 @@ function save() {
     <div class="page">
         <button @click="BoldText">加粗</button>
         <button @click="save">保存</button>
+        <Word></Word>
         <div class="content" ref="editor" contenteditable="true" @input="handleInput">
             <p><br /></p>
         </div>
