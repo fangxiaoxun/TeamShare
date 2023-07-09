@@ -46,7 +46,7 @@ const state: TNode[] = [{
         { ...text, marks: [strong, em], content: 'italic text' },
     ]
 }];
-console.log(state)
+console.log('state',state)
 
 // 渲染文档内容
 const renderNodeTree = (nodes: TNode[]) => {

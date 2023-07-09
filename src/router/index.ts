@@ -3,7 +3,7 @@ import { createRouter, createWebHashHistory } from 'vue-router'
 // 引入路由组件
 import DocIndex from '../views/DocIndex.vue'
 import Draw from '../views/Draw.vue'
-import Login from '../components/login/login.vue'
+import Login from '../views/login/login.vue'
 
 import Directory from '../views/Directory.vue'
 import DocView from '../views/DocView.vue'
@@ -32,9 +32,9 @@ const router = createRouter({
         },
         // 画板路由
         {
-            path:'/draw',
-            name:'draw',
-            component:Draw
+            path: '/draw',
+            name: 'draw',
+            component: Draw
         },
         // 功能页路由
         {
@@ -70,14 +70,17 @@ const router = createRouter({
     ]
 })
 
-// router.beforeEach((to, from, next) => {
-//     if(getCookie('token')){
-//         // 如果存在，则跳转对应路由
-//         next()
-//     }else{
-//         // 如果未登录状态，则跳转登录页
-//         next('/login')
-//     }
-// })
+// 不需要鉴权的白名单
+const whiteList: string[] = ['/', '/login']
+// 路由鉴权
+router.beforeEach((to: any, from: any, next: any) => { 
+    if (whiteList.indexOf(to.path) !== -1 || getCookie('token')) {
+        // 如果存在，则跳转对应路由
+        next()
+    } else {
+        // 如果未登录状态，则跳转登录页
+        next('/login')
+    }
+})
 // 暴露router
 export default router
