@@ -212,9 +212,6 @@ import DocContent from '../components/editor/DocContent.vue';
 import User from '../components/common/User.vue'
 import { onClickOutside } from '../hooks/clickOutside'
 
-const handClick = () => {
-    console.log('调用点击事件')
-}
 
 let duiMenu = reactive([
     {
@@ -343,7 +340,6 @@ function getTextNodesInLine(lineNode: Node, excludeNode?: Node): Node[] {
 }
 // 选中文本添加标签
 function addTag(tagName: string, className: string = '') {
-    // function splitSelectedText(tagName, className) {
     const selection = window.getSelection()!;
     const range = selection.getRangeAt(0);
 
