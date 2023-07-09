@@ -253,10 +253,10 @@ function changeDui(key: number): void {
 
 
 function createRangeFromNodes(startNode: Node, endNode: Node): Range {
-  const range = document.createRange();
-  range.setStart(startNode, 0);
-  range.setEnd(endNode, (endNode.textContent || '').length);
-  return range;
+    const range = document.createRange();
+    range.setStart(startNode, 0);
+    range.setEnd(endNode, (endNode.textContent || '').length);
+    return range;
 }
 
 function getTextNodesInRange(commonAncestor: Node, startContainer: Node, endContainer: Node): Node[] {
@@ -343,54 +343,148 @@ function getTextNodesInLine(lineNode: Node, excludeNode?: Node): Node[] {
 }
 // 选中文本添加标签
 function addTag(tagName: string, className: string = '') {
-    const selection: Selection = window.getSelection()!;
-    if (selection.rangeCount > 0) {
-        const range: Range = selection.getRangeAt(0);
-        const selectedText: string = range.toString();
+    // function splitSelectedText(tagName, className) {
+    const selection = window.getSelection()!;
+    const range = selection.getRangeAt(0);
 
-        // 检查范围是否只包含文本节
+    let startContainer = range.startContainer;
+    let endContainer = range.endContainer;
+    let newRangeStartOffset = range.startOffset;
+    let newRangeEndOffset = range.endOffset;
+    const commonAncestor = range.commonAncestorContainer;
 
-        const isMultiNodeSelection = range.startContainer !== range.endContainer;
-        if (!isMultiNodeSelection) {
-            // 如果选中范围在同一个节点内，直接应用加粗样式
-            // const spanElement = document.createElement('span');
-            const element: HTMLElement = document.createElement(tagName)
-            if (className) {
-                element.classList.add(className)
-            }
-            element.textContent = selectedText
+    const textNodes = getTextNodesInRange(commonAncestor, startContainer, endContainer);
 
-            // spanElement.style.fontWeight = 'bold';
-            range.deleteContents();
-            range.insertNode(element);
-            selection.removeAllRanges();
-        } else {
-            // 如果选中范围跨越多个节点，需要拆分并应用加粗样式
-            const startContainer = range.startContainer;
-            const endContainer = range.endContainer;
+    for (const node of textNodes) {
+        const nodeRange = createRangeFromNodes(node, node);
+        const nodeText = nodeRange.toString();
 
-            const commonAncestor = range.commonAncestorContainer as Node;
-            const textNodes = getTextNodesInRange(commonAncestor, startContainer, endContainer);
-            for (const node of textNodes) {
-                console.log(node)
-                const containerRange = createRangeFromNodes(node, node);
-                console.log(containerRange)
-                const nodeText = containerRange.toString();
-                console.log(nodeText)
-                // 创建标签元素并将当前文本节点内容包裹在其中
-                const element: HTMLElement = document.createElement(tagName);
+        if (node === startContainer && node === endContainer) {
+            // 选中的文本在同一个节点内
+            const selectedText = nodeText.substring(range.startOffset, range.endOffset);
+
+            if (selectedText.length < nodeText.length) {
+                // 需要对起始节点和结束节点进行拆分处理
+                const element = document.createElement(tagName);
                 if (className) {
                     element.classList.add(className);
                 }
-                element.textContent = nodeText;
+                element.textContent = selectedText;
 
-                containerRange.deleteContents();
-                containerRange.insertNode(element);
+                // 将新标签插入到选中文本首尾两端的文本节点之间
+                const beforeText = nodeText.substring(0, range.startOffset);
+                const afterText = nodeText.substring(range.endOffset);
+
+                const beforeTextNode = document.createTextNode(beforeText);
+                const afterTextNode = document.createTextNode(afterText);
+
+                const parent = node.parentNode;
+                if (parent) {
+                    parent.insertBefore(beforeTextNode, node);
+                    parent.insertBefore(element, node);
+                    parent.insertBefore(afterTextNode, node);
+
+                    // 移除原始文本节点
+                    parent.removeChild(node);
+                }
+
+                newRangeStartOffset = 0;
+                newRangeEndOffset = selectedText.length;
+            }
+        } else if (node === startContainer) {
+            // 选中的文本在起始节点中，需要对起始节点进行拆分处理
+            const selectedText = nodeText.substring(range.startOffset);
+
+            if (selectedText.length < nodeText.length) {
+                const element = document.createElement(tagName);
+                if (className) {
+                    element.classList.add(className);
+                }
+                element.textContent = selectedText;
+
+                nodeRange.setEnd(node, range.startOffset);
+                nodeRange.deleteContents();
+                nodeRange.insertNode(element);
+
+                newRangeStartOffset = 0;
+                newRangeEndOffset = selectedText.length;
+            }
+        } else if (node === endContainer) {
+            // 选中的文本在结束节点中，需要对结束节点进行拆分处理
+            const selectedText = nodeText.substring(0, range.endOffset);
+
+            if (selectedText.length < nodeText.length) {
+                const element = document.createElement(tagName);
+                if (className) {
+                    element.classList.add(className);
+                }
+                element.textContent = selectedText;
+
+                nodeRange.setStart(node, range.endOffset);
+                nodeRange.deleteContents();
+                nodeRange.insertNode(element);
+
+                const restText = nodeText.substring(range.endOffset);
+                if (restText.length > 0) {
+                    const restElement = document.createTextNode(restText);
+                    nodeRange.insertNode(restElement);
+                }
+
+                newRangeStartOffset = 0;
+                newRangeEndOffset = selectedText.length;
+
+                // 使用新节点替换旧节点
+                // 如果节点有父节点，才进行替换
+                if (node.parentNode) {
+                    node.parentNode.replaceChild(element, node);
+                }
+            }
+        } else {
+            // 选中的文本跨越多个节点，在中间节点处进行拆分处理
+            const element = document.createElement(tagName);
+            if (className) {
+                element.classList.add(className);
+            }
+            element.textContent = nodeText;
+            // console.log(' // 选中的文本跨越多个节点，在中间节点处进行拆分处理')
+            // 获取选中范围的起始和结束节点
+            const startContainer = nodeRange.startContainer as ChildNode;
+            const endContainer = nodeRange.endContainer as ChildNode;
+            // 创建一个临时父节点
+            const parent = document.createElement(tagName);
+
+            // 在临时父节点中插入新创建的元素
+            parent.appendChild(element);
+
+            if (startContainer.parentNode === endContainer.parentNode && startContainer.parentNode) {
+                // 如果起始和结束节点的父节点相同，则直接替换选中范围的内容
+                startContainer.parentNode.replaceChild(parent, startContainer);
+            } else {
+                // 如果起始和结束节点的父节点不同，需要分别处理起始和结束节点的父节点
+                const startParent = startContainer.parentNode;
+                const endParent = endContainer.parentNode;
+
+                if (startParent && endParent) {
+                    // 查找起始和结束节点在父节点中的位置
+                    let startIndex = Array.from(startParent.childNodes).indexOf(startContainer);
+                    let endIndex = Array.from(endParent.childNodes).indexOf(endContainer);
+
+                    // 分别在起始和结束节点的父节点中进行替换操作
+                    startParent.replaceChild(parent, startContainer);
+                    endParent.replaceChild(parent.cloneNode(true), endContainer);
+
+                    // 处理每个父节点中位于起始和结束节点之间的节点
+                    for (let i = startIndex + 1; i < endIndex; i++) {
+                        parent.appendChild(startParent.childNodes[startIndex + 1]);
+                    }
+                }
 
             }
         }
+
     }
 }
+
 </script>
 
 
