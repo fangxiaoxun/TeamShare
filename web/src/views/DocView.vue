@@ -343,7 +343,10 @@ function getTextNodesInLine(lineNode: Node, excludeNode?: Node): Node[] {
 }
 // 选中文本添加标签
 function addTag(tagName: string, className: string = '') {
+<<<<<<< HEAD:src/views/DocView.vue
     // function splitSelectedText(tagName, className) {
+=======
+>>>>>>> update:web/src/views/DocView.vue
     const selection = window.getSelection()!;
     const range = selection.getRangeAt(0);
 
