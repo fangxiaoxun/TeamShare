@@ -16,6 +16,7 @@
     "@element-plus/icons-vue": "^2.1.0",
     "@types/js-cookie": "^3.0.3",
     "@vue/runtime-core": "^3.3.4",
+    "adm-zip": "^0.5.10",
     "axios": "^1.4.0",
     "element-plus": "^2.3.5",
     "fast-glob": "^3.2.12",
