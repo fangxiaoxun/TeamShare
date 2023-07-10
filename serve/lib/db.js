@@ -1,11 +1,11 @@
 const mysql = require('mysql')
 // 连接数据库的配置信息
 const db_config = {
-    host:'localhost',
-    user:'root',
+    host:'47.120.39.84',
+    user:'sharedocuments',
     password:'3141592617F',
     port:'3306',
-    database:'shareDocument',
+    database:'sharedocuments',
 }
 
 
