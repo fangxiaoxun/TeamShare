@@ -270,17 +270,16 @@ function getTextNodesInRange(commonAncestor: Node, startContainer: Node, endCont
 
     // 获取中间行的文本节点
     const middleLines = getMiddleLines(startContainer, endContainer);
-
     for (const line of middleLines) {
-        const lineNodes = getTextNodesInLine(commonAncestor, line);
+
+        const lineNodes = getTextNodesInLine(commonAncestor, line)
+        // console.log(lineNodes) //获取的是选中的middle行的首尾， lineNodes报错
         textNodes.push(...lineNodes);
     }
 
     // 获取末行的文本节点
     const endLineNodes = getTextNodesInLine(commonAncestor, endContainer);
     textNodes.push(...endLineNodes);
-    // console.log(textNodes[1].textContent)
-    textNodes.forEach(item => {console.log(item.textContent)})
     return textNodes;
 }
 
@@ -321,14 +320,46 @@ function getMiddleLines(startNode: Node, endNode: Node): Node[] {
 }
 
 // 获取行节点上的文本节点function getTextNodesInLine(lineNode: Node, excludeNode?: Node): Node[] {
-function getTextNodesInLine(lineNode: Node, excludeNode?: Node): Node[] {
-    const textNodes: Node[] = [];
+// function getTextNodesInLine(lineNode: Node, excludeNode?: Node): Node[] {
+//     const textNodes: Node[] = [];
+//     traverseNodes(lineNode,excludeNode);
+//     return textNodes;
 
+//     function traverseNodes(node: Node,excludeNode?: Node) {
+//         if (node.nodeType === Node.TEXT_NODE) {
+//             if (!excludeNode || !excludeNode.contains(node)) {
+//                 textNodes.push(node);
+//             }
+
+//         } else {
+//             for (let i = 0; i < node.childNodes.length; i++) {
+//                 traverseNodes(node.childNodes[i],excludeNode);
+//             }
+//         }
+//     }
+
+// }
+
+
+
+function getTextNodesInLine(lineNode: Node, startContainer?: Node, endContainer?: Node): Node[] {
+    const textNodes: Node[] = [];
     traverseNodes(lineNode);
+    return textNodes;
 
     function traverseNodes(node: Node) {
         if (node.nodeType === Node.TEXT_NODE) {
-            if (!excludeNode || !excludeNode.contains(node)) {
+            // 排除开始标签和结束标签之外的文本节点
+            if (startContainer && endContainer) {
+                const { parentNode } = node;
+                if (
+                    parentNode &&
+                    parentNode.contains(startContainer) &&
+                    parentNode.contains(endContainer)
+                ) {
+                    textNodes.push(node);
+                }
+            } else {
                 textNodes.push(node);
             }
         } else {
@@ -337,21 +368,20 @@ function getTextNodesInLine(lineNode: Node, excludeNode?: Node): Node[] {
             }
         }
     }
-
-    return textNodes;
 }
+
+
 // 选中文本添加标签
 function addTag(tagName: string, className: string = '') {
     const selection = window.getSelection()!;
     const range = selection.getRangeAt(0);
-    console.log(range.toString())
     let startContainer = range.startContainer;
     let endContainer = range.endContainer;
     const commonAncestor = range.commonAncestorContainer;
 
     const textNodes = getTextNodesInRange(commonAncestor, startContainer, endContainer);
     for (const node of textNodes) {
-        let  nodeRange=  createRangeFromNodes(node, node);
+        let nodeRange = createRangeFromNodes(node, node);
         let nodeText = nodeRange.toString();
         if (node === startContainer && node === endContainer) {
             // 选中的文本在同一个节点内
@@ -367,7 +397,7 @@ function addTag(tagName: string, className: string = '') {
                 // 将新标签插入到选中文本首尾两端的文本节点之间
                 const beforeText = nodeText.substring(0, range.startOffset);
                 const afterText = nodeText.substring(range.endOffset);
-                console.log(beforeText, afterText)
+                // console.log(beforeText, afterText)
 
 
                 const beforeTextNode = document.createTextNode(beforeText);
@@ -380,7 +410,7 @@ function addTag(tagName: string, className: string = '') {
                     parent.insertBefore(afterTextNode, node);
                     // 移除原始文本节点
                     parent.removeChild(node);
-                    console.log(node)
+                    // console.log(node)
                 }
 
                 // 重置 offset
@@ -400,7 +430,7 @@ function addTag(tagName: string, className: string = '') {
                 nodeRange.setStart(node, range.startOffset)
                 nodeRange.deleteContents();
                 nodeRange.insertNode(element);
-                console.log(nodeRange)
+                // console.log(nodeRange)
                 // newRangeStartOffset = 0;
                 // newRangeEndOffset = selectedText.length;
             }
@@ -431,60 +461,60 @@ function addTag(tagName: string, className: string = '') {
                 // 使用新节点替换旧节点
                 // 如果节点有父节点，才进行替换
                 if (node.parentNode) {
-                    
+
                     node.parentNode.replaceChild(element, node); //(新， 旧)
                 }
             }
         } else {
             // 选中的文本跨越多个节点，在中间节点处进行拆分处理
-            
-            console.log(textNodes)
-            const element = document.createElement(tagName);
-            if (className) {
-                element.classList.add(className);
-            }
-            // 选取错误
-            element.textContent = nodeText;
-            // console.log(nodeText)
-            console.log(nodeRange.toString())
-            // 选中的文本跨越多个节点，在中间节点处进行拆分处理')
-            // 获取选中范围的起始和结束节点
-            //  startContainer = nodeRange.startContainer as ChildNode;
-            //  endContainer = nodeRange.endContainer as ChildNode;
-            // 创建一个临时父节点
-            const parent = document.createElement(tagName);
 
-            // 在临时父节点中插入新创建的元素
-            parent.appendChild(element);
-            // console.log(parent)
+            // const element = document.createElement(tagName);
+            // if (className) {
+            //     element.classList.add(className);
+            // }
+            // // 选取错误
+            // element.textContent = nodeText;
+            // // 选中的文本跨越多个节点，在中间节点处进行拆分处理')
+            // // 获取选中范围的起始和结束节点
+            // console.log(startContainer, endContainer)
+            startContainer = nodeRange.startContainer;
+            endContainer = nodeRange.endContainer;
+            // console.log(startContainer, endContainer)
 
-            // 对选中范围的节点进行替换
-            startContainer.parentNode?.replaceChild(parent, startContainer);
-            endContainer.parentNode?.replaceChild(parent.cloneNode(true), endContainer);
+            // // 创建一个临时父节点
+            // const parent = document.createElement(tagName);
 
-            // 处理每个中间节点
-            let currentNode: Node | null = startContainer.nextSibling;
-            while (currentNode && currentNode !== endContainer) {
-                const nextNode = currentNode?.nextSibling;
+            // // 在临时父节点中插入新创建的元素
+            // parent.appendChild(element);
+            // // console.log(parent)
 
-                parent.appendChild(currentNode!);
-                currentNode = nextNode;
-            }
+            // // 对选中范围的节点进行替换
+            // startContainer.parentNode?.replaceChild(parent, startContainer);
+            // endContainer.parentNode?.replaceChild(parent.cloneNode(true), endContainer);
 
-            // 将最后一个中间节点添加到临时父节点中
-            parent.appendChild(endContainer);
+            // // 处理每个中间节点
+            // let currentNode: Node | null = startContainer.nextSibling;
+            // while (currentNode && currentNode !== endContainer) {
+            //     const nextNode = currentNode?.nextSibling;
 
-            // newRangeStartOffset = 0;
-            // newRangeEndOffset = nodeText.length;
+            //     parent.appendChild(currentNode!);
+            //     currentNode = nextNode;
+            // }
 
-            // 对选中范围的节点进行替换
-            if (startContainer.parentNode && endContainer.parentNode) {
-                const startParent = startContainer.parentNode;
-                const endParent = endContainer.parentNode;
+            // // 将最后一个中间节点添加到临时父节点中
+            // parent.appendChild(endContainer);
 
-                startParent.replaceChild(parent, startContainer);
-                endParent.replaceChild(parent.cloneNode(true), endContainer);
-            }
+            // // newRangeStartOffset = 0;
+            // // newRangeEndOffset = nodeText.length;
+
+            // // 对选中范围的节点进行替换
+            // if (startContainer.parentNode && endContainer.parentNode) {
+            //     const startParent = startContainer.parentNode;
+            //     const endParent = endContainer.parentNode;
+
+            //     startParent.replaceChild(parent, startContainer);
+            //     endParent.replaceChild(parent.cloneNode(true), endContainer);
+            // }
         }
 
     }
