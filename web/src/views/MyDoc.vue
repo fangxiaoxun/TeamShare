@@ -8,7 +8,6 @@ const isEmpty = ref<boolean>(true)
 // 接收数据
 import EventBus from '@/hooks/eventBus';
 import { inject, ref, reactive } from 'vue'
-import { tr } from 'element-plus/es/locale';
 type File = {
     fileName: string,
     type: string,
