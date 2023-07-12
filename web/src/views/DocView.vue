@@ -305,7 +305,6 @@ function getMiddleLines(startNode: Node, endNode: Node): Node[] {
     const startLine = getLineNode(startNode);
     const endLine = getLineNode(endNode);
 
-
     // 无中间行
     if (!startLine || !endLine) {
         return middleLines;
@@ -396,7 +395,6 @@ function addTag(tagName: string, className: string = '') {
                 element.classList.add(className);
             }
             element.textContent = selectedText;
-            console.log(selectedText)
             nodeRange.setStart(node, range.startOffset)
             nodeRange.deleteContents();
             nodeRange.insertNode(element);
@@ -404,7 +402,6 @@ function addTag(tagName: string, className: string = '') {
             // 选中的文本在结束节点中，需要对结束节点进行拆分处理
             const selectedText = nodeText.substring(0, range.endOffset);
             const element = document.createElement(tagName);
-            console.log(selectedText)
             if (className) {
                 element.classList.add(className);
             }
@@ -413,10 +410,9 @@ function addTag(tagName: string, className: string = '') {
             nodeRange.deleteContents();
             const restText = nodeText.substring(range.endOffset);
             const restElement = document.createTextNode(restText);
-
             nodeRange.insertNode(restElement);
             // 使用新节点替换旧节点
-                node.parentNode.replaceChild(element, node); //(新， 旧)
+            node.parentNode.replaceChild(element, node); //(新， 旧)
         } else {
             // 创建b标签
             const element = document.createElement(tagName);
@@ -447,7 +443,6 @@ section {
         display: flex;
         position: relative;
         padding: 16px;
-        // background-color: palegoldenrod;
 
         .toolList {
             display: flex;
