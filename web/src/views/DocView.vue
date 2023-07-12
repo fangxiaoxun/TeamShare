@@ -211,6 +211,8 @@ import LeftBar from '../components/editor/LeftBar.vue';
 import DocContent from '../components/editor/DocContent.vue';
 import User from '../components/common/User.vue'
 import { onClickOutside } from '../hooks/clickOutside'
+import { connected } from 'process';
+import { en } from 'element-plus/es/locale';
 
 
 let duiMenu = reactive([
@@ -249,12 +251,30 @@ function changeDui(key: number): void {
 }
 
 //跨多行时候会报错
+// function createRangeFromNodes(startNode: Node, endNode: Node): Range {
+//     const range = document.createRange();
+//     if (startNode.nodeType === Node.TEXT_NODE) {
+//         range.setStart(startNode, 0);
+//     } else {
+//         range.setStartBefore(startNode);
+//     }
+//     if (endNode.nodeType === Node.TEXT_NODE) {
+//         range.setEnd(endNode, (endNode.textContent || '').length);
+//     } else {
+//         range.setEndAfter(endNode);
+//     }
+//     return range;
+// }
+
 function createRangeFromNodes(startNode: Node, endNode: Node): Range {
     const range = document.createRange();
-    range.setStart(startNode, 0);
-    range.setEnd(endNode, (endNode.textContent || '').length);
+    range.setStart(startNode, range.startOffset)
+    range.selectNodeContents(startNode);
+    range.setEnd(endNode, range.endOffset)
     return range;
 }
+
+
 
 function getTextNodesInRange(commonAncestor: Node, startContainer: Node, endContainer: Node): Node[] {
     const textNodes: Node[] = [];
@@ -265,22 +285,23 @@ function getTextNodesInRange(commonAncestor: Node, startContainer: Node, endCont
     }
 
     // 获取首行的文本节点
-    const startLineNodes = getTextNodesInLine(commonAncestor, startContainer);
+    const startLineNodes = getTextNodesInLine(startContainer);
+    // console.log(...startLineNodes)
     textNodes.push(...startLineNodes);
 
-    // 获取中间行的文本节点
+    // // 获取中间行的文本节点
     const middleLines = getMiddleLines(startContainer, endContainer);
-
-    for (const line of middleLines) {
-        const lineNodes = getTextNodesInLine(commonAncestor, line);
-        textNodes.push(...lineNodes);
+    // console.log(middleLines)
+    if (middleLines.length > 0) {
+        for (const line of middleLines) {
+            const lineNodes = getTextNodesInLine(line);
+            textNodes.push(...lineNodes);
+        }
     }
-
-    // 获取末行的文本节点
-    const endLineNodes = getTextNodesInLine(commonAncestor, endContainer);
+    // // 获取末行的文本节点
+    const endLineNodes = getTextNodesInLine(endContainer);
     textNodes.push(...endLineNodes);
-    // console.log(textNodes[1].textContent)
-    textNodes.forEach(item => {console.log(item.textContent)})
+
     return textNodes;
 }
 
@@ -324,16 +345,17 @@ function getMiddleLines(startNode: Node, endNode: Node): Node[] {
 function getTextNodesInLine(lineNode: Node, excludeNode?: Node): Node[] {
     const textNodes: Node[] = [];
 
-    traverseNodes(lineNode);
+    traverseNodes(lineNode, textNodes);
 
-    function traverseNodes(node: Node) {
+    function traverseNodes(node: Node, textNodes: Node[]) {
         if (node.nodeType === Node.TEXT_NODE) {
             if (!excludeNode || !excludeNode.contains(node)) {
+                console.log(node)
                 textNodes.push(node);
             }
         } else {
             for (let i = 0; i < node.childNodes.length; i++) {
-                traverseNodes(node.childNodes[i]);
+                traverseNodes(node.childNodes[i], textNodes);
             }
         }
     }
@@ -343,16 +365,22 @@ function getTextNodesInLine(lineNode: Node, excludeNode?: Node): Node[] {
 // 选中文本添加标签
 function addTag(tagName: string, className: string = '') {
     const selection = window.getSelection()!;
+    if (selection.toString().length <= 0) {
+        return
+    }
     const range = selection.getRangeAt(0);
-    console.log(range.toString())
-    let startContainer = range.startContainer;
-    let endContainer = range.endContainer;
+    if (range.collapsed) {
+        return;
+    }
+    let startContainer = range.startContainer
+    let endContainer = range.endContainer
     const commonAncestor = range.commonAncestorContainer;
 
     const textNodes = getTextNodesInRange(commonAncestor, startContainer, endContainer);
     for (const node of textNodes) {
-        let  nodeRange=  createRangeFromNodes(node, node);
+        let nodeRange = createRangeFromNodes(node, node);
         let nodeText = nodeRange.toString();
+
         if (node === startContainer && node === endContainer) {
             // 选中的文本在同一个节点内
             const selectedText = nodeText.substring(range.startOffset, range.endOffset);
@@ -367,7 +395,6 @@ function addTag(tagName: string, className: string = '') {
                 // 将新标签插入到选中文本首尾两端的文本节点之间
                 const beforeText = nodeText.substring(0, range.startOffset);
                 const afterText = nodeText.substring(range.endOffset);
-                console.log(beforeText, afterText)
 
 
                 const beforeTextNode = document.createTextNode(beforeText);
@@ -380,7 +407,6 @@ function addTag(tagName: string, className: string = '') {
                     parent.insertBefore(afterTextNode, node);
                     // 移除原始文本节点
                     parent.removeChild(node);
-                    console.log(node)
                 }
 
                 // 重置 offset
@@ -399,15 +425,15 @@ function addTag(tagName: string, className: string = '') {
                 element.textContent = selectedText;
                 nodeRange.setStart(node, range.startOffset)
                 nodeRange.deleteContents();
-                nodeRange.insertNode(element);
-                console.log(nodeRange)
-                // newRangeStartOffset = 0;
-                // newRangeEndOffset = selectedText.length;
-            }
-        } else if (node === endContainer) {
-            // 选中的文本在结束节点中，需要对结束节点进行拆分处理
-            const selectedText = nodeText.substring(0, range.endOffset);
 
+                nodeRange.insertNode(element);
+                console.log('start')
+            }
+        } else if (endContainer.nodeValue !== '' && node === endContainer) {
+            // 选中的文本在结束节点中，需要对结束节点进行拆分处理
+            console.log('处理结束')
+            // console.log(node.nodeValue)
+            const selectedText = nodeText.substring(0, range.endOffset);
             if (selectedText.length < nodeText.length) {
                 const element = document.createElement(tagName);
                 if (className) {
@@ -418,79 +444,45 @@ function addTag(tagName: string, className: string = '') {
                 // 这里可能有问题   nodeRange.setStart(node, range.endOffset);
                 nodeRange.setStart(node, range.endOffset);
                 nodeRange.deleteContents();
-                nodeRange.insertNode(element);//nodeRange 为选中文本
                 const restText = nodeText.substring(range.endOffset);
-                if (restText.length > 0) {
-                    const restElement = document.createTextNode(restText);
-                    nodeRange.insertNode(restElement);  //这个插入可能有问题
-                }
+                const restElement = document.createTextNode(restText);
 
-                // newRangeStartOffset = 0;
-                // newRangeEndOffset = selectedText.length;
+                nodeRange.insertNode(restElement);  //这个插入可能有问题
+
+
+
 
                 // 使用新节点替换旧节点
                 // 如果节点有父节点，才进行替换
                 if (node.parentNode) {
-                    
                     node.parentNode.replaceChild(element, node); //(新， 旧)
                 }
             }
         } else {
-            // 选中的文本跨越多个节点，在中间节点处进行拆分处理
-            
-            console.log(textNodes)
+            console.log('处理中间')
             const element = document.createElement(tagName);
             if (className) {
                 element.classList.add(className);
             }
-            // 选取错误
+
             element.textContent = nodeText;
-            // console.log(nodeText)
-            console.log(nodeRange.toString())
-            // 选中的文本跨越多个节点，在中间节点处进行拆分处理')
-            // 获取选中范围的起始和结束节点
-            //  startContainer = nodeRange.startContainer as ChildNode;
-            //  endContainer = nodeRange.endContainer as ChildNode;
+
             // 创建一个临时父节点
-            const parent = document.createElement(tagName);
-
+            const parent = document.createElement('p');
             // 在临时父节点中插入新创建的元素
+            // this ok
             parent.appendChild(element);
-            // console.log(parent)
-
             // 对选中范围的节点进行替换
-            startContainer.parentNode?.replaceChild(parent, startContainer);
-            endContainer.parentNode?.replaceChild(parent.cloneNode(true), endContainer);
 
-            // 处理每个中间节点
-            let currentNode: Node | null = startContainer.nextSibling;
-            while (currentNode && currentNode !== endContainer) {
-                const nextNode = currentNode?.nextSibling;
 
-                parent.appendChild(currentNode!);
-                currentNode = nextNode;
-            }
-
-            // 将最后一个中间节点添加到临时父节点中
-            parent.appendChild(endContainer);
-
-            // newRangeStartOffset = 0;
-            // newRangeEndOffset = nodeText.length;
-
-            // 对选中范围的节点进行替换
-            if (startContainer.parentNode && endContainer.parentNode) {
-                const startParent = startContainer.parentNode;
-                const endParent = endContainer.parentNode;
-
-                startParent.replaceChild(parent, startContainer);
-                endParent.replaceChild(parent.cloneNode(true), endContainer);
-            }
+            // 创建新节点的副本
+            const clonedParent = parent.cloneNode(true);
+            node.parentNode.insertBefore(parent, node);  // 添加新的父节点到节点的末尾
+            node.parentNode.removeChild(node)
         }
 
     }
     // 更新选中范围
-    // range.setStart(startContainer, newRangeStartOffset);
-    // range.setEnd(endContainer, newRangeEndOffset);
     selection.removeAllRanges();
 }
 
