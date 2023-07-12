@@ -9,7 +9,7 @@ const db_config = {
 }
 
 
-function conMysql(sql){
+function conMysql(...sqlOption){
     // 创建数据库连接池
     let MyConnect = mysql.createConnection(db_config)
     // 开始连接数据库
@@ -24,13 +24,13 @@ function conMysql(sql){
     // query查询是一个异步操作，所以用promise来操作
     return new Promise((resolve,reject)=>{
         // query()函数用于mysql语句查询
-        MyConnect.query(sql,(err,result)=>{
+        MyConnect.query(...sqlOption,(err,result)=>{
             if(err){
                 reject(err)
             }else{
                 let res = JSON.parse(JSON.stringify(result))
 				closeMysql(MyConnect)  //调用函数关闭mysql连接
-                console.log('res',res);
+                console.log('Conres',res);
 				resolve(res)
             }
         })
