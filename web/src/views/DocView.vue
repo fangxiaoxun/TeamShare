@@ -214,6 +214,9 @@ import { onClickOutside } from '../hooks/clickOutside'
 import { connected } from 'process';
 import { en } from 'element-plus/es/locale';
 
+const handClick = () => {
+    console.log('调用点击事件')
+}
 
 let duiMenu = reactive([
     {
