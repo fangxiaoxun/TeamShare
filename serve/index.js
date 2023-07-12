@@ -37,19 +37,9 @@ app.use(
     .unless({path: whiteList})//登陆注册页无需校验
 )
 
-// const {conMysql} = require('./lib/db')
+
 app.use('/user', require('./router/user.router.js'))
 
-// app.get('/getUser',(req,res)=>{
-//     let sql = 'select * from user'
-//     conMysql(sql).then(result => {
-//         res.send({
-// 			code:200,
-// 			data:result
-// 		})
-//     })
-
-// })
 
 // token过期或不合法
 app.use((err, req, res, next) => {

@@ -27,7 +27,6 @@ const createToken = (account, password) => {
 // 用户注册
 const regUser = (username, account, password) => {
     let sql = `select * from user where username = '${username}' or account = '${account}'`
-    console.log(sql);
 
     return conMysql(sql).then(result => {
         // 有返回结果说明改用户已存在
@@ -38,7 +37,6 @@ const regUser = (username, account, password) => {
             console.log('catch', result);
             let sql = `insert into user set ?`
             return conMysql(sql, { username, account, password }).then(result => {
-                console.log('111', result);
                 return { msg: '成功' }
             })
         }

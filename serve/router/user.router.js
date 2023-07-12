@@ -11,7 +11,6 @@ const userRouterHandler = async(req,res) =>{
     const path = req.path
     // const url = req.url
     // const params = url.split('?')[1]
-    console.log(res.status);
     // 解析query
     // req.query = querystring.parse(url.split('?')[1])
 
@@ -30,7 +29,6 @@ const userRouterHandler = async(req,res) =>{
     // 用户注册
     if(method === 'POST' && path === '/register'){
         const {username,account,password} = req.body
-        console.log(username,account,password);
         const $data = await regUser(username,account,password)
         if($data){
             return res.send(new SuccessModel({msg:'OK,注册成功'}))
