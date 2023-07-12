@@ -259,8 +259,6 @@ function createRangeFromNodes(startNode: Node, endNode: Node): Range {
     return range;
 }
 
-
-
 function getTextNodesInRange(commonAncestor: Node, startContainer: Node, endContainer: Node): Node[] {
     const textNodes: Node[] = [];
     // 检查是否为同一行
@@ -295,7 +293,6 @@ function getLineNode(node: Node): Node | null {
     while (currentNode && currentNode.nodeName !== 'DIV' && currentNode.nodeName !== 'P' && currentNode.nodeName !== 'BR') {
         currentNode = currentNode.parentNode;
     }
-    console.log(currentNode)
     return currentNode;
 }
 
@@ -311,7 +308,6 @@ function getMiddleLines(startNode: Node, endNode: Node): Node[] {
     }
 
     let currentNode: Node | null = startLine.nextSibling;   //获取starLine的下一节点
-    console.log(currentNode)
     while (currentNode && currentNode !== endLine) {
         middleLines.push(currentNode);
         currentNode = currentNode.nextSibling;
@@ -328,7 +324,6 @@ function getTextNodesInLine(lineNode: Node, excludeNode?: Node): Node[] {
     function traverseNodes(node: Node, textNodes: Node[]) {
         if (node.nodeType === Node.TEXT_NODE) {
             if (!excludeNode || !excludeNode.contains(node)) {
-                console.log(node)
                 textNodes.push(node);
             }
         } else {
@@ -389,14 +384,15 @@ function addTag(tagName: string, className: string = '') {
         } else if (node === startContainer) {   //跨行第一行
             // 选中的文本在起始节点中，需要对起始节点进行拆分处理
             const selectedText = nodeText.substring(range.startOffset);
+            console.log(selectedText)
             const element = document.createElement(tagName);
-
             if (className) {
                 element.classList.add(className);
             }
             element.textContent = selectedText;
             nodeRange.setStart(node, range.startOffset)
             nodeRange.deleteContents();
+            console.log(element)
             nodeRange.insertNode(element);
         } else if (endContainer.nodeValue !== '' && node === endContainer) {
             // 选中的文本在结束节点中，需要对结束节点进行拆分处理
