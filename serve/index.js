@@ -15,7 +15,7 @@ const {expressjwt:jwt} = require('express-jwt')
 // 生成token的密钥
 const secret = 'login2023'
 
-const {SuccessModel,ErrorModel} = require("./model/resModel")
+const {ErrorModel} = require("./model/resModel")
 // 处理 x-www-form-urlencoded
 app.use(bodyParser.urlencoded({ extended: true }))
 // 处理 mutipart/form-data
@@ -39,6 +39,7 @@ app.use(
 
 
 app.use('/user', require('./router/user.router.js'))
+app.use('/folder',require('./router/folder.router.js'))
 
 
 // token过期或不合法
