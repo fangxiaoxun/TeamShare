@@ -1,5 +1,3 @@
-
-
 // 导入数据模型
 const {SuccessModel,ErrorModel} = require("../model/resModel")
 const {createToken,regUser} = require('../controller/user.controller')
@@ -11,7 +9,7 @@ const userRouterHandler = async(req,res) =>{
     const path = req.path
     // const url = req.url
     // const params = url.split('?')[1]
-    console.log(res.status);
+   
     // 解析query
     // req.query = querystring.parse(url.split('?')[1])
 
@@ -41,7 +39,7 @@ const userRouterHandler = async(req,res) =>{
 
     // 获取用户信息
     if(method === 'GET' && path === '/getUser'){
-       return res.send(new SuccessModel({msg:'登录成功',data:req.auth}))
+       return res.send(new SuccessModel({msg:'成功',data:req.auth}))
     }
 }
 

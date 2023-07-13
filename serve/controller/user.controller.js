@@ -27,8 +27,7 @@ const createToken = (account, password) => {
 // 用户注册
 const regUser = (username, account, password) => {
     let sql = `select * from user where username = '${username}' or account = '${account}'`
-    console.log(sql);
-
+   
     return conMysql(sql).then(result => {
         // 有返回结果说明改用户已存在
         if (result.length > 0) {

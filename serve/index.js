@@ -15,7 +15,7 @@ const {expressjwt:jwt} = require('express-jwt')
 // 生成token的密钥
 const secret = 'login2023'
 
-const {SuccessModel,ErrorModel} = require("./model/resModel")
+const {ErrorModel} = require("./model/resModel")
 // 处理 x-www-form-urlencoded
 app.use(bodyParser.urlencoded({ extended: true }))
 // 处理 mutipart/form-data
@@ -39,7 +39,7 @@ app.use(
 
 // const {conMysql} = require('./lib/db')
 app.use('/user', require('./router/user.router.js'))
-
+app.use('/folder',require('./router/folder.router.js'))
 // app.get('/getUser',(req,res)=>{
 //     let sql = 'select * from user'
 //     conMysql(sql).then(result => {
