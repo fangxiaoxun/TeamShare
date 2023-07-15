@@ -15,7 +15,7 @@ const createToken = (account, password) => {
             headPortrait: result[0].headPortrait
         },
             secret,//密钥进行加密
-            { expiresIn: "3h" } //token有效时间
+            { expiresIn: "24h" } //token有效时间
         )
 
         return {

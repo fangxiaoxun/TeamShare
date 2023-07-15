@@ -6,6 +6,7 @@ const db_config = {
     password:'3141592617F',
     port:'3306',
     database:'sharedocuments',
+    timezone:'08:00'
 }
 
 

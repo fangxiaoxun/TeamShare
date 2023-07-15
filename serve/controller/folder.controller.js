@@ -3,17 +3,21 @@ const { conMysql } = require("../lib/db")
 // 查询文件夹列表
 const getFolder = (userId) => {
     console.log('getFolder');
-    let sql = `select folderId,foldername from folder where userId = ${userId} and deleteType = 0`
+    let sql = `select folderId,foldername,collectType from folder where userId = ${userId} and deleteType = 0`
 
-    return conMysql(sql).then(result => result)
+    return conMysql(sql)
 }
 
 
 // 删除指定文件夹
-const delFolder = (folderId) => {
+const delFolder = (folderId,lastDate) => {
     console.log('delFolder');
-    let sql = `update folder set deleteType = 1 where folderId = ${folderId}`
-    return conMysql(sql)
+    let sql = `update folder set deleteType = 1,lastDate = '${lastDate}' where folderId = ${folderId}`
+    return conMysql(sql).then(_ =>{
+        // 将文件夹下的文件也删除
+        let sql = `update file set deleteType = 1 where folderId = ${folderId}`
+        conMysql(sql)
+    })
 }
 
 // 增加文件夹
@@ -29,5 +33,16 @@ const updateFolder = (folderId,newFolderName) => {
     return conMysql(sql)
 }
 
+// 收藏文件夹
+const collectFolder = (folderId,collectDate) => {
+    let sql = `update folder set collectType = 1,collectDate = '${collectDate}' where folderId = ${folderId}`
+    return conMysql(sql)
+}
 
-module.exports = { getFolder,delFolder,addFolder,updateFolder }
+// 获取收藏文件夹列表
+const getCollectFolder = async (userId) => {
+    let sql = `select folderId,folderName,userId,collectDate from folder where userId = ${userId} and collectType = 1 and deleteType = 0 order by collectDate asc`
+    return conMysql(sql)
+}
+
+module.exports = { getFolder,delFolder,addFolder,updateFolder, collectFolder, getCollectFolder }

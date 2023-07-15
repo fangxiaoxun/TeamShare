@@ -1,6 +1,7 @@
 // 导入数据模型
 const {SuccessModel,ErrorModel} = require("../model/resModel")
-const {getFolder,delFolder,addFolder,updateFolder} = require("../controller/folder.controller")
+const {getFolder,delFolder,addFolder,updateFolder,collectFolder,getCollectFolder} = require("../controller/folder.controller")
+const Date = require('../utils/format')
 
 const folderRouterHandler = async(req,res) =>{
     console.log('folderRouterHandler');
@@ -16,9 +17,9 @@ const folderRouterHandler = async(req,res) =>{
 
     // 删除指定文件夹
     if(method === 'GET' && path === '/delFolder'){
-        console.log('folderId');
         const {folderId} = req.query
-        delFolder(folderId)
+        const lastDate = new Date().Format("yyyy-MM-dd hh:mm:ss")
+        delFolder(folderId,lastDate)
         return res.send(new SuccessModel({msg:'删除成功'}))
     }
 
@@ -35,6 +36,21 @@ const folderRouterHandler = async(req,res) =>{
         const {folderId,newFolderName} = req.query
         updateFolder(folderId,newFolderName)
         return res.send(new SuccessModel({msg:'OK，修改成功'}))
+    }
+
+    // 收藏文件夹
+    if(method === 'GET' && path === '/collectFolder'){
+        const {folderId} = req.query
+        const collectDate = new Date().Format("yyyy-MM-dd hh:mm:ss")
+        collectFolder(folderId,collectDate)
+        return res.send(new SuccessModel({msg:'OK，收藏成功'}))
+    }
+
+    // 获取收藏文件夹列表
+    if(method === 'GET' && path === '/getCollectFolder'){
+        const userId = req.auth.userId
+        const $data = await getCollectFolder(userId)
+        return res.send(new SuccessModel({msg:'OK',data:$data}))
     }
 }
 
