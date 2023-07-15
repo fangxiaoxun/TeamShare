@@ -8,7 +8,6 @@ const cors = require('cors')
 app.use(cors())
 
 const bodyParser = require('body-parser')
-const multiparty = require('connect-multiparty')
 
 // 导入校验token的模块，解析JWT字符串，还原成JSON对象的模块
 const {expressjwt:jwt} = require('express-jwt')
@@ -18,14 +17,14 @@ const secret = 'login2023'
 const {ErrorModel} = require("./model/resModel")
 // 处理 x-www-form-urlencoded
 app.use(bodyParser.urlencoded({ extended: true }))
-// 处理 mutipart/form-data
-app.use(multiparty())
+
+
 // 处理application/json
 app.use(bodyParser.json())
 
 // 部署上线时读取静态文件
 app.use(express.static(path.join(__dirname, './dist')))
-
+app.use(express.static(path.join(__dirname, './upload')))
 // 无需校验token的白名单
 const whiteList = ['/user/login','/user/register']
 // 解析token
@@ -40,6 +39,16 @@ app.use(
 
 app.use('/user', require('./router/user.router.js'))
 app.use('/folder',require('./router/folder.router.js'))
+app.use('/file',require('./router/file.router.js'))
+// app.get('/getUser',(req,res)=>{
+//     let sql = 'select * from user'
+//     conMysql(sql).then(result => {
+//         res.send({
+// 			code:200,
+// 			data:result
+// 		})
+//     })
+
 
 
 // token过期或不合法
