@@ -211,8 +211,6 @@ import LeftBar from '../components/editor/LeftBar.vue';
 import DocContent from '../components/editor/DocContent.vue';
 import User from '../components/common/User.vue'
 import { onClickOutside } from '../hooks/clickOutside'
-import { connected } from 'process';
-import { en } from 'element-plus/es/locale';
 
 const handClick = () => {
     console.log('调用点击事件')

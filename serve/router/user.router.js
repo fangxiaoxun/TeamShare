@@ -15,8 +15,8 @@ const userRouterHandler = async(req,res) =>{
     // req.query = querystring.parse(url.split('?')[1])
 
     // 用户登录
-    if(method === 'GET' && path === '/login'){
-        const {account,password} = req.query
+    if(method === 'POST' && path === '/login'){
+        const {account,password} = req.body
         const $data = await createToken(account,password)
         if($data){
             return res.send(new SuccessModel({msg:'登录成功',data:$data}))
