@@ -32,16 +32,14 @@ const em: TNode = {
     attrs: {}
 };
 
-// const state: TNode[] = [{
-//     ...paragraph,
-//     children: [
-//         { ...text, content: 'text ' },
-//         { ...text, marks: [strong], content: 'strong' },
-//         { ...text, marks: [strong, em], content: 'italic text' },
-//     ]
-// }];
-// console.log(state)
-
+const state: TNode[] = [{
+    ...paragraph,
+    children: [
+        { ...text, content: 'text ' },
+        { ...text, marks: [strong], content: 'strong' },
+        { ...text, marks: [strong, em], content: 'italic text' },
+    ]
+}];
 // 渲染文档内容
 const renderNodeTree = (nodes: TNode[]) => {
     let html = '';
@@ -74,7 +72,7 @@ const handleInput = (event: Event): any => {
     }
 }
 
-
+// const str:string = '<div data-v-43706c3a="" class="content" contenteditable="true"><p><b>111</b>1111</p><p>2222<b>222</b></p><p><b>3333333</b></p><p><b>444</b>4414</p></div>'
 // 转换输入 存储
 
 function parseNodes(element: Element): TNode[] {
@@ -109,9 +107,6 @@ function parseNodes(element: Element): TNode[] {
     return nodes;
 }
 
-
-
-
 function save() {
     const saveContent = editor.value.innerHTML;
     const html = saveContent;
@@ -119,9 +114,12 @@ function save() {
     const doc = parser.parseFromString(html, 'text/html');
     const body = doc.querySelector('body')!;
     const state: TNode[] = parseNodes(body);
-    
+    console.log(state)
     return state
 }
+
+
+console.log(save())
 
 </script>
 <template>

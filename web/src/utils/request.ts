@@ -11,9 +11,14 @@ const request = axios.create({
 // request 实例添加请求与响应拦截器
 request.interceptors.request.use((config) => {
     // console.log(config)
-    if (getCookie('token')) {
+    // if (getCookie('token')) {
+    //     config.headers.token = '564cdadd-bbea-4e41-a1b6-bd0789db682c' // 发送本地token
+    // }
+    if (localStorage.getItem('token')) {
         config.headers.token = '564cdadd-bbea-4e41-a1b6-bd0789db682c' // 发送本地token
+
     }
+
     return config
 })
 // 响应拦截器
@@ -50,5 +55,17 @@ request.interceptors.response.use(
         return Promise.reject(err)
     },
 )
+interface REGISTER {
+    username: string,
+    account: string,
+    password: string
+}
+
+let data: REGISTER = {
+    username: '1111',
+    account: '1111',
+    password: '1111'
+}
+
 
 export default request
