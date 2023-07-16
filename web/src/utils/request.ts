@@ -1,7 +1,7 @@
 //axios 二次封装
 import axios from 'axios'
 import { ElMessage } from 'element-plus'
-import { setCookie, getCookie, delCookie } from '../hooks/cookie'
+
 const request = axios.create({
     // 基础路径
     baseURL: import.meta.env.VITE_APP_BASE_API,

@@ -1,6 +1,6 @@
 // 导入数据模型
 const {SuccessModel,ErrorModel} = require("../model/resModel")
-const {getLatest,getFile,addFile,updateFile,getLatestType,getFileType,delFile,collectFile,getCollectFile,getCollectFileType} = require('../controller/file.controller')
+const {getLatest,getFile,addFile,updateFile,getLatestType,getFileType,delFile,collectFile,getCollectFile,getCollectFileType,getTrash,recoverFile,searchFile} = require('../controller/file.controller')
 const upload = require('../utils/upload');
 const Date = require('../utils/format')
 const fileRouterHandler = async(req,res) => {
@@ -97,6 +97,32 @@ const fileRouterHandler = async(req,res) => {
         return res.send(new SuccessModel({msg:'OK',data:$data}))
     }
 
+    // 获取回收站列表
+    if(method === 'GET' && path === '/getTrash'){
+        const {userId,username} = req.auth
+        const nowDate = new Date().Format("yyyy-MM-dd hh:mm:ss")
+        const $data = await getTrash(nowDate,userId,username)
+        return res.send(new SuccessModel({msg:'OK',data:$data}))
+    }
+
+    // 恢复删除文件
+    if(method === 'GET' && path === '/recoverFile'){
+        const fileId = req.query.fileId
+        const lastDate = new Date().Format("yyyy-MM-dd hh:mm:ss")
+        recoverFile(fileId,lastDate)
+        res.send(new SuccessModel({msg:'恢复成功'}))
+    }
+
+    // 通过文件名搜索文件
+    if(method === 'GET' && path === '/searchFile'){
+        const creator = req.auth.username
+        const keyword = req.query.keyword
+        const $data = await searchFile(keyword,creator)
+        console.log($data);
+        res.send(new SuccessModel({msg:'OK',data:$data}))
+    }
+
+  
 }
 
 
