@@ -63,4 +63,42 @@ const getCollectFileType = async (creator,fileType) => {
     return conMysql(sql)
 }
 
-module.exports = { getLatest, getFile, getFileType, getLatestType, addFile, updateFile, delFile, collectFile, getCollectFile, getCollectFileType }
+// 判断是否超七天
+const deleteForever = async (nowDate,userId,username) =>{
+    let sql = `update folder set deleteType = 2 where datediff('${nowDate}',lastDate) > 7 and deleteType = 1 and userId = ${userId}`
+    return conMysql(sql).then(_ => {
+        let sql = `update file set deleteType = 2 where datediff('${nowDate}',lastDate) > 7 and deleteType = 1 and creator = '${username}'`
+        return conMysql(sql)
+    })
+}
+
+// 获取回收站列表
+const getTrash = async (nowDate,userId,username) => {
+    // 删除超过七天的文件
+    deleteForever(nowDate,userId,username)
+    let sql = `select * from folder where deleteType = 1 and userId = ${userId}`
+    return conMysql(sql).then(folderArr =>{
+        let sql = `select * from file where deleteType = 1 and folderDelete = 0 and creator = '${username}'`
+        return conMysql(sql).then(fileArr => {
+            let result = [...folderArr,...fileArr]
+            return result.sort((a,b) => {
+                return b.lastDate > a.lastDate ? 1:-1
+            })
+        })
+    })
+}
+
+// 恢复删除文件
+const recoverFile = (fileId,lastDate) => {
+    let sql = `update file set deleteType = 0,lastDate = '${lastDate}' where fileId = ${fileId}`
+    return conMysql(sql)
+}
+
+// 通过文件名搜索文件
+const searchFile = async (keyword,creator) => {
+    let sql = `select * from file where fileName like '%${keyword}%' and creator = '${creator}' and deleteType = 0`
+    return conMysql(sql)
+}
+
+
+module.exports = { getLatest, getFile, getFileType, getLatestType, addFile, updateFile, delFile, collectFile, getCollectFile, getCollectFileType, getTrash, recoverFile,searchFile }

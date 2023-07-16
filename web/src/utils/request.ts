@@ -10,9 +10,9 @@ const request = axios.create({
 })
 // request 实例添加请求与响应拦截器
 request.interceptors.request.use((config) => {
-    // console.log(config)
+    console.log('config')
     if (getCookie('token')) {
-        config.headers.token = '564cdadd-bbea-4e41-a1b6-bd0789db682c' // 发送本地token
+        config.headers.Authorization = getCookie('token') // 发送本地token
     }
     return config
 })
