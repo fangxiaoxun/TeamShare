@@ -40,16 +40,6 @@ app.use(
 app.use('/user', require('./router/user.router.js'))
 app.use('/folder',require('./router/folder.router.js'))
 app.use('/file',require('./router/file.router.js'))
-// app.get('/getUser',(req,res)=>{
-//     let sql = 'select * from user'
-//     conMysql(sql).then(result => {
-//         res.send({
-// 			code:200,
-// 			data:result
-// 		})
-//     })
-
-// })
 
 
 // token过期或不合法
