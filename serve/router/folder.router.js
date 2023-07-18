@@ -27,8 +27,8 @@ const folderRouterHandler = async(req,res) =>{
     if(method === 'GET' && path === '/addFolder'){
         const userId = req.auth.userId
         const {folderName} = req.query
-        addFolder(folderName,userId)
-        return res.send(new SuccessModel({msg:'OK，添加成功'}))
+        const $data = await addFolder(folderName,userId)
+        return res.send(new SuccessModel({msg:'OK，添加成功',data:$data}))
     }
 
     // 修改文件夹名字

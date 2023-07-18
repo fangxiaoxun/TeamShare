@@ -28,7 +28,9 @@ const getFileType = async (folderId,fileType) => {
 // 新建文件
 const addFile = async (fileOption) => {
     let sql = `insert into file set ?`
-    return conMysql(sql, fileOption)
+    return conMysql(sql, fileOption).then(result => {
+        return {fileId:result.insertId}
+    })
 }
 
 // 修改文件

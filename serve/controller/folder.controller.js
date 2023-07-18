@@ -20,10 +20,12 @@ const delFolder = (folderId, lastDate) => {
 }
 
 // 增加文件夹
-const addFolder = (foldername, userId) => {
+const addFolder = async(foldername, userId) => {
     console.log('addFolder');
     let sql = `insert into folder set ?`
-    return conMysql(sql, { foldername, userId })
+    return conMysql(sql, { foldername, userId }).then(result => {
+        return {folderId:result.insertId}
+    })
 }
 
 // 修改文件夹名字

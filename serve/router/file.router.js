@@ -51,7 +51,7 @@ const fileRouterHandler = async(req,res) => {
         let fileOption = {fileName,fileType,folderId,content,creator,createDate,lastDate}
         const $data = await addFile(fileOption)
         if($data){
-            return res.send(new SuccessModel({msg:'OK,添加成功'}))
+            return res.send(new SuccessModel({msg:'OK,添加成功',data:$data}))
         }else{
             return res.send(new ErrorModel({msg:'添加失败，检查是否缺少参数'}))
         }   
