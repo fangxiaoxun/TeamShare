@@ -4,7 +4,14 @@
 </template>
 <script lang="ts" setup>
 // import Directory from './components/index/Directory.vue';
-
+// 初始化数据
+import { useFileStore } from './store/files'
+import { useFolderStore } from './store/folder'
+const fileStore = useFileStore()
+const FolderStore = useFolderStore()
+fileStore.initFileData()
+FolderStore.initMyDocData()
+fileStore.setMyDocFiles()
 </script>
 
 <style lang="less" scoped>

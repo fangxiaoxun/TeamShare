@@ -1,9 +1,12 @@
 <script lang='ts' setup>
 import frame from '@/components/common/frame.vue';
 import { useFileStore } from '@/store/files';
+import { useFolderStore } from '@/store/folder';
 
 const fileStore = useFileStore()
-fileStore.setMyDocFiles()
+// 初始化文件数据
+// fileStore.initFileData()
+// fileStore.setMyDocFiles()
 const isEmpty = ref<boolean>(true)
 // 接收数据
 import EventBus from '@/hooks/eventBus';
@@ -26,20 +29,18 @@ const fileData = (...args: any[]) => {
     // 可实现响应式
     title.value = args[0].title
     if (args[0].list.length) {
-        console.log(args[0].list.length)
         isEmpty.value = false
         fileList.list = args[0].list
     }else{
         isEmpty.value = true
-        // console.log("空文件")
-        // ElEmpty.description = "空文件"
     }
 }
+
 $bus.on('fileData', fileData) //接收数据
 </script>
 <template>
     <!-- 传入文件显示类型 -->
-    <frame :fileList="fileList.list" operate="分享" :start="0" :isEmpty="isEmpty">
+    <frame :foderName="title" :fileList="fileList.list" operate="分享" :start="0" :isEmpty="isEmpty">
         <template v-slot:title>{{ title }}</template>
         <template v-slot:item1>文件位置</template>
         <template v-slot:item2>创建者</template>

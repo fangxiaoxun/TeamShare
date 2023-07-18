@@ -212,9 +212,6 @@ import DocContent from '../components/editor/DocContent.vue';
 import User from '../components/common/User.vue'
 import { onClickOutside } from '../hooks/clickOutside'
 
-const handClick = () => {
-    console.log('调用点击事件')
-}
 
 let duiMenu = reactive([
     {

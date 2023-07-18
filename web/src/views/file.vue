@@ -2,17 +2,29 @@
     <div class="filewrap" @click="hanldSelected(isCheck)" ref="FILE">
         <div class="filename">
             <div class="checkBox">
-                <div class="border" v-show="isCheck"><div class="label"></div></div>
+                <div class="border" v-show="isCheck">
+                    <div class="label"></div>
+                </div>
             </div>
             <div class="fileicon"> <svg-icon name="doc" width="24px" height="24px"></svg-icon></div>
-            <span><router-link to="/docView"><slot name="fileName"></slot></router-link></span>
+            <span><router-link to="/docView">
+                    <slot name="fileName"></slot>
+                </router-link></span>
             <div class="star"><svg-icon name="star"></svg-icon></div>
         </div>
-        <div class="position"><span><slot name="li1"></slot></span></div>
-        <div class="author"><span><slot name="li2"></slot></span></div>
-        <div class="latest"><span><slot name="li3"></slot></span></div>
+        <div class="position"><span>
+                <slot name="li1"></slot>
+            </span></div>
+        <div class="author"><span>
+                <slot name="li2"></slot>
+            </span></div>
+        <div class="latest"><span>
+                <slot name="li3"></slot>
+            </span></div>
         <div class="button-box">
-            <div class="share btn"><span><slot name="operate"></slot></span></div>
+            <div class="share btn"><span>
+                    <slot name="operate"></slot>
+                </span></div>
             <div class="delete btn"><span><svg-icon name="delete" width="24px" height="24px"></svg-icon></span></div>
         </div>
     </div>
@@ -20,16 +32,15 @@
 <script lang='ts' setup>
 import { ref } from 'vue';
 let isCheck = ref<boolean>(false);
-    const FILE = ref<HTMLElement>(document.createElement('div'));
-const hanldSelected = (check:boolean):void => {
-    if(!check){
+const FILE = ref<HTMLElement>(document.createElement('div'));
+const hanldSelected = (check: boolean): void => {
+    if (!check) {
         console.log(FILE.value)
         FILE.value.classList.add('selected')
-    }else{
+    } else {
         FILE.value.classList.remove('selected')
     }
-    isCheck.value=!isCheck.value;
-    console.log(isCheck)
+    isCheck.value = !isCheck.value;
 }
 </script>
 <style scope lang='less' scoped>
@@ -38,13 +49,17 @@ span {
     cursor: pointer;
     color: rgba(13, 13, 13, .9);
 }
-.filewrap:hover{
-    background-color: rgba(13,13,13,.06);
+
+.filewrap:hover {
+    background-color: rgba(13, 13, 13, .06);
 }
-.filewrap:hover .star, .filewrap:hover .button-box{
+
+.filewrap:hover .star,
+.filewrap:hover .button-box {
     opacity: 1;
 }
-.filewrap::after{
+
+.filewrap::after {
     content: '';
     display: block;
     position: absolute;
@@ -52,41 +67,55 @@ span {
     width: calc(100% - 13px);
     height: 0.8px;
     margin: 0 auto;
-    background-color:#e7e9eb;;
+    background-color: #e7e9eb;
+    ;
 }
+
 .filewrap {
     position: relative;
     display: flex;
     align-items: center;
     height: 56px;
-    padding: 0 10px;
-    margin-bottom: 10px;
+    padding: 10px 10px;
+    padding-right: 30px;
+    // padding-bottom: 10px;
     margin-right: 36px;
     border-radius: 8px;
+
 }
-.filewrap.selected{
+
+.filewrap.selected {
     background-color: @bgColorBase;
 }
+
 .filename {
     flex: 4;
     display: flex;
     transform: translateY(2px);
 }
-.star{
+
+.star {
+    cursor: pointer;
     width: 24px;
     height: 24px;
     border-radius: 6px;
     opacity: 0;
-    margin-left: 10px;
-    padding: 4px;
+    margin-left: 12px;
+    padding: 2px 4px;
     box-sizing: border-box;
+    transform: translateY(-2px);
 }
-.star:hover{
-    background-color: rgba(13,13,13,.06);
+
+.star:hover {
+    background-color: rgba(13, 13, 13, .06);
 }
-.position,
-.author {
+
+.position {
     flex: 1;
+}
+
+.author {
+    flex: 0.9;
 }
 
 .latest {
@@ -99,6 +128,7 @@ span {
     height: 24px;
     margin: 0 15px;
 }
+
 .checkBox {
     cursor: pointer;
     position: relative;
@@ -108,7 +138,8 @@ span {
     border-radius: 2px;
     background-color: #fff;
 }
-.border{
+
+.border {
     border-radius: 2px;
     left: -1px;
     top: -1px;
@@ -118,9 +149,11 @@ span {
     border: 1px solid @button-color;
 
 }
-.checkBox:hover{
+
+.checkBox:hover {
     border-color: @button-color;
 }
+
 .checkBox .label {
     position: relative;
     left: 6px;
@@ -134,42 +167,49 @@ span {
     background: transparent;
     transform: rotate(45deg) scaleY(1);
 }
+
 .checkBox label:hover {
     opacity: 1;
 }
 
-.button-box{
+.button-box {
     opacity: 0;
     display: flex;
     justify-content: space-around;
     align-items: center;
-    right: 0;
+    right: 0px;
+    transform: translateX(35px);
     position: absolute;
     width: 180px;
     height: 100%;
     padding-right: 45px;
     box-sizing: border-box;
-    span{
+
+    span {
         color: #fff;
         font-size: 16px;
         // line-height: 20px;
     }
 }
-.btn{
+
+.btn {
     padding: 8px 15px;
     background-color: @button-color;
-    height: 20px;
     border-radius: 6px;
-    
+
 }
-.delete{
+
+.delete {
     padding: 8px 10px;
     background-color: transparent;
 }
-.delete:hover,.delete:active{
+
+.delete:hover,
+.delete:active {
     background-color: @primaryLight;
 }
-.share:hover,.share:active{
+
+.share:hover,
+.share:active {
     background-color: @button-hover-color;
-}
-</style>
+}</style>

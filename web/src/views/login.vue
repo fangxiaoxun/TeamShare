@@ -65,13 +65,7 @@
 import { ref, reactive } from 'vue';
 import { reqRegister, reqLogin } from '@/api/user/index'
 import { ElMessage } from 'element-plus'
-import { RouteLocationNormalized } from 'vue-router';
 import router from '@/router/index';
-import { AxiosResponse } from 'axios';
-
-import axios from 'axios';
-import Cookies from 'js-cookie';
-import { createSSRApp } from 'vue';
 // import 
 const container = ref<HTMLElement | null>(null)
 const handleClickregister = () => {
