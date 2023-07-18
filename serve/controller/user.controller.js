@@ -9,19 +9,46 @@ const createToken = (account, password) => {
     let sql = `select * from user where account = '${account}' and password = '${password}'`
     return conMysql(sql).then(result => {
         // 生成token
-        const token = jWT.sign({
+        const access_token = jWT.sign({
             userId: result[0].userId,
             username: result[0].username,
             headPortrait: result[0].headPortrait
         },
             secret,//密钥进行加密
-            { expiresIn: "24h" } //token有效时间
+            { expiresIn: "8h" } //token有效时间
+        )
+
+        const refresh_token = jWT.sign({
+            userId: result[0].userId,
+            username: result[0].username,
+            headPortrait: result[0].headPortrait
+        },
+            secret,//密钥进行加密
+            { expiresIn: "3d" } //token有效时间
         )
 
         return {
-            token: 'Bearer ' + token
+            access_token: 'Bearer ' + access_token,
+            refresh_token: 'Bearer ' + refresh_token
         }
     }).catch(_ => result = undefined)
+}
+
+// 更新token
+const refreshToken = (userId,username,headPortrait) => {
+    // 生成token
+    const access_token = jWT.sign({
+        userId,
+        username,
+        headPortrait,
+    },
+        secret,//密钥进行加密
+        { expiresIn: "8h" } //token有效时间
+    )
+
+    return {
+        access_token: 'Bearer ' + access_token,
+    }
 }
 
 // 用户注册
@@ -47,4 +74,4 @@ const regUser = (username, account, password) => {
 
 
 
-module.exports = { createToken, regUser }
+module.exports = { createToken, regUser,refreshToken }

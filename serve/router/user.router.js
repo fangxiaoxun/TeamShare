@@ -1,6 +1,6 @@
 // 导入数据模型
 const {SuccessModel,ErrorModel} = require("../model/resModel")
-const {createToken,regUser} = require('../controller/user.controller')
+const {createToken,regUser,refreshToken} = require('../controller/user.controller')
 const upload = require('../utils/upload')
 
 const userRouterHandler = async(req,res) =>{
@@ -45,6 +45,13 @@ const userRouterHandler = async(req,res) =>{
     // 上传用户头像
     if(method === 'POST' && path === '/uploadHeadPortrait'){
         upload(req,res,'headPortrait')
+    }
+
+    // 更新Token
+    if(method === 'GET' && path === '/refreshToken'){
+        const {userId,username,headPortrait} = req.auth
+        const $data = refreshToken(userId,username,headPortrait)
+        return res.send(new SuccessModel({msg:'OK',data:$data}))
     }
 }
 
