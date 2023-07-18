@@ -1,6 +1,6 @@
 // 导入数据模型
 const {SuccessModel,ErrorModel} = require("../model/resModel")
-const {getFolder,delFolder,addFolder,updateFolder,collectFolder,getCollectFolder} = require("../controller/folder.controller")
+const {getFolder,delFolder,addFolder,updateFolder,collectFolder,getCollectFolder, recoverFolder} = require("../controller/folder.controller")
 const Date = require('../utils/format')
 
 const folderRouterHandler = async(req,res) =>{
@@ -27,8 +27,8 @@ const folderRouterHandler = async(req,res) =>{
     if(method === 'GET' && path === '/addFolder'){
         const userId = req.auth.userId
         const {folderName} = req.query
-        addFolder(folderName,userId)
-        return res.send(new SuccessModel({msg:'OK，添加成功'}))
+        const $data = await addFolder(folderName,userId)
+        return res.send(new SuccessModel({msg:'OK，添加成功',data:$data}))
     }
 
     // 修改文件夹名字
@@ -51,6 +51,14 @@ const folderRouterHandler = async(req,res) =>{
         const userId = req.auth.userId
         const $data = await getCollectFolder(userId)
         return res.send(new SuccessModel({msg:'OK',data:$data}))
+    }
+
+    // 恢复删除文件夹
+    if(method === 'GET' && path === '/recoverFolder'){
+        const folderId = req.query.folderId
+        const lastDate = new Date().Format("yyyy-MM-dd hh:mm:ss")
+        recoverFolder(folderId,lastDate)
+        return res.send(new SuccessModel({msg:'OK，恢复成功'}))
     }
 }
 
