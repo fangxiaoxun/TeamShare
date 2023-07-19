@@ -12,6 +12,7 @@ const FolderStore = useFolderStore()
 fileStore.initFileData()
 FolderStore.initMyDocData()
 fileStore.setMyDocFiles()
+fileStore.setDeleteFiles()
 </script>
 
 <style lang="less" scoped>

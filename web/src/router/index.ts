@@ -79,7 +79,7 @@ const router = createRouter({
 const whiteList: string[] = ['/', '/login']
 // 路由鉴权
 router.beforeEach((to: RouteLocationNormalized, from: RouteLocationNormalized, next: NavigationGuardNext) => { 
-    if (whiteList.indexOf(to.path) !== -1 || localStorage.getItem('token')) {
+    if (whiteList.indexOf(to.path) !== -1 || localStorage.getItem('access_token')) {
         // 如果存在，则跳转对应路由
         next()
     } else {

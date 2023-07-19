@@ -46,7 +46,8 @@ export const useFolderStore = defineStore("folders", {
             console.log(index, folderId)
             // 需要调用删除新建文件接口，使用返回的响应信息
             const response = await delFolder(folderId)
-            this.data[index].list = this.data[index].list.filter(item => item.folderId !== folderId)
+            console.log(response)
+            // this.data[index].list = this.data[index].list.filter(item => item.folderId !== folderId)
             // this.data[index].list = this.data[index].list.filter(item => item != folderName)
         },
         // 添加文件夹

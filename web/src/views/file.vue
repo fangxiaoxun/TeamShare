@@ -22,7 +22,7 @@
                 <slot name="li3"></slot>
             </span></div>
         <div class="button-box">
-            <div class="share btn"><span>
+            <div class="operate btn" @click="RECOVER(FILE.getAttribute('fileid') ,FILE.getAttribute('type'))"><span>
                     <slot name="operate"></slot>
                 </span></div>
             <div class="delete btn"><span><svg-icon name="delete" width="24px" height="24px"></svg-icon></span></div>
@@ -30,7 +30,7 @@
     </div>
 </template>
 <script lang='ts' setup>
-import { ref } from 'vue';
+import { ref, inject } from 'vue';
 let isCheck = ref<boolean>(false);
 const FILE = ref<HTMLElement>(document.createElement('div'));
 const hanldSelected = (check: boolean): void => {
@@ -42,6 +42,18 @@ const hanldSelected = (check: boolean): void => {
     }
     isCheck.value = !isCheck.value;
 }
+
+// const FILE = ref<HTMLElement|null>(null)
+
+// 接收来自父组件的 recover 对象
+const recover = inject<{
+    RECOVER: (folderId: string|null, type:string|null) => void;
+}>('recover')!;
+
+// 解构出函数
+const { RECOVER } = recover;
+
+
 </script>
 <style scope lang='less' scoped>
 span {
@@ -209,7 +221,8 @@ span {
     background-color: @primaryLight;
 }
 
-.share:hover,
-.share:active {
+.operate:hover,
+.operate:active {
     background-color: @button-hover-color;
-}</style>
+}
+</style>

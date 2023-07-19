@@ -119,8 +119,9 @@ const handleRegister = () => {
 const handleLogin = () => {
     reqLogin(loginInfo)
         .then((res) => {
-            if (res.data?.token) { //登录成功
-                localStorage.setItem('token', res.data.token)
+            if (res.data.access_token) { //登录成功
+                localStorage.setItem('access_token', res.data.access_token)
+                localStorage.setItem('refresh_token', res.data.refresh_token)
                 router.push('/directory')
             } else {  //登录失败
                 ElMessage.error('账号或密码错误，请重新输入')

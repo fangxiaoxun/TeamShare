@@ -4,7 +4,7 @@ import { vClickOutside } from '@/hooks/clickOutside';
 import file from '@/views/file.vue';
 import { useFileStore } from '@/store/files'
 // import { isEmpty } from 'element-plus/es/utils';
-const props = defineProps(["fileList", "operate", "isEmpty" , "folderName"]);
+const props = defineProps(["fileList", "operate", "isEmpty", "folderName"]);
 const FileStore = useFileStore()
 const count = ref<number>(0)
 const showType = (element: HTMLElement) => {
@@ -32,9 +32,9 @@ const typeObj: Type = {
         iconName: 'word',
         type: 'word'
     },
-    excel: {
-        iconName: 'excel',
-        type: 'excel'
+    map: {
+        iconName: 'map',
+        type: 'map'
     }
 
 }
@@ -117,11 +117,11 @@ const load = (): void => {
                                     <div class="icon"><svg-icon name="word" width="16px" height="16px"></svg-icon></div>
                                     <span>word</span>
                                 </div>
-                                <div class="item" id="excel" @click="TypeSelect($event)">
+                                <div class="item" id="map" @click="TypeSelect($event)">
                                     <div class="icon selected"><svg-icon name="selected" width="16px" height="16px"
                                             color="#0A6CFF"></svg-icon></div>
-                                    <div class="icon"><svg-icon name="excel" width="16px" height="16px"></svg-icon></div>
-                                    <span>excel</span>
+                                    <div class="icon"><svg-icon name="map" width="16px" height="16px"></svg-icon></div>
+                                    <span>map</span>
                                 </div>
                             </div>
                         </div>
@@ -143,14 +143,15 @@ const load = (): void => {
                 <div class="inner">
 
                     <el-empty description="文件夹是空的" v-if="props.isEmpty"></el-empty>
-                    <file v-else v-for="i in props.fileList.length" :key="i" >
-                        <div>{{ props.fileList[i-1] }}</div>
-                            <!-- 只有文件夹的id -->
-                        <template v-slot:li1>{{ FileStore.getFolderName(props.fileList[i-1].folderId)? FileStore.getFolderName(props.fileList[i-1].folderId): '我的云文档' }}</template>
-                        <template v-slot:fileName>{{ props.fileList[i - 1].fileName }}</template>
-                        <template v-slot:li2>{{ props.fileList[i - 1].creator }}</template>
-                        <template v-slot:li3>{{ props.fileList[i - 1].lastDate.slice(0,16) }}</template>
+                    <file v-else v-for="item in props.fileList" :folderId="item.folderId" :fileId="item.fileId" :type="item.type">
+                        <template v-slot:li1>{{ FileStore.getFolderName(item.folderId) ?
+                            FileStore.getFolderName(item.folderId) : '我的云文档' }}</template>
+                        <template v-slot:fileName>{{ item.fileName }}</template>
+                        <template v-slot:li2>{{ item.creator }}</template>
+                        <template v-slot:li3>{{ item.lastDate.slice(0, 16) }}</template>
                         <template v-slot:operate>{{ props.operate }}</template>
+
+
                     </file>
                 </div>
             </ul>
@@ -208,6 +209,7 @@ span {
             padding-left: 12px;
             line-height: 28px;
             white-space: nowrap;
+
             .icon {
                 margin: 2px 2px 2px 2px;
             }
@@ -260,7 +262,7 @@ span {
     transition: all 0.3s;
     box-sizing: border-box;
     cursor: pointer;
-    padding: 4px 8px 0 20px;
+    padding: 4px 8px 0 0px;
     margin: 4px 0;
     border-radius: 6px;
 

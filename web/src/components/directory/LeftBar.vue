@@ -105,7 +105,9 @@ const handleClick = (e: MouseEvent) => {
     })
     // 未进入判断
     if ((e.target as HTMLElement).classList.contains('folder')) {
-        console.log(filesStore.getFiles((e.target as HTMLElement).id)[0].fileList)
+        console.log((e.target as HTMLElement).id)
+        console.log(filesStore.getFiles((e.target as HTMLElement).id));
+
         fileData.title = (e.target as HTMLElement).innerText;
         fileData.list = filesStore.getFiles((e.target as HTMLElement).id)[0].fileList;
         (e.target as HTMLElement).classList.add('current');
@@ -127,6 +129,7 @@ const clickEvent = () => {
 const handleDelete = () => {
     console.log(filesStore.getAllFolder(false))
 }
+
 
 
 </script>
@@ -186,7 +189,7 @@ const handleDelete = () => {
                                 <div class="folder" ref="folderItem" v-for="(item, index) in filesStore.getAllFolder(false)"
                                     :key="index" :id="item.folderId" @click.native="handleClick">{{ item.foldername }}
                                     <!-- 删除文件夹 -->
-                                    <div class="delete" @click="handleDelete"><svg-icon class="icon"
+                                    <div class="delete" @click="filesStore.deleteFolder(item.folderId,false)"><svg-icon class="icon"
                                             name="delete"></svg-icon></div>
                                 </div>
 
@@ -196,11 +199,11 @@ const handleDelete = () => {
                             <span class="addFolder" @click="addFolder(true)" :key="0" id="1"><svg-icon name="add" width="12px"
                                     height="12px" color="#6965db"></svg-icon></span>
                             <el-collapse-item class="item" title="我的收藏" name="我的收藏">
-                                <div class="folder" ref="folderItem" v-for="(item, index) in allFolder[1].list" :key="index"
-                                    :id="item.folderId" @click.native="handleClick">{{ item.folderName }}
+                                <div class="folder" ref="folderItem" v-for="(item, index) in filesStore.getAllFolder(true)" :key="index"
+                                    :id="item.folderId" @click.native="handleClick">{{ item.foldername }}
                                     <!-- 删除文件夹 -->
                                     <!-- <div>{{ item }}</div> -->
-                                    <div class="delete" @click="handleDelete">
+                                    <div class="delete" @click="filesStore.deleteFolder(item.folderId,true)">
                                         <svg-icon class="icon" name="delete"></svg-icon>
                                     </div>
                                 </div>

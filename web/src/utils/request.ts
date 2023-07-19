@@ -11,11 +11,10 @@ const api = axios.create({
 })
 // request 实例添加请求与响应拦截器
 api.interceptors.request.use((config) => {
-    // console.log(config)
-    if (localStorage.getItem('token')) {
+    if (localStorage.getItem('access_token')) {
         const headers = {
             ...config.headers,
-            Authorization: localStorage.getItem('token')
+            Authorization: localStorage.getItem('access_token')
         }
         config.headers = headers as AxiosRequestHeaders;
     
