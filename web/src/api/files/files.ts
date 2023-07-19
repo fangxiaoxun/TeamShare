@@ -14,14 +14,8 @@ export async function LatestFiles() {
 }
 
 // 我的文档
-<<<<<<< HEAD
-
-export async function myDocFiles() {
-    const response = await axios.get(API.MYDOC_URL)
-=======
 export async function myDocFiles(data:any) {
     const response = await api.get(API.MYDOC_URL,data)
->>>>>>> 2cefde376ccda8c9eea3ce8e05822caf57dfb28c
     return response.data
 }
 
