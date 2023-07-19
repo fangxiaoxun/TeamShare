@@ -1,44 +1,67 @@
 // 更改 elementplus 组件默认样式
 // @--el-collapse-header-text-color:#9195a1
+// @import "~element-plus/lib/theme-chalk/base.variables";
+@import '../../node_modules/element-plus/theme-chalk/index.css';
 
+@--color-primary: #6965db;
+@--el-button-bg-color: #6965db;
 
-.item .el-collapse-item__header, .demo-collapse div {
+.item .el-collapse-item__header,
+.demo-collapse div {
     color: #61636b;
 }
-.el-collapse-item__header.is-active{
+
+.el-collapse-item__header.is-active {
     color: @button-color;
 }
-.item .el-collapse-item__header{
+
+.item .el-collapse-item__header {
     height: 30px;
 }
+
 .item .el-collapse-item__content {
     padding-bottom: 0;
 }
-.item .el-collapse-item__arrow{
+
+.item .el-collapse-item__arrow {
     transform: rotate(90deg);
 }
-.item .el-collapse-item__arrow.is-active{
+
+.item .el-collapse-item__arrow.is-active {
     transform: rotate(-90deg);
 }
+
 .item .el-collapse {
     border: none;
 }
-.item .el-collapse div{
+
+.item .el-collapse div {
     border: none;
 }
-.el-button--primary span{
+
+.el-button--primary span {
     color: #fff;
 }
-.el-collapse.collapse{
+
+.el-collapse.collapse {
     border: none;
 }
-.collapse .el-collapse-item__header{
+
+.collapse .el-collapse-item__header {
     height: 100%;
     background-color: transparent;
     line-height: 35px;
     border: none;
 }
-.collapse .el-collapse-item__wrap{
+
+.collapse .el-collapse-item__wrap {
     border: none;
     background-color: transparent;
+}
+
+
+
+:export {
+    --el-button-bg-color: @--el-button-bg-color;
+    // 其他需要导出的变量...
 }

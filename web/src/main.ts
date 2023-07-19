@@ -3,12 +3,14 @@ import { createPinia } from 'pinia'
 import App from './App.vue'
 import router from './router/index'
 import './styles/commons.less'
-import './styles/element-ui-reset.less'
+// import './styles/element-ui-reset.less'
 import { vClickOutside } from './hooks/clickOutside'
 
 // 引入 element-plus 插件和样式
 import ElementPlus from 'element-plus'
 import 'element-plus/dist/index.css'
+// import '../node_modules/element-plus/theme-chalk/index.css'
+import './styles/element-ui-reset.less'
 //  @ts-expect-error   注释 ts 忽略，跳过类型检测
 import zhCn from 'element-plus/dist/locale/zh-cn.mjs'
 // 引入 svg插件
@@ -16,15 +18,6 @@ import 'virtual:svg-icons-register'
 
 import EventBus from './hooks/eventBus'
 
-// 接口测试
-import axios from 'axios'
-axios({
-    url: 'https://mock.apifox.cn/m1/2733445-0-default/user/info',
-    method: 'post',
-    data: {
-        userId: '111111',
-    },
-})
 
 const app = createApp(App)
 

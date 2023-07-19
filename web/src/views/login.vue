@@ -65,13 +65,7 @@
 import { ref, reactive } from 'vue';
 import { reqRegister, reqLogin } from '@/api/user/index'
 import { ElMessage } from 'element-plus'
-import { RouteLocationNormalized } from 'vue-router';
 import router from '@/router/index';
-import { AxiosResponse } from 'axios';
-
-import axios from 'axios';
-import Cookies from 'js-cookie';
-import { createSSRApp } from 'vue';
 // import 
 const container = ref<HTMLElement | null>(null)
 const handleClickregister = () => {
@@ -125,8 +119,9 @@ const handleRegister = () => {
 const handleLogin = () => {
     reqLogin(loginInfo)
         .then((res) => {
-            if (res.data?.token) { //登录成功
-                localStorage.setItem('token', res.data.token)
+            if (res.data.access_token) { //登录成功
+                localStorage.setItem('access_token', res.data.access_token)
+                localStorage.setItem('refresh_token', res.data.refresh_token)
                 router.push('/directory')
             } else {  //登录失败
                 ElMessage.error('账号或密码错误，请重新输入')

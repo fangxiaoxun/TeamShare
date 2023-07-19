@@ -1,42 +1,44 @@
 <script lang='ts' setup>
 import Button from '../common/Button.vue';
-import { ref, onMounted, getCurrentInstance } from 'vue';
+import { ref, getCurrentInstance } from 'vue';
 import { useFolderStore } from '@/store/folder';
 import { useFileStore } from '@/store/files'
 // 未确认
-import { ElMessage, ElMessageBox} from 'element-plus'
+import { ElMessage, ElMessageBox } from 'element-plus'
 // 待更改
 // 文件夹操作
 const folderStore = useFolderStore();
 const filesStore = useFileStore();
 const allFolder = folderStore.getAllFolder;
-
+filesStore.getAllFolder(false)
 const activeNames = ref([''])
 const showFolder = ref<boolean>(false);
 
 // 点击文件夹
 const handleChange = (val: string[]) => {
+    // console.log(val)
 }
 // 获取新建文件夹的所在位置id
 const getFolderId = (e: MouseEvent): number => {
     const id = (e.target as HTMLElement).getAttribute('id')!;
+    console.log(id)
     return parseInt(id)
 }
 
-const addFolder = (e: MouseEvent) => {
-    let id = getFolderId(e)
+//新建文件夹
+const addFolder = (isCollect:boolean) => {
     ElMessageBox.prompt('请输入文件夹名称', '新建文件夹', {
         confirmButtonText: '完成',
         cancelButtonText: '取消',
     })
-        .then(({ value }) => {
+        .then(({value}) => {
             ElMessage({
                 type: 'success',
                 message: `新建文件夹 ${value} 成功！`,
             })
             // 新建文件夹
-            folderStore.addFolder(id, value);
-            setFileId();
+            filesStore.addFolder(value, isCollect);
+            // setFileId();
 
         })
         .catch(() => {
@@ -48,27 +50,36 @@ const addFolder = (e: MouseEvent) => {
 }
 const instance = getCurrentInstance()!;
 const component = instance.proxy;
-
-
 // 获取Dom元素
 const folderItem = ref<Array<HTMLHeadingElement | null>>([])
 // 为每个文件夹设置id
 async function setFileId(): Promise<void> {
     await component!.$nextTick(() => {
-        // console.log()
         for (let i = 0; i < folderItem.value.length; i++) {
+            console.log(folderItem.value)
             folderItem.value[i]?.setAttribute('id', i + '')
         }
     });
 }
 import EventBus from '@/hooks/eventBus';
 import { inject, reactive } from 'vue';
-type File = {
-    fileName: string,
-    type: string,
-    time: string,
-    author: string,
-    location:string
+
+interface docContent {
+    [key: string]: any;
+}
+interface File {
+    collectDate?: string | null;
+    collectType?: number;
+    content?: docContent[];
+    createDate?: string;
+    creator?: string;
+    deleteType?: number;
+    fileId?: number;
+    fileName?: string;
+    fileType?: string;
+    folderDelete?: string;
+    folderId: string;
+    lastDate?: string;
 }
 
 // 定义点击显示事件
@@ -76,30 +87,50 @@ type File = {
 const $bus = inject('$bus') as EventBus;
 // 点击文件夹
 // 更新接口返回数据
-filesStore.setMyDocFiles()
-let myDocList:any;
+// filesStore.setMyDocFiles()
+interface FileData {
+    title: string;
+    list: File[] | undefined
+}
+// 默认显示我都云文档
+let fileData: FileData = reactive({
+    title: '我的云文档',
+    list: filesStore.getFiles('1')
+});
+$bus.emit('fileData', fileData) //发送数据 应该发送响应式数据
+// 修改当前展示的文件夹
 const handleClick = (e: MouseEvent) => {
     folderItem.value.forEach(item => {
         item?.classList.remove('current')
     })
-    if ((e.target as HTMLElement).id) {
-        let list:File[] = myDocList.list.filter((item:File) =>item.location ==  (e.target as HTMLElement).innerText);
-        const fileData = reactive({
-            title:(e.target as HTMLElement).innerText,
-            list:list
-        });
+    // 未进入判断
+    if ((e.target as HTMLElement).classList.contains('folder')) {
+        console.log((e.target as HTMLElement).id)
+        console.log(filesStore.getFiles((e.target as HTMLElement).id));
+
+        fileData.title = (e.target as HTMLElement).innerText;
+        fileData.list = filesStore.getFiles((e.target as HTMLElement).id)[0].fileList;
         (e.target as HTMLElement).classList.add('current');
         // 匹配位置
         $bus.emit('fileData', fileData) //发送数据 应该发送响应式数据
     }
 }
-setFileId();
 
-const myDoc = ref<HTMLElement|null>(null)
+const myDoc = ref<HTMLElement | null>(null)
 const clickEvent = () => {
     showFolder.value = !showFolder.value
-    myDocList = filesStore.getMydocFiles
+    const myDocList = filesStore.getFiles('1')
+    fileData.title = '我的云文档'
+    fileData.list = myDocList
+    console.log('点击我的云文档')
+    $bus.emit('fileData', fileData) //发送数据 应该发送响应式数据
 }
+
+const handleDelete = () => {
+    console.log(filesStore.getAllFolder(false))
+}
+
+
 
 </script>
 <template>
@@ -143,7 +174,7 @@ const clickEvent = () => {
                 <span>桌面</span>
             </router-link>
             <router-link ref="myDoc" class="myDoc item" active-class="active" to="/mydoc">
-                <div class="wrap " @click="clickEvent">
+                <div class="wrap " @click="clickEvent" id="1">
                     <i class="icon"><svg-icon class="tab-icon" name="mydoc" width="20px" height="20px"></svg-icon></i>
                     <span>我的文档</span>
                 </div>
@@ -151,26 +182,28 @@ const clickEvent = () => {
                 <div class="demo-collapse" v-show="showFolder">
                     <el-collapse v-model="activeNames" @change="handleChange">
                         <div class="li">
-                            <span class="addFolder" @click="addFolder" :key="0" id="0"><svg-icon name="add" width="12px"
+                            <span class="addFolder" @click="addFolder(false)" :key="0" id="0"><svg-icon name="add" width="12px"
                                     height="12px" color="#6965db"></svg-icon></span>
                             <el-collapse-item class="item current" title="我的云文档" name="我的云文档">
 
-                                <div class="folder" ref="folderItem" v-for="(item, index) in allFolder[0].list" :key="index"
-                                    @click.native="handleClick">{{ item }}
-                                    <div class="delete" @click="folderStore.deleteFolder(0, item)"><svg-icon class="icon"
+                                <div class="folder" ref="folderItem" v-for="(item, index) in filesStore.getAllFolder(false)"
+                                    :key="index" :id="item.folderId" @click.native="handleClick">{{ item.foldername }}
+                                    <!-- 删除文件夹 -->
+                                    <div class="delete" @click="filesStore.deleteFolder(item.folderId,false)"><svg-icon class="icon"
                                             name="delete"></svg-icon></div>
                                 </div>
 
                             </el-collapse-item>
                         </div>
                         <div class="li">
-                            <span class="addFolder" @click="addFolder" :key="0" id="1"><svg-icon name="add" width="12px"
+                            <span class="addFolder" @click="addFolder(true)" :key="0" id="1"><svg-icon name="add" width="12px"
                                     height="12px" color="#6965db"></svg-icon></span>
                             <el-collapse-item class="item" title="我的收藏" name="我的收藏">
-                                <div class="folder" ref="folderItem" v-for="(item, index) in allFolder[1].list" :key="index"
-                                    @click.native="handleClick">{{ item }}
+                                <div class="folder" ref="folderItem" v-for="(item, index) in filesStore.getAllFolder(true)" :key="index"
+                                    :id="item.folderId" @click.native="handleClick">{{ item.foldername }}
                                     <!-- 删除文件夹 -->
-                                    <div class="delete" @click="folderStore.deleteFolder(1, item)">
+                                    <!-- <div>{{ item }}</div> -->
+                                    <div class="delete" @click="filesStore.deleteFolder(item.folderId,true)">
                                         <svg-icon class="icon" name="delete"></svg-icon>
                                     </div>
                                 </div>
@@ -247,6 +280,16 @@ svg {
     padding: 0;
     width: 100%;
 
+}
+
+.wrap {
+    i> {
+        pointer-events: none;
+    }
+
+    >span {
+        pointer-events: none;
+    }
 }
 
 .myDoc {

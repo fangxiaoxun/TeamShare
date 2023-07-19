@@ -15,7 +15,9 @@ const fileRouterHandler = async(req,res) => {
 
     // 获取最近文件列表
     if(method === 'GET' && path === '/getLatest'){
+        console.log('请求最近文件列表')
         const creator = req.auth.username
+        console.log(creator)
         const $data = await getLatest(creator)
         return res.send(new SuccessModel({msg:'OK',data:$data}))
     }
