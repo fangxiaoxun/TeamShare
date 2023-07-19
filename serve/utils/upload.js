@@ -25,6 +25,7 @@ const upload = (req, res, fileType) => {
         if (err) {
             res.send(new ErrorModel({ msg: '上传失败,' + err }))
         } else {
+            console.log('type',files.asset[0]);
             console.log('fields', fields);
             const oldPath = files.asset[0].path
             const newPath = form.uploadDir + '/' + new Date().Format('yyyy-MM-dd-hh-mm-ss') + files.asset[0].originalFilename

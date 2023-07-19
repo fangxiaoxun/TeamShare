@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import { ref } from 'vue'
+import Word from './Word.vue'
 const editor = ref<HTMLElement>(document.createElement('div'))
 
 interface TNode {
@@ -126,7 +127,7 @@ console.log(save())
     <div class="page">
         <div class="content" ref="editor" contenteditable="true" @input="handleInput">
             <p><br /></p>
-           
+            <Word></Word>
         </div>
     </div>
 </template>
