@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { ref } from 'vue';
 import { vClickOutside } from '@/hooks/clickOutside';
-import file from '@/views/file.vue';
+import file from '../directory/file.vue'
 import { useFileStore } from '@/store/files'
 // import { isEmpty } from 'element-plus/es/utils';
 const props = defineProps(["fileList", "operate", "isEmpty", "folderName"]);

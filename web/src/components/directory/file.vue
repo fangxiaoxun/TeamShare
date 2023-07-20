@@ -22,7 +22,7 @@
                 <slot name="li3"></slot>
             </span></div>
         <div class="button-box">
-            <div class="operate btn" @click=""><span>
+            <div class="operate btn"><span>
                     <slot name="operate"></slot>
                 </span></div>
             <div class="delete btn"><span><svg-icon name="delete" width="24px" height="24px"></svg-icon></span></div>
@@ -35,6 +35,7 @@ let isCheck = ref<boolean>(false);
 const FILE = ref<HTMLElement>(document.createElement('div'));
 const hanldSelected = (check: boolean): void => {
     if (!check) {
+        
         console.log(FILE.value)
         FILE.value.classList.add('selected')
     } else {

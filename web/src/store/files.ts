@@ -156,6 +156,7 @@ export const useFileStore = defineStore('files', {
                 // 初始化回收站
                 // 接口请求回收站文件
                 const delFileList = await getDeleteFiles()
+                console.log(delFileList)
                 for (const file of delFileList) {
                     const fileInfo = {
                         fileId: file.folderId ? file.folderId : file.fileId,
@@ -184,7 +185,6 @@ export const useFileStore = defineStore('files', {
                 this.myDocFiles.list = this.myDocFiles.list.filter(item => item.folderId !== folderId)
             }
         },
-
         // 添加文件夹
         async addFolder(folderName: string, isCollect: boolean) {
             const response = await addFolder({ params: { folderName: folderName } })
@@ -227,4 +227,7 @@ export const useFileStore = defineStore('files', {
         // 恢复回收站
     }
 })
+
+
+
 

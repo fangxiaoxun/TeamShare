@@ -30,6 +30,16 @@ latest.value = fileStore.getLatestFiles.list;
 
 // 在这里使用获取到的最新文件列表数据
 
+fileStore.$onAction(({
+    name,
+    after,
+    store
+}) => {
+    after(() => {
+        // fileStore.initFileData()
+    })
+},true)
+
 </script>
 <template>
     <!-- 传入文件显示类型 -->
