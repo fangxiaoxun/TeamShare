@@ -137,7 +137,7 @@ const handleDelete = () => {
     <div class="leftBar">
         <!-- 新建按钮 -->
         <div class="btn-box">
-            <Button class="blue-btn btn" id="newsetBtn">
+            <Button class="blue-btn btn" id="newsetBtn" ref="newsetBtn">
                 <span>
                     <svg t="1683629730582" class="icon" viewBox="0 0 1024 1024" version="1.1"
                         xmlns="http://www.w3.org/2000/svg" p-id="11333" width="128" height="128">
@@ -220,6 +220,12 @@ const handleDelete = () => {
         </div>
     </div>
 </template>
+
+<script setup>
+import {ref} from "vue"
+
+
+</script>
 <style scope lang='less' scoped>
 .leftBar {
     width: 260px;

@@ -35,7 +35,7 @@ const createToken = (account, password) => {
 }
 
 // 更新token
-const refreshToken = (userId,username,headPortrait) => {
+const refreshToken = (userId, username, headPortrait) => {
     // 生成token
     const access_token = jWT.sign({
         userId,
@@ -54,7 +54,7 @@ const refreshToken = (userId,username,headPortrait) => {
 // 用户注册
 const regUser = (username, account, password) => {
     let sql = `select * from user where username = '${username}' or account = '${account}'`
-   
+
     return conMysql(sql).then(result => {
         // 有返回结果说明改用户已存在
         if (result.length > 0) {
@@ -64,7 +64,12 @@ const regUser = (username, account, password) => {
             console.log('catch', result);
             let sql = `insert into user set ?`
             return conMysql(sql, { username, account, password }).then(result => {
-                return { msg: '成功' }
+                let sql = `insert into folder set folderName = '我的云文档',userId = ${result.insertId}`
+                // 默认新建我的云文档文件夹
+                return conMysql(sql).then(_ => {
+                    return { msg: '成功' }
+                })
+
             })
         }
     })
@@ -73,4 +78,4 @@ const regUser = (username, account, password) => {
 
 
 
-module.exports = { createToken, regUser,refreshToken }
+module.exports = { createToken, regUser, refreshToken }

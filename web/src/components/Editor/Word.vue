@@ -1,5 +1,7 @@
 <template>
-    <input ref="doc" accept=".docx" type="file" @click="getWordFile">
+    <input ref="doc" accept=".docx" 
+    
+    @click="getWordFile">
     <p ref="docShow"></p>
     <a href="http//localhost:3000/img/2023-07-18-21-25-31《管理信息系统》实验报告3.doc" download="true">下载文件</a>
 </template>
@@ -24,13 +26,23 @@ const options: object = {
 
 const getWordFile = (e: MouseEvent): void => {
     axios({
-        url: 'http://localhost:3000/img/2023-07-18-22-05-03“治郁”互联网＋（第六版）修改.docx',	// 本地文件夹路径+本地文件名称(若资源在服务器，且是具体的路径，这里可改成该资源路径，此时封装的方法需要微调，入参的localFileName改成资源路径resource)
+        url: 'http://localhost:3000/img/2023-07-19-22-18-56“治郁”互联网＋（第六版）修改.docx',	// 本地文件夹路径+本地文件名称(若资源在服务器，且是具体的路径，这里可改成该资源路径，此时封装的方法需要微调，入参的localFileName改成资源路径resource)
         method: 'get',
         responseType: 'blob',
     }
     ).then(res => {
         console.log('res', res);
         const blob: Blob = new Blob([res.data])
+        // const url = URL.createObjectURL(blob);
+        // const a = document.createElement('a');
+        // a.href = url;
+        // a.download = '下载的word'
+        // document.body.append(a);
+        // a.click();
+        // document.body.remove(a);
+        // URL.revokeObjectURL(url);
+
+        
         let reader: FileReader = new FileReader()
         reader.onload = (ev: ProgressEvent<FileReader>) => {
             const arrayBuffer = <ArrayBuffer>reader.result

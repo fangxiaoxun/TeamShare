@@ -3,7 +3,7 @@ const { conMysql } = require("../lib/db")
 // 查询文件夹列表
 const getFolder = (userId) => {
     console.log('getFolder');
-    let sql = `select folderId,foldername,collectType from folder where userId = ${userId} and deleteType = 0`
+    let sql = `select folderId,folderName,collectType from folder where userId = ${userId} and deleteType = 0`
 
     return conMysql(sql)
 }

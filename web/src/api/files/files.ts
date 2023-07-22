@@ -6,6 +6,7 @@ enum API {
     FILE_URL = BASE_URL + '/file/getFileType',
     DELETE_URL = BASE_URL + '/file/getTrash',
     REFILE_URL = BASE_URL + '/file/recoverFile'
+    UPLOAD_URL = BASE_URL + '/file/uploadImage'
 }
 // 最近文件列表
 export async function LatestFiles() {
