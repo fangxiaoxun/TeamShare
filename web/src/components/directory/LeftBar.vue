@@ -149,7 +149,7 @@ const handleMenu = (e: MouseEvent): void => {
     menuTop.value = e.clientY + 30
     menuLeft.value = e.clientX + 10
 }
-const 
+// const 
 const renameFolder = () => {
     ElMessageBox.prompt('重命名', {
         confirmButtonText: '完成',
