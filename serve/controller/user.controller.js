@@ -15,7 +15,7 @@ const createToken = (account, password) => {
             headPortrait: result[0].headPortrait
         },
             secret,//密钥进行加密
-            { expiresIn: "8h" } //token有效时间 
+            { expiresIn: "5s" } //token有效时间 
         )
 
         const refresh_token = jWT.sign({
@@ -24,7 +24,7 @@ const createToken = (account, password) => {
             headPortrait: result[0].headPortrait
         },
             secret,//密钥进行加密
-            { expiresIn: "3d" } //token有效时间
+            { expiresIn: "15s" } //token有效时间
         )
 
         return {
@@ -43,7 +43,7 @@ const refreshToken = (userId,username,headPortrait) => {
         headPortrait,
     },
         secret,//密钥进行加密
-        { expiresIn: "8h" } //token有效时间
+        { expiresIn: "5s" } //token有效时间
     )
 
     return {

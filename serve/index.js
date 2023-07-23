@@ -44,22 +44,22 @@ app.use('/file', require('./router/file.router.js'))
 
 // token过期或不合法
 app.use((err, req, res, next) => {
-    // if (err.name === 'UnauthorizedError'){
-    //     res.send(new ErrorModel({code:401,msg:'invalid token'}))
-    // } 
-    if (err.name === 'UnauthorizedError') {
-        if (err.expiredAt) {
-            const now = new Date().getTime();
-            if (now > err.expiredAt) {
-                return res.send(new ErrorModel({ code: 401, msg: 'token expired' }));   //超时前端自动处理
-            }
-        }
-        // 检查 Token 是否可用
-        if (!err.user) {
-            return res.status(401).json({ code: 401, msg: 'invalid token' });   //报错重新登录
-        }
-    }
-    next(err);
+    if (err.name === 'UnauthorizedError'){
+        res.send(new ErrorModel({code:401,msg:'invalid token'}))
+    } 
+    // if (err.name === 'UnauthorizedError') {
+    //     if (err.expiredAt) {
+    //         const now = new Date().getTime();
+    //         if (now > err.expiredAt) {
+    //             return res.send(new ErrorModel({ code: 401, msg: 'token expired' }));   //超时前端自动处理
+    //         }
+    //     }
+    //     // 检查 Token 是否可用
+    //     if (!err.user) {
+    //         return res.status(401).json({ code: 401, msg: 'invalid token' });   //报错重新登录
+    //     }
+    // }
+    // next(err);
 })
 
 

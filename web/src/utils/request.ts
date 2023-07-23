@@ -25,15 +25,30 @@ api.interceptors.request.use((config) => {
 // 响应拦截器
 api.interceptors.response.use(
     (response) => {
-        if (response.data.code === 401) {    // token过期
-                localStorage.setItem('access_token', localStorage.getItem('refresh_token')!)
-                return api.get('http://localhost:3000/user/refreshToken').then(res => {
+        if (response.data.code === 401) {
+            // console.log()   // token过期
+            console.log(response)
+            // localStorage.setItem('access_token', localStorage.getItem('refresh_token')!)
+            return axios.get('http://localhost:3000/user/refreshToken', { headers: { Authorization: localStorage.getItem('refresh_token') } }).then(res => {
+                console.log(res)
+                if (res.data.code === 401) {
+                    // message = 'TOKEN无效，请重新登录！'
+                    setTimeout(() => {
+                        localStorage.clear()
+                        router.push('/login')
+                    }, 1000)
+                } else {
                     localStorage.setItem('access_token', res.data.access_token)
+                    console.log('更换token')
                     const newConfig = response.config
                     newConfig.headers.Authorization = localStorage.getItem('access_token')
                     axios(newConfig)
-                    
-                })
+                }
+
+
+            }).then(res => {
+
+            })
         }
         return response.data
     },
@@ -47,10 +62,10 @@ api.interceptors.response.use(
             case 401: {
                 // 处理过期,重新登录
                 message = 'TOKEN无效，请重新登录！'
-                setTimeout(()=>{
+                setTimeout(() => {
                     localStorage.clear()
                     router.push('/login')
-                },1000)
+                }, 1000)
             }
                 break
             case 403:
