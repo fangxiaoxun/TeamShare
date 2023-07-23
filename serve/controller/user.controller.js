@@ -15,7 +15,7 @@ const createToken = (account, password) => {
             headPortrait: result[0].headPortrait
         },
             secret,//密钥进行加密
-            { expiresIn: "8h" } //token有效时间
+            { expiresIn: "8h" } //token有效时间 
         )
 
         const refresh_token = jWT.sign({

@@ -1,7 +1,7 @@
 <script lang='ts' setup>
 import frame from '@/components/common/frame.vue';
-import { useFileStore } from '@/store/files';
-import { ref } from 'vue';
+import { useFileStore } from '@/store/files1';
+import { ref, provide } from 'vue';
 
 interface docContent {
     [key: string]: any;
@@ -23,11 +23,10 @@ interface File {
 }
 
 const fileStore = useFileStore()
+fileStore.setLatesList()
 const latest = ref<any[]>([]);
-
-fileStore.setLatestFiles();
-latest.value = fileStore.getLatestFiles.list;
-
+// fileStore.setLatesList();
+latest.value = fileStore.latestList;
 // 在这里使用获取到的最新文件列表数据
 
 fileStore.$onAction(({
@@ -36,15 +35,32 @@ fileStore.$onAction(({
     store
 }) => {
     after(() => {
-        // fileStore.initFileData()
+        console.log(name)
+        if (name === 'delete') {
+            fileStore.setLatesList()
+        }
     })
-},true)
+})
+
+// 分享文件
+function SHARE(id: string, type: string): void {
+    console.log(id)
+    console.log('分享文件')
+}
+function DELETE(fileId: string): void {
+    fileStore.delete(fileId)
+}
+// 恢复文件
+provide('operate', {
+    SHARE,
+    DELETE
+})
 
 </script>
 <template>
     <!-- 传入文件显示类型 -->
-    <frame :fileList="fileStore.getLatestFiles.list" operate="分享" :fileCount="fileStore.getLatestFiles.list.length"
-        :isEmpty="fileStore.getLatestFiles.list.length === 0" >
+    <frame :fileList="fileStore.latestList" operate="分享" :fileCount="fileStore.latestList.length"
+        :isEmpty="fileStore.latestList.length === 0" :isCollect="true">
         <template v-slot:title>最近</template>
         <template v-slot:item1>文件位置</template>
         <template v-slot:item2>创建者</template>

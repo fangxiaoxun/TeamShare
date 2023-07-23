@@ -1,6 +1,6 @@
 // 导入数据模型
 const {SuccessModel,ErrorModel} = require("../model/resModel")
-const {getLatest,getFile,addFile,updateFile,getLatestType,getFileType,delFile,collectFile,getCollectFile,getCollectFileType,getTrash,recoverFile,searchFile} = require('../controller/file.controller')
+const {getLatest,getFile,addFile,updateFile,getLatestType,getFileType,delFile,collectFile,cancelCollectFile,getCollectFile,getCollectFileType,getTrash,recoverFile,searchFile} = require('../controller/file.controller')
 const upload = require('../utils/upload');
 const Date = require('../utils/format')
 const fileRouterHandler = async(req,res) => {
@@ -81,6 +81,13 @@ const fileRouterHandler = async(req,res) => {
         const collectDate = new Date().Format("yyyy-MM-dd hh:mm:ss")
         collectFile(fileId,collectDate)
         return res.send(new SuccessModel({msg:'OK，收藏成功'}))
+    }
+    // 取消收藏文件
+    if(method === 'GET' && path === '/cancelCollectFile'){
+        const fileId = req.query.fileId
+        const collectDate = new Date().Format("yyyy-MM-dd hh:mm:ss")
+        cancelCollectFile(fileId,collectDate)
+        return res.send(new SuccessModel({msg:'OK，取消收藏成功'}))
     }
 
     // 获取收藏文件列表

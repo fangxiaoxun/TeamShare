@@ -2,9 +2,10 @@
 import { ref } from 'vue';
 import { vClickOutside } from '@/hooks/clickOutside';
 import file from '../directory/file.vue'
-import { useFileStore } from '@/store/files'
+import { useFileStore } from '@/store/files1'
 // import { isEmpty } from 'element-plus/es/utils';
-const props = defineProps(["fileList", "operate", "isEmpty", "folderName"]);
+const props = defineProps(["fileList", "operate", "isEmpty", "folderName", "fileCount", "start", "isCollect"]);
+console.log(props.fileList)
 const FileStore = useFileStore()
 const count = ref<number>(0)
 const showType = (element: HTMLElement) => {
@@ -81,9 +82,57 @@ const load = (): void => {
         count.value += 2
     }
 }
+
+// 右击菜单
+const wrapper = ref<HTMLElement | null>(null)
+const menuLeft = ref<number>(0);
+const menuTop = ref<number>(0)
+const showMenu = ref<boolean>(false)
+const rightClickHandler = (e: MouseEvent) => {
+    if (e.clientX >= wrapper.value?.offsetWidth! + 100 && e.clientY >= wrapper.value?.offsetHeight! - 100) {
+        menuLeft.value = wrapper.value?.offsetWidth! + 100
+        menuTop.value = wrapper.value?.offsetHeight! - 100
+    } else if (e.clientX >= wrapper.value?.offsetWidth! && e.clientY <= wrapper.value?.offsetHeight!) {
+        menuLeft.value = wrapper.value?.offsetWidth! + 100
+        menuTop.value = e.clientY + 40
+    } else if (e.clientY >= wrapper.value?.offsetHeight! - 100 && e.clientX <= wrapper.value?.offsetWidth!) {
+        menuTop.value = wrapper.value?.offsetHeight! - 40
+        menuLeft.value = e.clientX + 20
+    } else {
+        menuTop.value = e.clientY + 20
+        menuLeft.value = e.clientX
+    }
+    showMenu.value = true
+    // 做边界判断
+}
+
+const menuItem = ['新建文件', '上传本地文件','刷新']
+let activeIndex = ref<number>(-1)
+const handleMenu = (key:number) =>{
+    console.log(key)
+    switch(key){
+        case 0:{    //新建文件
+            break;
+        }
+        case 1: {
+            break;
+        }
+        case 2:{
+            break
+        }
+        default: break
+    }
+
+}
 </script>
 <template>
-    <div class="wrapper">
+    <div class="menu" :style="{ top: menuTop + 'px', left: menuLeft + 'px' }" v-show="showMenu">
+        <ul>
+            <li v-for="(item, index) in menuItem" :key="index" :class="{ active: activeIndex === index }"
+            @mouseover="activeIndex = index" @mouseout="activeIndex = -1" @click="handleMenu(index)">{{ item }}</li>
+        </ul>
+    </div>
+    <div class="wrapper" ref="wrapper" @contextmenu.prevent="rightClickHandler" @click="showMenu = false">
         <div class="title">
             <h3>
                 <slot name="title"></slot>
@@ -143,10 +192,11 @@ const load = (): void => {
                 <div class="inner">
 
                     <el-empty description="文件夹是空的" v-if="props.isEmpty"></el-empty>
-                    <file v-else v-for="item in props.fileList" :folderId="item.folderId" :fileId="item.fileId" :type="item.type">
-                        <template v-slot:li1>{{ FileStore.getFolderName(item.folderId) ?
-                            FileStore.getFolderName(item.folderId) : '我的云文档' }}</template>
-                        <template v-slot:fileName>{{ item.fileName }}</template>
+                    <file v-else v-for="item in props.fileList" :folderId="item.folderId" :fileId="item.fileId"
+                        :isCollect="props.isCollect" :collectType="item.collectType" v-model="item.collectType">
+                        <!-- <template v-slot:li1>{{ FileStore.getFolderName(item.folderId) ?
+                            FileStore.getFolderName(item.folderId) : '我的云文档' }}</template> -->
+                        <template v-slot:fileName>{{ item.fileName ? item.fileName : item.folderName }}</template>
                         <template v-slot:li2>{{ item.creator }}</template>
                         <template v-slot:li3>{{ item.lastDate.slice(0, 16) }}</template>
                         <template v-slot:operate>{{ props.operate }}</template>
@@ -163,6 +213,31 @@ const load = (): void => {
 <style lang="less" scoped>
 @list-top: 185px;
 @top-offset: 60px;
+
+.menu {
+    cursor: pointer;
+    position: absolute;
+    z-index: 100;
+    left: 50%;
+    top: 40%;
+    width: 150px;
+    border-radius: 6px;
+    padding: 6px;
+    background-color: #fff;
+    border: 1px solid rgba(13, 13, 13, .12);
+    box-shadow: 0px 12px 32px rgba(13, 13, 13, 0.08);
+
+    li {
+        padding-left: 20px;
+        line-height: 30px;
+        border-radius: 3px;
+    }
+
+    li.active {
+        background-color: @bgColorBase;
+    }
+}
+
 
 span {
     font-size: 14px;

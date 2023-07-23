@@ -1,5 +1,5 @@
 <template>
-    <div class="filewrap" @click="hanldSelected(isCheck)" ref="FILE">
+    <div class="filewrap" @click="hanldSelected(isCheck)" ref="FILE" :collectType = collectType>
         <div class="filename">
             <div class="checkBox">
                 <div class="border" v-show="isCheck">
@@ -10,7 +10,8 @@
             <span><router-link to="/docView">
                     <slot name="fileName"></slot>
                 </router-link></span>
-            <div class="star"><svg-icon name="star"></svg-icon></div>
+            <div class="star" v-show="props.isCollect" @click="handleCollect" v-if="collectType"><svg-icon name="collect"></svg-icon></div>
+            <div class="star" @click="handleCollect" v-show="props.isCollect" v-if="!collectType"><svg-icon name="star"></svg-icon></div>
         </div>
         <div class="position"><span>
                 <slot name="li1"></slot>
@@ -22,10 +23,10 @@
                 <slot name="li3"></slot>
             </span></div>
         <div class="button-box">
-            <div class="operate btn"><span>
+            <div class="operate btn" @click="handleRecover"><span>
                     <slot name="operate"></slot>
                 </span></div>
-            <div class="delete btn"><span><svg-icon name="delete" width="24px" height="24px"></svg-icon></span></div>
+            <div class="delete btn" @click="handleDelete"><span><svg-icon name="delete" width="24px" height="24px"></svg-icon></span></div>
         </div>
     </div>
 </template>
@@ -33,10 +34,12 @@
 import { ref, inject } from 'vue';
 let isCheck = ref<boolean>(false);
 const FILE = ref<HTMLElement>(document.createElement('div'));
+import { useFileStore } from '@/store/files1';
+const fileStore = useFileStore()
+const props = defineProps(['isCollect', 'collectType'])
+const collectType = ref<boolean>(props.collectType)
 const hanldSelected = (check: boolean): void => {
     if (!check) {
-        
-        console.log(FILE.value)
         FILE.value.classList.add('selected')
     } else {
         FILE.value.classList.remove('selected')
@@ -44,16 +47,42 @@ const hanldSelected = (check: boolean): void => {
     isCheck.value = !isCheck.value;
 }
 
-// const FILE = ref<HTMLElement|null>(null)
+interface injectData {
+    RECOVER: (id: string | null, type: string) => void;
+    SHARE:() => void;
+    DELETE:(fileId:string, folderId?:string) => void
+}
 
 // 接收来自父组件的 recover 对象
-// const recover = inject<{
-//     RECOVER: (folderId: string|null, type:string|null) => void;
-// }>('recover')!;
+const OPERATE: injectData | undefined = inject('operate')
+const handleRecover = (): void => {
+    const id = FILE.value.getAttribute('fileId') ? FILE.value.getAttribute('fileId') : FILE.value.getAttribute('folderId')
+    const type = FILE.value.getAttribute('fileId') ? 'file' : 'folder'
+    if (OPERATE?.RECOVER) {
+        OPERATE.RECOVER(id, type)
+    }else if(OPERATE?.SHARE){
+        OPERATE.SHARE()
+    }
+}
 
-// // 解构出函数
-// const { RECOVER } = recover;
-
+const handleDelete =():void => {
+    const fileId = FILE.value.getAttribute('fileId')!;
+    const folderId = FILE.value.getAttribute('folderId')!;
+    // fileStore.delete(fileId)
+    if(OPERATE?.DELETE){
+        OPERATE.DELETE(fileId, folderId)
+    }
+}
+const handleCollect = (e:MouseEvent):void => {
+    collectType.value = !collectType.value
+    const fileId = FILE.value.getAttribute('fileId')!
+    if(FILE.value.getAttribute('collectType') === 'false' || FILE.value.getAttribute('collectType') === '0'){
+        fileStore.addCollect(fileId)
+    }else{
+        fileStore.deleteCollect(fileId)
+    }
+}
+// 监听
 
 </script>
 <style scope lang='less' scoped>

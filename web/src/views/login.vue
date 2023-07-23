@@ -23,7 +23,7 @@
                     <h1 class="title">Welcome!</h1>
                     <div class="input-field">
                         <svg-icon class="username" name="username" width="25px" height="25px" fill="#acacac"></svg-icon>
-                        <input type="text" name="username" autocomplete="off" placeholder="请输入用户名"
+                        <input type="text" name="username" autocomplete="off" placeholder="请输入用户账号"
                             v-model="loginInfo.account">
                     </div>
                     <div class="input-field">
@@ -31,8 +31,8 @@
                         <input type="password" name="password" autocomplete="off" placeholder="请输入密码"
                             v-model="loginInfo.password">
                     </div>
-                    <router-link to="./directory"><button type="submit" ref="login"
-                            @click="handleLogin">LOGIN</button></router-link>
+                    <div><button type="submit" ref="login"
+                            @click="handleLogin">LOGIN</button></div>
                 </div>
                 <div id="register" class="registerForm form">
                     <h1 class="title">Sign up</h1>
@@ -66,6 +66,7 @@ import { ref, reactive } from 'vue';
 import { reqRegister, reqLogin } from '@/api/user/index'
 import { ElMessage } from 'element-plus'
 import router from '@/router/index';
+import { AxiosResponse } from 'axios'
 // import 
 const container = ref<HTMLElement | null>(null)
 const handleClickregister = () => {
@@ -74,15 +75,11 @@ const handleClickregister = () => {
 const handleClickLogin = () => {
     container.value?.classList.remove('inRight')
 }
-
-
 interface REGISTER {
     username: string,
     account: string,
     password: string
 }
-
-// const password: string = ''
 const password = ref<string>('')
 const registerInfo = reactive<REGISTER>({
     username: '',
@@ -115,16 +112,19 @@ const handleRegister = () => {
     }
 }
 
-
 const handleLogin = () => {
     reqLogin(loginInfo)
-        .then((res) => {
-            if (res.data.access_token) { //登录成功
+        .then((res:AxiosResponse<any, any>) => {
+            if (res.data) { //登录成功
                 localStorage.setItem('access_token', res.data.access_token)
                 localStorage.setItem('refresh_token', res.data.refresh_token)
-                router.push('/directory')
-            } else {  //登录失败
-                ElMessage.error('账号或密码错误，请重新输入')
+                router.push('/desktop')
+            }else if(!loginInfo.account){
+                ElMessage.warning('请输入账号！')
+            }else if(!loginInfo.password){
+                ElMessage.warning('请输入密码！')
+            }else {  //登录失败
+                ElMessage.error('账号或密码错误，请重新输入！')
                 loginInfo.account = ''
                 loginInfo.password = ''
             }
