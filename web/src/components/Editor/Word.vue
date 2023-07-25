@@ -20,7 +20,7 @@ const options: object = {
         "p[style-name='Section Title'] => h1:fresh",
         "p[style-name='Subsection Title'] => h2:fresh"
     ],
-    ignoreEmptyParagraphs: false
+    ignoreEmptyParagraphs: true
 }
 
 

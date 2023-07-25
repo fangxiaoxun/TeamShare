@@ -13,6 +13,11 @@ const fileRouterHandler = async(req,res) => {
         upload(req,res,'img')
     }
 
+    // 上传文件并获取文件路径
+    if(method === 'POST' && path === '/uploadFile'){
+        upload(req,res,'word')
+    }
+
     // 获取最近文件列表
     if(method === 'GET' && path === '/getLatest'){
         console.log('请求最近文件列表')

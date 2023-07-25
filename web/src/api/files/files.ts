@@ -5,8 +5,9 @@ enum API {
     MYDOC_URL = BASE_URL+'/file/getFile',
     FILE_URL = BASE_URL + '/file/getFileType',
     DELETE_URL = BASE_URL + '/file/getTrash',
-    REFILE_URL = BASE_URL + '/file/recoverFile'
-    UPLOAD_URL = BASE_URL + '/file/uploadImage'
+    REFILE_URL = BASE_URL + '/file/recoverFile',
+    UPLOADIMG_URL = BASE_URL + '/file/uploadImage',
+    UPLOADFILE_URL = BASE_URL + '/file/uploadFile'
 }
 // 最近文件列表
 export async function LatestFiles() {
@@ -32,6 +33,18 @@ export async function getDeleteFiles(){
 // 恢复回收站文件
 export async function REFile(data:any){
     const response = await api.get(API.REFILE_URL,data)
+    return response
+}
+
+// 上传图片
+export async function uploadImg(data:any) {
+    const response = await api.post(API.UPLOADIMG_URL,date)
+    return response
+}
+
+// 上传文件
+export async function uploadFile(data:any) {
+    const response = await api.post(API.UPLOADFile_URL,date)
     return response
 }
 

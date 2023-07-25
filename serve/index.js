@@ -44,9 +44,15 @@ app.use('/file',require('./router/file.router.js'))
 
 // token过期或不合法
 app.use((err, req, res, next) => {
+   try{
     if (err.name === 'UnauthorizedError'){
+        if(!err.user){
+            console.log('1',err.user)
+        }
         res.send(new ErrorModel({code:401,msg:'invalid token'}))
-    } 
+    } }catch{
+        console.log(err);
+    }
 })
 
 
