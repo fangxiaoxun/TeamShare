@@ -1,6 +1,6 @@
 // 导入数据模型
 const {SuccessModel,ErrorModel} = require("../model/resModel")
-const {getFolder,delFolder,addFolder,updateFolder,collectFolder,getCollectFolder, recoverFolder} = require("../controller/folder.controller")
+const {getFolder,delFolder,addFolder,updateFolder,collectFolder,getCollectFolder, recoverFolder, cancelCollectFolder} = require("../controller/folder.controller")
 const Date = require('../utils/format')
 
 const folderRouterHandler = async(req,res) =>{
@@ -44,6 +44,14 @@ const folderRouterHandler = async(req,res) =>{
         const collectDate = new Date().Format("yyyy-MM-dd hh:mm:ss")
         collectFolder(folderId,collectDate)
         return res.send(new SuccessModel({msg:'OK，收藏成功'}))
+    }
+
+    // 取消收藏文件夹
+    if(method === 'GET' && path === '/cancelCollectFolder'){
+        const {folderId} = req.query
+        const collectDate = new Date().Format("yyyy-MM-dd hh:mm:ss")
+        cancelCollectFolder(folderId,collectDate)
+        return res.send(new SuccessModel({msg:'OK，取消收藏成功'}))
     }
 
     // 获取收藏文件夹列表

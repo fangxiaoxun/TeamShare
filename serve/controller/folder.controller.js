@@ -40,9 +40,16 @@ const collectFolder = (folderId, collectDate) => {
     return conMysql(sql)
 }
 
+// 取消收藏文件夹
+const cancelCollectFolder = (folderId, collectDate) => {
+    let sql = `update folder set collectType = 0,collectDate = '${collectDate}' where folderId = ${folderId}`
+    return conMysql(sql)
+}
+
+
 // 获取收藏文件夹列表
 const getCollectFolder = async (userId) => {
-    let sql = `select folderId,folderName,userId,collectDate from folder where userId = ${userId} and collectType = 1 and deleteType = 0 order by collectDate asc`
+    let sql = `select folderId,foldername,userId,collectDate from folder where userId = ${userId} and collectType = 1 and deleteType = 0 order by collectDate asc`
     return conMysql(sql)
 }
 
@@ -57,4 +64,4 @@ const recoverFolder = (folderId, lastDate) => {
 }
 
 
-module.exports = { getFolder, delFolder, addFolder, updateFolder, collectFolder, getCollectFolder, recoverFolder }
+module.exports = { getFolder, delFolder, addFolder, updateFolder, collectFolder, cancelCollectFolder, getCollectFolder, recoverFolder }

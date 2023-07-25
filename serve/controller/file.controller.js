@@ -45,9 +45,15 @@ const delFile = (fileId,lastDate) => {
     return conMysql(sql)
 }
 
-// 收藏文件夹
+// 收藏文件
 const collectFile = (fileId,collectDate) => {
     let sql = `update file set collectType = 1,collectDate = '${collectDate}' where fileId = ${fileId}`
+    return conMysql(sql)
+}
+
+// 取消收藏文件 
+const cancelCollectFile = (fileId,collectDate) => {
+    let sql = `update file set collectType = 0,collectDate = '${collectDate}' where fileId = ${fileId}`
     return conMysql(sql)
 }
 
@@ -103,4 +109,4 @@ const searchFile = async (keyword,creator) => {
 }
 
 
-module.exports = { getLatest, getFile, getFileType, getLatestType, addFile, updateFile, delFile, collectFile, getCollectFile, getCollectFileType, getTrash, recoverFile,searchFile }
+module.exports = { getLatest, getFile, getFileType, getLatestType, addFile, updateFile, delFile, collectFile,cancelCollectFile, getCollectFile, getCollectFileType, getTrash, recoverFile,searchFile }

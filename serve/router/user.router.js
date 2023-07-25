@@ -48,6 +48,7 @@ const userRouterHandler = async(req,res) =>{
     // 更新Token
     if(method === 'GET' && path === '/refreshToken'){
         const {userId,username,headPortrait} = req.auth
+        console.log(headPortrait)
         const $data = refreshToken(userId,username,headPortrait)
         return res.send(new SuccessModel({msg:'OK',data:$data}))
     }
