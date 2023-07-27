@@ -98,7 +98,6 @@ const loginInfo = reactive<LOGIN>({
 })
 const handleRegister = () => {
     if (password.value === registerInfo.password) {
-        console.log('密码正确')
         reqRegister(registerInfo)
         .then(()=>{
             // 跳转登录
@@ -114,8 +113,9 @@ const handleRegister = () => {
 
 const handleLogin = () => {
     reqLogin(loginInfo)
-        .then((res:AxiosResponse<any, any>) => {
+        .then((res) => {
             if (res.data) { //登录成功
+                console.log(res)
                 localStorage.setItem('access_token', res.data.access_token)
                 localStorage.setItem('refresh_token', res.data.refresh_token)
                 router.push('/desktop')

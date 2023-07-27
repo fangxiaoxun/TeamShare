@@ -26,9 +26,7 @@ api.interceptors.request.use((config) => {
 api.interceptors.response.use(
     (response) => {
         if (response.data.code === 401) {
-            // console.log()   // token过期
             console.log(response)
-            // localStorage.setItem('access_token', localStorage.getItem('refresh_token')!)
             return axios.get('http://localhost:3000/user/refreshToken', { headers: { Authorization: localStorage.getItem('refresh_token') } }).then(res => {
                 console.log(res)
                 if (res.data.code === 401) {
@@ -38,8 +36,7 @@ api.interceptors.response.use(
                         router.push('/login')
                     }, 1000)
                 } else {
-                    localStorage.setItem('access_token', res.data.access_token)
-                    console.log('更换token')
+                    localStorage.setItem('access_token', res.data.data.access_token)
                     const newConfig = response.config
                     newConfig.headers.Authorization = localStorage.getItem('access_token')
                     axios(newConfig)

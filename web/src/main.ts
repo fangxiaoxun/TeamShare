@@ -1,5 +1,6 @@
 import { createApp } from 'vue'
 import { createPinia } from 'pinia'
+// import piniaPluginPersistedState from 'pinia-plugin-persistedstate'
 import App from './App.vue'
 import router from './router/index'
 import './styles/commons.less'
@@ -33,7 +34,10 @@ app.use(ElementPlus, {
     locale: zhCn,
 })
 app.use(router)
-app.use(createPinia())
+import piniaPluginPersistedState from 'pinia-plugin-persistedstate'
+const pinia = createPinia()
+pinia.use(piniaPluginPersistedState)
+app.use(pinia)
 
 // 安装自定义插件
 import gloablComponent from './components/SvgIcon/index'

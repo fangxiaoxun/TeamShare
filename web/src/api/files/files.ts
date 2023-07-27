@@ -9,7 +9,9 @@ enum API {
     COLLECT_URL = BASE_URL + '/file/getCollectFile',
     DEL_URL = BASE_URL + '/file/delFile',
     ADDCOLLECT_URL = BASE_URL + '/file/collectFile',
-    CANCELCOLLECT_URL = BASE_URL +'/file/cancelCollectFile'
+    CANCELCOLLECT_URL = BASE_URL +'/file/cancelCollectFile',
+    UPDATE_URL = BASE_URL + '/file/updateFile',
+    NEWSET_URL = BASE_URL + '/file/addFile'
 }
 // 最近文件列表
 export async function LatestFiles() {
@@ -60,6 +62,16 @@ export async function cancelCollectFile(data:any) {
     console.log(api)
     await api.get(API.CANCELCOLLECT_URL,data)
 }
-
-
+// 修改文件
+export async function updateFile(data:any) {
+    console.log(data)
+   const response = await api.post(API.UPDATE_URL, data)
+   console.log(response)
+}
+// 新建文件
+export async function newsetFile(data:any) {
+    console.log(data)
+    const response = await api.post(API.NEWSET_URL, data)
+    console.log(response)
+}
 

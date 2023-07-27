@@ -1,6 +1,12 @@
 <script lang="ts" setup>
-import { ref } from 'vue'
+import { ElMessage, ElMessageBox } from 'element-plus'
+import { ref, computed, onMounted } from 'vue'
 const editor = ref<HTMLElement>(document.createElement('div'))
+import { updateFile, newsetFile } from '@/api/files/files'
+import { useFileStore } from '@/store/files1';
+import { useInfo } from '@/store/user';
+const userInfo = useInfo()
+const fileSotre = useFileStore()
 
 interface TNode {
     type: string;
@@ -43,6 +49,7 @@ const state: TNode[] = [{
 // 渲染文档内容
 const renderNodeTree = (nodes: TNode[]) => {
     let html = '';
+
     for (const node of nodes) {
         if (node.type === 'text') {
             let content = node.content;
@@ -67,7 +74,7 @@ const handleInput = (event: Event): any => {
 
     console.log('触发input事件')
     const userInput = (event.target as HTMLElement).innerHTML;
-    if(userInput == ''){
+    if (userInput == '') {
         (event.target as HTMLElement).innerHTML = `<p><br></p>`
     }
 }
@@ -81,22 +88,20 @@ function parseNodes(element: Element): TNode[] {
 
     for (let i = 0; i < childNodes.length; i++) {
         const childNode = childNodes[i];
-        console.log(childNodes)
 
         if (childNode.nodeType === Node.TEXT_NODE) {
+            // 文字节点
             if (childNode.textContent?.trim()) {
                 nodes.push({ type: 'text', content: childNode.textContent.trim(), attrs: {} });
             }
         } else if (childNode.nodeType === Node.ELEMENT_NODE) {
-            console.log(Node.ELEMENT_NODE)
-            console.log(childNode)
             const childElement = childNode as Element;
             const node: TNode = { type: childElement.tagName.toLowerCase(), attrs: {} };
 
             if (childElement.tagName.toLowerCase() === 'b') {
-                node.marks = [strong];
+                node.marks = [{ type: 'strong', attrs: {} }];
             } else if (childElement.tagName.toLowerCase() === 'i') {
-                node.marks = [em];
+                node.marks = [{ type: 'em', attrs: {} }];
             }
 
             node.children = parseNodes(childElement);
@@ -114,19 +119,73 @@ function save() {
     const doc = parser.parseFromString(html, 'text/html');
     const body = doc.querySelector('body')!;
     const state: TNode[] = parseNodes(body);
-    console.log(state)
     return state
 }
 
+const handleSave = (event: KeyboardEvent) => {
+    if (event.ctrlKey && event.code === 'KeyS') {
+        event.preventDefault()
+        let content = JSON.stringify(save())
+        userInfo.setCurrConten(save())
+        const fileInfo = fileSotre.getCurrFile
+        // 修改文件
+        if (fileInfo.fileId) {
+            const reqParams = {
+                fileId: fileInfo.fileId,
+                fileName: fileInfo.fileName,
+                content: content
+            }
+            updateFile(reqParams)
+        } else {     //新建文件
+            ElMessageBox.prompt('请输入文件名称', '新建文件', {
+                confirmButtonText: '完成',
+                cancelButtonText: '取消',
+            })
+                .then(({ value }) => {
+                    ElMessage({
+                        type: 'success',
+                        message: `新建文件 ${value} 成功！`,
+                    })
+                    // 新建文件
+                    const reqParams = {
+                        fileName: value,
+                        fileType: 0,
+                        folderId: fileSotre.currFile.folderId,
+                        content:content
+                    }
+                    newsetFile(reqParams)
 
-console.log(save())
+                })
+                .catch(() => {
+                    ElMessage({
+                        type: 'info',
+                        message: '取消新建文件',
+                    })
+                })
+        }
+    }
+}
+const handleEnter = () => {
+    // 存在内容即渲染
+    if (userInfo.currContent?.length) {
+        console.log(userInfo.currContent)
+        const content = JSON.parse(userInfo.currContent)
+        const res = renderNodeTree(content)
+        editor.value.innerHTML += res
+    }
+}
+onMounted(() => {
+    handleEnter()
+})
+
+
 
 </script>
 <template>
-    <div class="page">
+    <div class="page" @keydown="handleSave">
         <div class="content" ref="editor" contenteditable="true" @input="handleInput">
             <p><br /></p>
-           
+
         </div>
     </div>
 </template>
@@ -153,9 +212,9 @@ console.log(save())
     }
 }
 
-.content{
-    p{
-        .underline{
+.content {
+    p {
+        .underline {
             text-decoration: underline;
         }
     }

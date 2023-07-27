@@ -71,6 +71,7 @@ const router = createRouter({
             path: '/docView',
             name: 'docView',
             component: DocView,
+            meta:{data:{fileId:''}}
         }
     ]
 })
