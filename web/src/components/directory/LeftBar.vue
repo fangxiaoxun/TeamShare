@@ -310,11 +310,7 @@ const handleMenuList = (key: number): void => {
     </div>
 </template>
 
-<script setup>
-import {ref} from "vue"
 
-
-</script>
 <style scope lang='less' scoped>
 .menu {
     cursor: pointer;
