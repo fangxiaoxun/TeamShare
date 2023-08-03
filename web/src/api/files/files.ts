@@ -7,7 +7,7 @@ enum API {
     DELETE_URL = BASE_URL + '/file/getTrash',
     REFILE_URL = BASE_URL + '/file/recoverFile',
     UPLOADIMG_URL = BASE_URL + '/file/uploadImage',
-    UPLOADFILE_URL = BASE_URL + '/file/uploadFile'
+    UPLOADFILE_URL = BASE_URL + '/file/uploadFile',
     COLLECT_URL = BASE_URL + '/file/getCollectFile',
     DEL_URL = BASE_URL + '/file/delFile',
     ADDCOLLECT_URL = BASE_URL + '/file/collectFile',
