@@ -67,3 +67,24 @@ app.use((err, req, res, next) => {
 app.listen(3000, () => {
     console.log('服务器已启动！！');
 })
+
+
+// 监听 ws 连接
+// const websocket = require('ws')
+// const wss = new websocket.Server({port:  5173})
+// // 监听连接事件
+// wss.on('connection', function connection(ws) {
+//     // 监听接收消息事件
+//     console.log('连接到websocket')
+//     ws.on('message', function incoming(message) {
+//       console.log('received:', message);
+  
+//       // 处理客户端发送的消息并进行相应的转发或同步操作
+//       // ...
+//     });
+  
+//     // 监听关闭连接事件
+//     ws.on('close', function close() {
+//       console.log('disconnected');
+//     });
+//   });

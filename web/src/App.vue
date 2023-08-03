@@ -1,6 +1,6 @@
 <template >
     <!-- <Directory></Directory> -->
-    <router-view @click="{leftMenu = false; rightMenu = false}"></router-view>
+    <router-view></router-view>
 </template>
 <script lang="ts" setup>
 import { provide } from 'vue';

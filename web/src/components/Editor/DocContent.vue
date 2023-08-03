@@ -5,6 +5,10 @@ const editor = ref<HTMLElement>(document.createElement('div'))
 import { updateFile, newsetFile } from '@/api/files/files'
 import { useFileStore } from '@/store/files1';
 import { useInfo } from '@/store/user';
+import { diffChars } from 'diff';
+import * as awarenessProtocol from 'y-protocols/awareness.js'
+console.log(awarenessProtocol)
+
 const userInfo = useInfo()
 const fileSotre = useFileStore()
 
@@ -53,7 +57,6 @@ const renderNodeTree = (nodes: TNode[]) => {
     for (const node of nodes) {
         if (node.type === 'text') {
             let content = node.content;
-            console.log(content)
             if (node.marks && node.marks.length > 0) {
                 // 标记类型
                 for (const mark of node.marks) {
@@ -68,19 +71,6 @@ const renderNodeTree = (nodes: TNode[]) => {
     }
     return html
 }
-
-// 获取输入的内容
-const handleInput = (event: Event): any => {
-
-    console.log('触发input事件')
-    const userInput = (event.target as HTMLElement).innerHTML;
-    if (userInput == '') {
-        (event.target as HTMLElement).innerHTML = `<p><br></p>`
-    }
-}
-
-// const str:string = '<div data-v-43706c3a="" class="content" contenteditable="true"><p><b>111</b>1111</p><p>2222<b>222</b></p><p><b>3333333</b></p><p><b>444</b>4414</p></div>'
-// 转换输入 存储
 
 function parseNodes(element: Element): TNode[] {
     const childNodes = element.childNodes;
@@ -151,7 +141,7 @@ const handleSave = (event: KeyboardEvent) => {
                         fileName: value,
                         fileType: 0,
                         folderId: fileSotre.currFile.folderId,
-                        content:content
+                        content: content
                     }
                     newsetFile(reqParams)
 
@@ -168,7 +158,6 @@ const handleSave = (event: KeyboardEvent) => {
 const handleEnter = () => {
     // 存在内容即渲染
     if (userInfo.currContent?.length) {
-        console.log(userInfo.currContent)
         const content = JSON.parse(userInfo.currContent)
         const res = renderNodeTree(content)
         editor.value.innerHTML += res
@@ -179,12 +168,123 @@ onMounted(() => {
 })
 
 
+// 协同操作
+import * as Y from 'yjs'
+import { WebrtcProvider } from 'y-webrtc';
+
+// 创建 Y.Doc 对象，并指定文档名称
+const ydoc = new Y.Doc();
+const roomName = 'room2'; // 房间名称
+
+// 使用 WebsocketProvider 连接到协同编辑房间
+const provider = new WebrtcProvider(roomName, ydoc);
+const awareness = provider.awareness
+awareness.on('change', (changes: any) => {
+    console.log(awareness.getStates())
+    console.log(Array.from(awareness.getStates().values()))
+})
+
+awareness.setLocalStateField('user', {
+    name: 'fxx',
+    color: '#bfa'
+})
+
+
+// 获取共享状态对象（在这个示例中，我们使用 Y.Text）
+const sharedText = ydoc.getText('shared-text');
+const yxmlFragment = ydoc.getXmlFragment('my xml fragment')
+// 监听共享状态的变化事件
+yxmlFragment.observe(event => {
+    console.log(event.currentTarget)
+    console.log(provider)
+    // render(event.delta)
+})
+
+// 监听文档更新事件     监听其他客户端的操作
+ydoc.on('update', (update) => {
+    // 将更新应用到文档对象
+    Y.applyUpdate(ydoc, update);
+    // const yxmlNested = new Y.XmlElement('p')
+
+    // 获取修改后的文本内容
+    const modifiedContent = sharedText.toString();
+    // console.log(yxmlFragment.toString());
+    yxmlFragment.delete(0, yxmlFragment.length)
+    // console.log('Modified content:', modifiedContent);
+    // 进行编辑操作}
+})
+
+// // 获取增量更新
+let previousContent = editor.value.innerText
+// 获取输入的内容
+const yxmlNested = new Y.XmlElement('p')
+
+let modifiedContent = '';
+const handleInput = (event: Event): any => {
+    const userInput = (event.target as HTMLElement).innerText;
+    if (userInput == '') {
+        (event.target as HTMLElement).innerHTML = `<p><br></p>`
+    }
+    const diff = diffChars(previousContent, userInput);
+    for (const part of diff) {
+        if (part.added) {
+            modifiedContent += part.value;
+        }
+        else if (part.removed) {
+            modifiedContent = modifiedContent.replace(part.value, '')
+        }
+
+    }
+
+    // 创建一个 Y.XmlText 对象并设置文本内容
+    const textContent = new Y.XmlText();
+    textContent.insert(0, modifiedContent);
+    yxmlFragment.insert(yxmlFragment.length, [textContent]);
+
+    previousContent = userInput; // 更新保存的内容
+
+
+    console.log(getContentIndex())
+    // console.log(getCursorPosition())
+}
+
+function getCursorPosition() {
+    const selection = window.getSelection();
+    if (selection && selection.rangeCount > 0) {
+        const range = selection.getRangeAt(0);
+        const { startOffset, endOffset } = range;
+        return { start: startOffset, end: endOffset };
+    }
+    return null
+}
+function getContentIndex() {
+    const selection = window.getSelection()!
+    const range = selection.getRangeAt(0)
+    const clonedRange = range?.cloneRange()
+    clonedRange?.selectNodeContents(editor.value)
+    clonedRange?.setEnd(range.startContainer, range.startOffset)
+    const content = clonedRange?.toString()
+
+    return content?.length
+}
+function calculateCursorPosition(index: number) {
+    const selection = window.getSelection()!
+    const range = selection.getRangeAt(0);
+    const clonedRange = range.cloneRange();
+    clonedRange.collapse(true)
+    const cursorElement = document.createElement('span');
+    cursorElement.appendChild(document.createTextNode('|')); // 在光标位置添加一个临时的占位符
+
+    clonedRange.insertNode(cursorElement);
+    // range.setStart
+}
+
 
 </script>
 <template>
     <div class="page" @keydown="handleSave">
+        <p><br /></p>
         <div class="content" ref="editor" contenteditable="true" @input="handleInput">
-            <p><br /></p>
 
         </div>
     </div>

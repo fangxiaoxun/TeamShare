@@ -207,8 +207,8 @@
 <script lang="ts" setup>
 import { ref, reactive } from 'vue';
 import TopBar from '../components/common/ToolBar.vue';
-import LeftBar from '../components/editor/LeftBar.vue';
-import DocContent from '../components/editor/DocContent.vue';
+import LeftBar from '../components/Editor/LeftBar.vue';
+import DocContent from '../components/Editor/DocContent.vue';
 import User from '../components/common/User.vue'
 import { onClickOutside } from '../hooks/clickOutside'
 
@@ -406,7 +406,7 @@ function addTag(tagName: string, className: string = '') {
             const restElement = document.createTextNode(restText);
             nodeRange.insertNode(restElement);
             // 使用新节点替换旧节点
-            node.parentNode.replaceChild(element, node); //(新， 旧)
+            node.parentNode?.replaceChild(element, node); //(新， 旧)
         } else {
             // 创建b标签
             const element = document.createElement(tagName);
@@ -416,8 +416,8 @@ function addTag(tagName: string, className: string = '') {
             // 处理第一行
             element.textContent = nodeText;
             // 对选中范围的节点进行替换
-            node.parentNode.insertBefore(element, node);  // 添加新的父节点到节点的末尾
-            node.parentNode.removeChild(node)
+            node.parentNode?.insertBefore(element, node);  // 添加新的父节点到节点的末尾
+            node.parentNode?.removeChild(node)
         }
 
     }
