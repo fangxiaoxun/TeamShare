@@ -1,6 +1,6 @@
 // 存储文件信息
 import { defineStore } from "pinia";
-import { LatestFiles, getFiles, getDeleteFiles, recoverFile, deleteFile, getCollectFiles,collectFile,cancelCollectFile } from "@/api/files/files";
+import { LatestFiles, getFiles, getDeleteFiles, recoverFile, deleteFile, getCollectFiles, collectFile, cancelCollectFile } from "@/api/files/files";
 import { recoverFolder } from '@/api/files/folder'
 
 interface File {
@@ -33,7 +33,13 @@ interface deleteData {
 interface State {
     latestList: File[],
     filesList: File[],
-    deleteList: deleteData[]
+    deleteList: deleteData[],
+    currFile: {
+        folderId:string;
+        fileId: string;
+        fileName: string
+    },
+    keyword: string
 }
 
 export const useFileStore = defineStore('files', {
@@ -43,7 +49,13 @@ export const useFileStore = defineStore('files', {
         // 文件列表
         filesList: [],
         // 回收站文件列表
-        deleteList: []
+        deleteList: [],
+        currFile: {
+            folderId:'',
+            fileId: '',
+            fileName: ''
+        },
+        keyword: ''
     }),
     getters: {
         getLasteList: (state) => {
@@ -56,6 +68,9 @@ export const useFileStore = defineStore('files', {
         },
         getDeleteList: (state) => {
             return state.deleteList
+        },
+        getCurrFile: (state) => {
+            return state.currFile
         }
     },
     actions: {
@@ -110,7 +125,16 @@ export const useFileStore = defineStore('files', {
         // 取消收藏文件
         async deleteCollect(fileId: string) {
             await cancelCollectFile({ params: { fileId: fileId } })
-        }
+        },
+        // 显示当前文件信息
+        setFileInfo(folderId:string,fileId: string, fileName: string) {
+            this.currFile.folderId = folderId
+            this.currFile.fileId = fileId
+            this.currFile.fileName = fileName
+        },
+        getFileContent(fileId: string) {
+            return this.latestList.filter(item => item.fileId == fileId).length ? this.latestList.filter(item => item.fileId == fileId)[0].content : this.filesList.filter(item => item.fileId == fileId)[0].content
+        },
     }
 })
 

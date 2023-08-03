@@ -57,7 +57,7 @@ provide('operate', {
 })
 
 </script>
-<template>
+<template  @click="{leftMenu = false; rightMenu = false}">
     <!-- 传入文件显示类型 -->
     <frame :fileList="fileStore.latestList" operate="分享" :fileCount="fileStore.latestList.length"
         :isEmpty="fileStore.latestList.length === 0" :isCollect="true">

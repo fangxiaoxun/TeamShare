@@ -1,7 +1,7 @@
 <script lang='ts' setup>
 import LeftBar from './LeftBar.vue';
 </script>
-<template>
+<template >
     <div class="container">
         <LeftBar></LeftBar>
         <div class="rightBar">

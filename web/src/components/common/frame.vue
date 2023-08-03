@@ -1,12 +1,15 @@
 <script lang="ts" setup>
-import { ref } from 'vue';
+import { ref, inject, Ref } from 'vue';
 import { vClickOutside } from '@/hooks/clickOutside';
 import file from '../directory/file.vue'
 import { useFileStore } from '@/store/files1'
-// import { isEmpty } from 'element-plus/es/utils';
+import { useInfo } from '@/store/user';
+import router from '@/router/index';
+
+const { rightMenu } = inject('showMenu') as { rightMenu: Ref<boolean> };
 const props = defineProps(["fileList", "operate", "isEmpty", "folderName", "fileCount", "start", "isCollect"]);
-console.log(props.fileList)
-const FileStore = useFileStore()
+const fileStore = useFileStore()
+const userInfo = useInfo()
 const count = ref<number>(0)
 const showType = (element: HTMLElement) => {
     element.classList.contains('active') && element.classList.remove('active')
@@ -87,7 +90,7 @@ const load = (): void => {
 const wrapper = ref<HTMLElement | null>(null)
 const menuLeft = ref<number>(0);
 const menuTop = ref<number>(0)
-const showMenu = ref<boolean>(false)
+// const showMenu = ref<boolean>(false)
 const rightClickHandler = (e: MouseEvent) => {
     if (e.clientX >= wrapper.value?.offsetWidth! + 100 && e.clientY >= wrapper.value?.offsetHeight! - 100) {
         menuLeft.value = wrapper.value?.offsetWidth! + 100
@@ -102,7 +105,7 @@ const rightClickHandler = (e: MouseEvent) => {
         menuTop.value = e.clientY + 20
         menuLeft.value = e.clientX
     }
-    showMenu.value = true
+    rightMenu.value = true
     // 做边界判断
 }
 
@@ -112,6 +115,11 @@ const handleMenu = (key:number) =>{
     console.log(key)
     switch(key){
         case 0:{    //新建文件
+            // 清空store 的存储内容
+            fileStore.currFile.fileId = ''
+            fileStore.currFile.fileName =''
+            userInfo.setCurrConten('')
+            router.push('/docView')
             break;
         }
         case 1: {
@@ -126,13 +134,13 @@ const handleMenu = (key:number) =>{
 }
 </script>
 <template>
-    <div class="menu" :style="{ top: menuTop + 'px', left: menuLeft + 'px' }" v-show="showMenu">
+    <div class="menu" :style="{ top: menuTop + 'px', left: menuLeft + 'px' }" v-show="rightMenu">
         <ul>
             <li v-for="(item, index) in menuItem" :key="index" :class="{ active: activeIndex === index }"
             @mouseover="activeIndex = index" @mouseout="activeIndex = -1" @click="handleMenu(index)">{{ item }}</li>
         </ul>
     </div>
-    <div class="wrapper" ref="wrapper" @contextmenu.prevent="rightClickHandler" @click="showMenu = false">
+    <div class="wrapper" ref="wrapper" @contextmenu.prevent="rightClickHandler" >
         <div class="title">
             <h3>
                 <slot name="title"></slot>
@@ -192,8 +200,8 @@ const handleMenu = (key:number) =>{
                 <div class="inner">
 
                     <el-empty description="文件夹是空的" v-if="props.isEmpty"></el-empty>
-                    <file v-else v-for="item in props.fileList" :folderId="item.folderId" :fileId="item.fileId"
-                        :isCollect="props.isCollect" :collectType="item.collectType" v-model="item.collectType">
+                    <file v-else v-for="item in props.fileList" :folderId="item.folderId" :fileId="item.fileId" :filename="item.fileName"
+                        :isCollect="props.isCollect" :collectType="item.collectType" >
                         <!-- <template v-slot:li1>{{ FileStore.getFolderName(item.folderId) ?
                             FileStore.getFolderName(item.folderId) : '我的云文档' }}</template> -->
                         <template v-slot:fileName>{{ item.fileName ? item.fileName : item.folderName }}</template>
