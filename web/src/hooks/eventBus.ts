@@ -35,7 +35,6 @@ export default class EventBus {
         if(!fn){
             this.events[eventName] = [];
         }else{
-            // console.log(this.events)
             this.events[eventName] = this.events[eventName].filter(item => item!= fn)
         }
         return this

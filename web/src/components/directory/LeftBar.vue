@@ -1,14 +1,16 @@
 <script lang='ts' setup>
 import Button from '../common/Button.vue';
-import { ref, getCurrentInstance } from 'vue';
+import { Ref, ref } from 'vue';
 import { useFolderStore } from '@/store/folder1';
 import { useFileStore } from '@/store/files1'
+import { useInfo } from '@/store/user';
 // 未确认
 import { ElMessage, ElMessageBox } from 'element-plus'
 // 待更改
 // 文件夹操作
 const folderStore = useFolderStore();
 const fileStore = useFileStore();
+const userInfo = useInfo()
 folderStore.setAllFolder()
 folderStore.setCollectFolder()
 
@@ -53,6 +55,7 @@ const folderItem = ref<Array<HTMLHeadingElement | null>>([])
 // 为每个文件夹设置id
 import EventBus from '@/hooks/eventBus';
 import { inject, reactive } from 'vue';
+import router from '@/router';
 
 folderStore.$onAction(({
     name,
@@ -60,7 +63,6 @@ folderStore.$onAction(({
     store
 }) => {
     after(() => {
-        console.log(name)
         if (name === 'addFolder' || name === 'deleteFolder') {
             folderStore.setAllFolder()
 
@@ -89,13 +91,11 @@ let fileData: FileData = reactive({
 $bus.emit('fileData', fileData) //发送数据 应该发送响应式数据
 // 修改当前展示的文件夹
 const handleClick = (e: MouseEvent) => {
-    console.log(e.target as HTMLElement)
     folderItem.value.forEach(item => {
         item?.classList.remove('current')
     })
     if ((e.target as HTMLElement).classList.contains('folder')) {
         fileData.folderName = (e.target as HTMLElement).innerText;
-        console.log(fileData.folderName)
         fileData.folderId = (e.target as HTMLElement).id;
         fileData.isCollect = true;
         (e.target as HTMLElement).classList.add('current');
@@ -136,16 +136,15 @@ async function deleteCollect(folderId: string) {
 }
 // 右击菜单
 const menuList = ['重命名']
-const showMenu = ref<boolean>(false)
+const { leftMenu } = inject('showMenu') as { leftMenu: Ref<boolean> };
+
 const activeIndex = ref<number>(-1)
 const menuTop = ref<number>(0)
 const menuLeft = ref<number>(0)
 const currFolder = ref<string>('')
 const handleMenu = (e: MouseEvent): void => {
-    console.log(e.target as HTMLElement)
     currFolder.value = (e.target as HTMLElement).id!
-    console.log(currFolder.value)
-    showMenu.value = true
+    leftMenu.value = true
     menuTop.value = e.clientY + 30
     menuLeft.value = e.clientX + 10
 }
@@ -161,7 +160,6 @@ const renameFolder = () => {
                 message: `重命名文件夹 ${value} 成功！`,
             })
             // 新建文件夹
-            console.log(currFolder.value, value)
             folderStore.renameFolder(currFolder.value, value)
             folderStore.setAllFolder()
             folderStore.setCollectFolder()
@@ -175,9 +173,16 @@ const renameFolder = () => {
         })
 }
 
+const handleNewset = () => {
+    // 新建在我的云文档文件夹
+    fileStore.setFileInfo('1', '', '')
+    userInfo.currContent = ''
+    router.push('/docView')
+
+}
+
 
 const handleMenuList = (key: number): void => {
-    console.log(key)
     switch (key) {
         case 0: {    //新建文件
             renameFolder()
@@ -194,16 +199,16 @@ const handleMenuList = (key: number): void => {
 }
 </script>
 <template>
-    <div class="menu" :style="{ top: menuTop + 'px', left: menuLeft + 'px' }" v-show="showMenu">
+    <div class="menu" :style="{ top: menuTop + 'px', left: menuLeft + 'px' }" v-show="leftMenu">
         <ul>
             <li v-for="(item, index) in menuList" :key="index" :class="{ active: activeIndex === index }"
                 @mouseover="activeIndex = index" @mouseout="activeIndex = -1" @click="handleMenuList(index)">{{ item }}</li>
         </ul>
     </div>
-    <div class="leftBar" @click="showMenu = false">
+    <div class="leftBar">
         <!-- 新建按钮 -->
         <div class="btn-box">
-            <Button class="blue-btn btn" id="newsetBtn" ref="newsetBtn">
+            <Button class="blue-btn btn" id="newsetBtn" @click="handleNewset">
                 <span>
                     <svg t="1683629730582" class="icon" viewBox="0 0 1024 1024" version="1.1"
                         xmlns="http://www.w3.org/2000/svg" p-id="11333" width="128" height="128">
