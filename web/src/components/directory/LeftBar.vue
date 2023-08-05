@@ -259,7 +259,7 @@ const handleMenuList = (key: number): void => {
                                 @click="handleFolder($event.target.innerText)">
                                 <div class="folder" v-for="(item, index) in folderStore.getAllFolder" :key="index"
                                     :id="item.folderId" @click.native="handleClick" @contextmenu.prevent="handleMenu">
-                                    <u class="folder" ref="folderItem" :id="item.folderId">{{ item.foldername }}</u>
+                                    <u class="folder" ref="folderItem" :id="item.folderId">{{ item.folderName }}</u>
                                     <!-- 删除文件夹 -->
                                     <div class="delete-btn">
                                         <a title="删除">
@@ -290,8 +290,8 @@ const handleMenuList = (key: number): void => {
                             <el-collapse-item class="item" title="我的收藏" name="我的收藏"
                                 @click="handleFolder($event.target.innerText)">
                                 <div class="folder " v-for="(item, index) in folderStore.collect.folderList" :key="index"
-                                    :id="item.folderId" @click.native="handleClick" @contextmenu.prevent="handleMenu"> <u
-                                        class="folder" ref="folderItem" :id="item.folderId">{{ item.foldername }}</u>
+                                    :id="item.folderId" @click.native="handleClick" @contextmenu.prevent="handleMenu"> 
+                                    <u class="folder" ref="folderItem" :id="item.folderId">sss{{ item.folderName }}</u>
                                     <!-- 取消收藏文件夹 -->
                                     <div class="delete-btn">
                                         <a title="取消收藏">

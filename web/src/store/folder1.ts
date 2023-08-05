@@ -5,7 +5,7 @@ import { getFolder, collectFolder, delFolder, addFolder, addCollectFolder, delet
 
 interface Folder {
     folderId: string;
-    foldername:string;
+    folderName:string;
     collectType:number|boolean
 }
 interface Data {
