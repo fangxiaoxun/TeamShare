@@ -287,7 +287,6 @@ function calculateCursorPosition(index: number) {
         <p><br /></p>
         <div class="content" ref="editor" contenteditable="true" @input="handleInput">
             <p><br /></p>
-            <Word></Word>
         </div>
     </div>
 </template>

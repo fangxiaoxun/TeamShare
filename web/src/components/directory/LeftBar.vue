@@ -404,7 +404,6 @@ svg {
 
 .white-btn {
     margin-top: 12px;
-
     span {
         color: @button-color;
     }

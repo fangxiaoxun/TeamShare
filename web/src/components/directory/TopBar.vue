@@ -147,7 +147,6 @@ header {
     .menu {
         width: 10%;
         height: 100%;
-        background-color: #fff;
         display: flex;
         align-items: center;
         justify-content: space-between;
