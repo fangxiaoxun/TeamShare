@@ -1,32 +1,43 @@
 <script lang='ts' setup>
 import frame from '@/components/common/frame.vue';
-type ATTR = {
-    fileCount:number,
-    position:string,
-    author:string,
-    time:string,
-    operate:string
+import { useFileStore } from '@/store/files1';
+import { useFolderStore } from '@/store/folder1';
+import { ref, provide } from 'vue';
+const fileStore = useFileStore();
+const folderStore = useFolderStore()
+fileStore.setDeleteList()
+// 恢复文件夹
+function RECOVER(id:string, type:string):void{
+    console.log(id)
+    fileStore.recoverData(id, type)
 }
+// 恢复文件
+provide('operate',{RECOVER})
 
-const attribute:ATTR ={
-    fileCount:100,
-    position:'我的文档',
-    author:'',
-    time:'1天前',
-    operate:'还原'
-}
+fileStore.$onAction(({
+    name,
+    after,
+    store
+}) => {
+    after(() => {
+        console.log(name)
+        if(name === 'recoverData'){
+            fileStore.setDeleteList()
+        }
+    })
+})
+
 </script>
 <template>
     <!-- 传入文件显示类型 -->
-<!-- <frame :attribute="attribute">
-    <template v-slot:title>回收站</template>
-    <template v-slot:item2>文件位置</template>
-    <template v-slot:item3>删除时间</template>
-    
-
-    
-</frame> -->
+    <!-- 传入文件显示类型 -->
+    <frame :fileList="fileStore.deleteList" operate="恢复" :start="0" :isEmpty="fileStore.deleteList.length === 0? true: false">
+        <template v-slot:title>回收站</template>
+        <template v-slot:item1>文件位置</template>
+        <template v-slot:item2>创建者</template>
+        <template v-slot:item3>删除时间</template>
+        <template v-slot:file>
+        </template>
+    </frame>
 </template>
-<style lang='less' scope>
-
-</style>
+<style lang='less' scope></style>

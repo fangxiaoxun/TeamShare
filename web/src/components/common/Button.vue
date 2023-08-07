@@ -14,7 +14,7 @@ const show = (element: HTMLElement) => {
                 <li><i class="icon"><svg-icon name="addicon"></svg-icon></i><span>上传文件</span></li>
             </ul>
         </div>
-        <div class="wrapper">
+        <!-- <div class="wrapper">
             <div class="title">
                 <h2>新建</h2>
             </div>
@@ -68,7 +68,7 @@ const show = (element: HTMLElement) => {
                     </div>
                 </div>
             </div>
-        </div>
+        </div> -->
         <span>
             <slot></slot>
         </span>
@@ -163,47 +163,47 @@ const show = (element: HTMLElement) => {
 }
 
 
-.wrapper {
-    display: none;
-    padding: 28px 36px;
-    background-color: #fff;
-    position: absolute;
-    left: calc(~"@{leftBar-size} - 20px");
-    z-index: 2;
-    border-radius: 12px;
-    border: 1px solid rgba(13, 13, 13, .12);
-    box-shadow: 0px 12px 32px rgba(13, 13, 13, .08);
+// .wrapper {
+//     display: none;
+//     padding: 28px 36px;
+//     background-color: #fff;
+//     position: absolute;
+//     left: calc(~"@{leftBar-size} - 20px");
+//     z-index: 2;
+//     border-radius: 12px;
+//     border: 1px solid rgba(13, 13, 13, .12);
+//     box-shadow: 0px 12px 32px rgba(13, 13, 13, .08);
 
-    h5 {
-        margin-top: 20px;
-    }
+//     h5 {
+//         margin-top: 20px;
+//     }
 
-    .list {
-        width: 100%;
-        display: flex;
+//     .list {
+//         width: 100%;
+//         display: flex;
 
-        .box {
-            text-align: center;
-            width: 80px;
-            height: 80px;
-            margin-top: 18px;
+//         .box {
+//             text-align: center;
+//             width: 80px;
+//             height: 80px;
+//             margin-top: 18px;
 
-            .img {
-                width: 36px;
-                height: 36px;
-                margin: 0 auto;
+//             .img {
+//                 width: 36px;
+//                 height: 36px;
+//                 margin: 0 auto;
 
-                img {
-                    width: 32px;
-                    height: 32px;
-                }
-            }
+//                 img {
+//                     width: 32px;
+//                     height: 32px;
+//                 }
+//             }
 
-            .desc {
-                margin: 8px 0 auto;
-                font-size: 12px;
-            }
-        }
-    }
-}
+//             .desc {
+//                 margin: 8px 0 auto;
+//                 font-size: 12px;
+//             }
+//         }
+//     }
+// }
 </style>

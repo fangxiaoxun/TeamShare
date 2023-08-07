@@ -1,9 +1,9 @@
 // 按需引入，如果全部引入的话是引入VueRouter
-import { createRouter, createWebHashHistory } from 'vue-router'
+import { createRouter, createWebHashHistory, RouteLocationNormalized, NavigationGuardNext } from 'vue-router'
 // 引入路由组件
 import DocIndex from '../views/DocIndex.vue'
 import Draw from '../views/Draw.vue'
-import Login from '../components/login/login.vue'
+import Login from '../views/login.vue'
 
 import Directory from '../views/Directory.vue'
 import DocView from '../views/DocView.vue'
@@ -15,6 +15,10 @@ import App from '../App.vue'
 import path from 'path'
 
 import { setCookie, getCookie, delCookie } from '../hooks/cookie'
+
+
+
+
 // 创建router实例对象，去管理路由规则
 const router = createRouter({
     history: createWebHashHistory(),
@@ -32,9 +36,9 @@ const router = createRouter({
         },
         // 画板路由
         {
-            path:'/draw',
-            name:'draw',
-            component:Draw
+            path: '/draw',
+            name: 'draw',
+            component: Draw
         },
         // 功能页路由
         {
@@ -42,6 +46,7 @@ const router = createRouter({
             name: 'directory',
             component: Directory,
             redirect: '/desktop',
+            meta: { requiresAuth: true }, // 添加 meta 字段表示需要验证登录
             children: [
                 {
                     path: '/desktop',
@@ -66,18 +71,22 @@ const router = createRouter({
             path: '/docView',
             name: 'docView',
             component: DocView,
+            meta:{data:{fileId:''}}
         }
     ]
 })
 
-// router.beforeEach((to, from, next) => {
-//     if(getCookie('token')){
-//         // 如果存在，则跳转对应路由
-//         next()
-//     }else{
-//         // 如果未登录状态，则跳转登录页
-//         next('/login')
-//     }
-// })
+// 不需要鉴权的白名单
+const whiteList: string[] = ['/', '/login']
+// 路由鉴权
+router.beforeEach((to: RouteLocationNormalized, from: RouteLocationNormalized, next: NavigationGuardNext) => { 
+    if (whiteList.indexOf(to.path) !== -1 || localStorage.getItem('access_token')) {
+        // 如果存在，则跳转对应路由
+        next()
+    } else {
+        // 如果未登录状态，则跳转登录页
+        next('/login')
+    }
+})
 // 暴露router
 export default router

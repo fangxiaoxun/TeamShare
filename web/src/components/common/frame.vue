@@ -1,10 +1,15 @@
 <script lang="ts" setup>
-import { ref } from 'vue';
+import { ref, inject, Ref } from 'vue';
 import { vClickOutside } from '@/hooks/clickOutside';
-import file from '@/views/file.vue';
-// import { isEmpty } from 'element-plus/es/utils';
-const props = defineProps(["fileList", "operate","isEmpty"]);
-console.log(props.isEmpty)
+import file from '../directory/file.vue'
+import { useFileStore } from '@/store/files1'
+import { useInfo } from '@/store/user';
+import router from '@/router/index';
+
+const { rightMenu } = inject('showMenu') as { rightMenu: Ref<boolean> };
+const props = defineProps(["fileList", "operate", "isEmpty", "folderName", "fileCount", "start", "isCollect"]);
+const fileStore = useFileStore()
+const userInfo = useInfo()
 const count = ref<number>(0)
 const showType = (element: HTMLElement) => {
     element.classList.contains('active') && element.classList.remove('active')
@@ -29,11 +34,11 @@ const typeObj: Type = {
     },
     word: {
         iconName: 'word',
-        type: 'wrod'
+        type: 'word'
     },
-    excel: {
-        iconName: 'excel',
-        type: 'excel'
+    map: {
+        iconName: 'map',
+        type: 'map'
     }
 
 }
@@ -79,11 +84,63 @@ const load = (): void => {
     } else {
         count.value += 2
     }
-    // load()
+}
+
+// 右击菜单
+const wrapper = ref<HTMLElement | null>(null)
+const menuLeft = ref<number>(0);
+const menuTop = ref<number>(0)
+// const showMenu = ref<boolean>(false)
+const rightClickHandler = (e: MouseEvent) => {
+    if (e.clientX >= wrapper.value?.offsetWidth! + 100 && e.clientY >= wrapper.value?.offsetHeight! - 100) {
+        menuLeft.value = wrapper.value?.offsetWidth! + 100
+        menuTop.value = wrapper.value?.offsetHeight! - 100
+    } else if (e.clientX >= wrapper.value?.offsetWidth! && e.clientY <= wrapper.value?.offsetHeight!) {
+        menuLeft.value = wrapper.value?.offsetWidth! + 100
+        menuTop.value = e.clientY + 40
+    } else if (e.clientY >= wrapper.value?.offsetHeight! - 100 && e.clientX <= wrapper.value?.offsetWidth!) {
+        menuTop.value = wrapper.value?.offsetHeight! - 40
+        menuLeft.value = e.clientX + 20
+    } else {
+        menuTop.value = e.clientY + 20
+        menuLeft.value = e.clientX
+    }
+    rightMenu.value = true
+    // 做边界判断
+}
+
+const menuItem = ['新建文件', '上传本地文件','刷新']
+let activeIndex = ref<number>(-1)
+const handleMenu = (key:number) =>{
+    console.log(key)
+    switch(key){
+        case 0:{    //新建文件
+            // 清空store 的存储内容
+            fileStore.currFile.fileId = ''
+            fileStore.currFile.fileName =''
+            userInfo.setCurrConten('')
+            router.push('/docView')
+            break;
+        }
+        case 1: {
+            break;
+        }
+        case 2:{
+            break
+        }
+        default: break
+    }
+
 }
 </script>
 <template>
-    <div class="wrapper">
+    <div class="menu" :style="{ top: menuTop + 'px', left: menuLeft + 'px' }" v-show="rightMenu">
+        <ul>
+            <li v-for="(item, index) in menuItem" :key="index" :class="{ active: activeIndex === index }"
+            @mouseover="activeIndex = index" @mouseout="activeIndex = -1" @click="handleMenu(index)">{{ item }}</li>
+        </ul>
+    </div>
+    <div class="wrapper" ref="wrapper" @contextmenu.prevent="rightClickHandler" >
         <div class="title">
             <h3>
                 <slot name="title"></slot>
@@ -117,11 +174,11 @@ const load = (): void => {
                                     <div class="icon"><svg-icon name="word" width="16px" height="16px"></svg-icon></div>
                                     <span>word</span>
                                 </div>
-                                <div class="item" id="excel" @click="TypeSelect($event)">
+                                <div class="item" id="map" @click="TypeSelect($event)">
                                     <div class="icon selected"><svg-icon name="selected" width="16px" height="16px"
                                             color="#0A6CFF"></svg-icon></div>
-                                    <div class="icon"><svg-icon name="excel" width="16px" height="16px"></svg-icon></div>
-                                    <span>excel</span>
+                                    <div class="icon"><svg-icon name="map" width="16px" height="16px"></svg-icon></div>
+                                    <span>map</span>
                                 </div>
                             </div>
                         </div>
@@ -141,14 +198,19 @@ const load = (): void => {
             <!-- 动态渲染 -->
             <ul v-infinite-scroll="load" infinite-scroll-distance=1 class="list" style="overflow: auto">
                 <div class="inner">
-                        <el-empty  description="文件夹是空的" v-if="props.isEmpty"></el-empty>
-                        <file v-else v-for="i in props.fileList.length" :key="i">
-                            <template v-slot:li1>{{ props.fileList[i - 1].location }}</template>
-                            <template v-slot:fileName>{{ props.fileList[i - 1].fileName }}</template>
-                            <template v-slot:li2>{{ props.fileList[i - 1].author }}</template>
-                            <template v-slot:li3>{{ props.fileList[i - 1].time }}</template>
-                            <template v-slot:operate>{{ props.operate }}</template>
-                        </file>
+
+                    <el-empty description="文件夹是空的" v-if="props.isEmpty"></el-empty>
+                    <file v-else v-for="item in props.fileList" :folderId="item.folderId" :fileId="item.fileId" :filename="item.fileName"
+                        :isCollect="props.isCollect" :collectType="item.collectType" >
+                        <!-- <template v-slot:li1>{{ FileStore.getFolderName(item.folderId) ?
+                            FileStore.getFolderName(item.folderId) : '我的云文档' }}</template> -->
+                        <template v-slot:fileName>{{ item.fileName ? item.fileName : item.folderName }}</template>
+                        <template v-slot:li2>{{ item.creator }}</template>
+                        <template v-slot:li3>{{ item.lastDate.slice(0, 16) }}</template>
+                        <template v-slot:operate>{{ props.operate }}</template>
+
+
+                    </file>
                 </div>
             </ul>
 
@@ -159,6 +221,31 @@ const load = (): void => {
 <style lang="less" scoped>
 @list-top: 185px;
 @top-offset: 60px;
+
+.menu {
+    cursor: pointer;
+    position: absolute;
+    z-index: 100;
+    left: 50%;
+    top: 40%;
+    width: 150px;
+    border-radius: 6px;
+    padding: 6px;
+    background-color: #fff;
+    border: 1px solid rgba(13, 13, 13, .12);
+    box-shadow: 0px 12px 32px rgba(13, 13, 13, 0.08);
+
+    li {
+        padding-left: 20px;
+        line-height: 30px;
+        border-radius: 3px;
+    }
+
+    li.active {
+        background-color: @bgColorBase;
+    }
+}
+
 
 span {
     font-size: 14px;
@@ -181,9 +268,7 @@ span {
     cursor: pointer;
     position: relative;
     display: flex;
-    // padding: 0 10 10px 10px;
     margin-right: 55px;
-    // padding-bottom: 10px;
     border-bottom: 2px solid rgba(13, 13, 13, .06);
 
     #keyword {
@@ -208,7 +293,6 @@ span {
             line-height: 28px;
             white-space: nowrap;
 
-            // background-color: rgba(10, 108, 255, 0.1);
             .icon {
                 margin: 2px 2px 2px 2px;
             }
@@ -261,7 +345,7 @@ span {
     transition: all 0.3s;
     box-sizing: border-box;
     cursor: pointer;
-    padding: 4px 8px 0 20px;
+    padding: 4px 8px 0 0px;
     margin: 4px 0;
     border-radius: 6px;
 

@@ -191,6 +191,9 @@
                             fill="#515151" p-id="13276"></path>
                     </svg>
                 </button>
+                <button class="save">
+                    <svg t="1691250279228" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="2318" width="200" height="200"><path d="M218.843 208.468c-4.55 2.434-7.941 5.825-10.375 10.375-3.3 6.171-4.468 12.218-4.468 32.074v522.166c0 19.856 1.168 25.903 4.468 32.074 2.434 4.55 5.825 7.941 10.375 10.375 6.171 3.3 12.218 4.468 32.074 4.468h522.166c19.856 0 25.903-1.168 32.074-4.468 4.55-2.434 7.941-5.825 10.375-10.375 3.3-6.171 4.468-12.218 4.468-32.074V357.176c0-12.479-0.295-16.284-1.164-20.053-0.62-2.694-1.514-4.85-2.98-7.195-2.05-3.279-4.533-6.178-13.357-15.002L709.074 221.5c-8.824-8.824-11.723-11.307-15.002-13.358-2.344-1.465-4.5-2.359-7.195-2.98-3.769-0.868-7.574-1.163-20.053-1.163H250.917c-19.856 0-25.903 1.168-32.074 4.468zM250.917 144h415.907c16.624 0 24.466 0.608 33.529 2.696 9.186 2.117 17.54 5.578 25.533 10.576 7.885 4.932 13.86 10.047 25.615 21.802l93.425 93.425c11.755 11.756 16.87 17.73 21.802 25.615 4.998 7.993 8.459 16.347 10.576 25.533 2.088 9.063 2.696 16.905 2.696 33.53v415.906c0 28.914-2.975 44.318-11.56 60.37-8.025 15.006-19.98 26.962-34.987 34.987-16.052 8.585-31.456 11.56-60.37 11.56H250.917c-28.914 0-44.318-2.975-60.37-11.56-15.006-8.025-26.962-19.98-34.987-34.987-8.585-16.052-11.56-31.456-11.56-60.37V250.917c0-28.914 2.975-44.318 11.56-60.37 8.025-15.006 19.98-26.962 34.987-34.987 16.052-8.585 31.456-11.56 60.37-11.56zM674 203.475h60v199.686c0 30.316-3.854 46.832-14.731 63.661-9.743 15.074-23.834 26.734-41.15 34.397C659.975 509.25 642.757 512 608.723 512H415.277c-34.034 0-51.252-2.751-69.396-10.78-17.316-7.664-31.407-19.324-41.15-34.398C293.854 449.992 290 433.477 290 403.161V203.88h60v199.28c0 11.255 0.63 18.6 1.75 23.393 0.7 3.004 1.507 4.814 3.373 7.7 3.212 4.971 8.132 9.042 15.04 12.099 9.385 4.153 18.738 5.648 45.114 5.648h193.446c26.376 0 35.73-1.495 45.115-5.648 6.907-3.057 11.827-7.128 15.04-12.098 1.865-2.887 2.672-4.697 3.373-7.7 1.118-4.794 1.749-12.139 1.749-23.393V203.475z" fill="#515151" p-id="2319"></path></svg>
+                </button>
                 <!-- 用户 -->
                 <User></User>
             </div>
@@ -207,8 +210,8 @@
 <script lang="ts" setup>
 import { ref, reactive } from 'vue';
 import TopBar from '../components/common/ToolBar.vue';
-import LeftBar from '../components/editor/LeftBar.vue';
-import DocContent from '../components/editor/DocContent.vue';
+import LeftBar from '../components/Editor/LeftBar.vue';
+import DocContent from '../components/Editor/DocContent.vue';
 import User from '../components/common/User.vue'
 import { onClickOutside } from '../hooks/clickOutside'
 
@@ -248,45 +251,41 @@ function changeDui(key: number): void {
     }
 }
 
-
+//跨多行时候会报错
 function createRangeFromNodes(startNode: Node, endNode: Node): Range {
     const range = document.createRange();
-    range.setStart(startNode, 0);
-    range.setEnd(endNode, (endNode.textContent || '').length);
+    range.setStart(startNode, range.startOffset)
+    range.selectNodeContents(startNode);
+    range.setEnd(endNode, range.endOffset)
     return range;
 }
 
 function getTextNodesInRange(commonAncestor: Node, startContainer: Node, endContainer: Node): Node[] {
     const textNodes: Node[] = [];
-
     // 检查是否为同一行
-    if (isSameLine(startContainer, endContainer)) {
+    // if (isSameLine(startContainer, endContainer)) {
+    if (startContainer === endContainer) {
         return [startContainer];
     }
 
     // 获取首行的文本节点
-    const startLineNodes = getTextNodesInLine(commonAncestor, startContainer);
+    const startLineNodes = getTextNodesInLine(startContainer);
     textNodes.push(...startLineNodes);
 
     // 获取中间行的文本节点
     const middleLines = getMiddleLines(startContainer, endContainer);
-    for (const line of middleLines) {
-        const lineNodes = getTextNodesInLine(commonAncestor, line);
-        textNodes.push(...lineNodes);
+    if (middleLines.length > 0) {
+        for (const line of middleLines) {
+            const lineNodes = getTextNodesInLine(line);
+            textNodes.push(...lineNodes);
+        }
     }
 
     // 获取末行的文本节点
-    const endLineNodes = getTextNodesInLine(commonAncestor, endContainer);
+    const endLineNodes = getTextNodesInLine(endContainer);
     textNodes.push(...endLineNodes);
 
     return textNodes;
-}
-
-// 判断起始节点和结束节点是否在同一行
-function isSameLine(startNode: Node, endNode: Node): boolean {
-    const startLine = getLineNode(startNode);
-    const endLine = getLineNode(endNode);
-    return startLine === endLine;
 }
 
 // 获取节点所在的行节点
@@ -298,18 +297,18 @@ function getLineNode(node: Node): Node | null {
     return currentNode;
 }
 
-// 获取两个节点之间的所有行节点（不包括起始和结束节点所在的行）
+// 获取两个节点之间的所有行节点
 function getMiddleLines(startNode: Node, endNode: Node): Node[] {
     const middleLines: Node[] = [];
-
     const startLine = getLineNode(startNode);
     const endLine = getLineNode(endNode);
 
+    // 无中间行
     if (!startLine || !endLine) {
         return middleLines;
     }
 
-    let currentNode: Node | null = startLine.nextSibling;
+    let currentNode: Node | null = startLine.nextSibling;   //获取starLine的下一节点
     while (currentNode && currentNode !== endLine) {
         middleLines.push(currentNode);
         currentNode = currentNode.nextSibling;
@@ -321,17 +320,16 @@ function getMiddleLines(startNode: Node, endNode: Node): Node[] {
 // 获取行节点上的文本节点function getTextNodesInLine(lineNode: Node, excludeNode?: Node): Node[] {
 function getTextNodesInLine(lineNode: Node, excludeNode?: Node): Node[] {
     const textNodes: Node[] = [];
+    traverseNodes(lineNode, textNodes);
 
-    traverseNodes(lineNode);
-
-    function traverseNodes(node: Node) {
+    function traverseNodes(node: Node, textNodes: Node[]) {
         if (node.nodeType === Node.TEXT_NODE) {
             if (!excludeNode || !excludeNode.contains(node)) {
                 textNodes.push(node);
             }
         } else {
             for (let i = 0; i < node.childNodes.length; i++) {
-                traverseNodes(node.childNodes[i]);
+                traverseNodes(node.childNodes[i], textNodes);
             }
         }
     }
@@ -341,24 +339,26 @@ function getTextNodesInLine(lineNode: Node, excludeNode?: Node): Node[] {
 // 选中文本添加标签
 function addTag(tagName: string, className: string = '') {
     const selection = window.getSelection()!;
+    if (selection.toString().length <= 0) {
+        return
+    }
     const range = selection.getRangeAt(0);
+    if (range.collapsed) {
+        return;
+    }
 
-    let startContainer = range.startContainer;
-    let endContainer = range.endContainer;
-    let newRangeStartOffset = range.startOffset;
-    let newRangeEndOffset = range.endOffset;
+    let startContainer = range.startContainer
+    let endContainer = range.endContainer
     const commonAncestor = range.commonAncestorContainer;
-
     const textNodes = getTextNodesInRange(commonAncestor, startContainer, endContainer);
 
     for (const node of textNodes) {
-        const nodeRange = createRangeFromNodes(node, node);
-        const nodeText = nodeRange.toString();
+        let nodeRange = createRangeFromNodes(node, node);
+        let nodeText = nodeRange.toString();
 
         if (node === startContainer && node === endContainer) {
             // 选中的文本在同一个节点内
             const selectedText = nodeText.substring(range.startOffset, range.endOffset);
-
             if (selectedText.length < nodeText.length) {
                 // 需要对起始节点和结束节点进行拆分处理
                 const element = document.createElement(tagName);
@@ -370,116 +370,66 @@ function addTag(tagName: string, className: string = '') {
                 // 将新标签插入到选中文本首尾两端的文本节点之间
                 const beforeText = nodeText.substring(0, range.startOffset);
                 const afterText = nodeText.substring(range.endOffset);
-
                 const beforeTextNode = document.createTextNode(beforeText);
                 const afterTextNode = document.createTextNode(afterText);
-
                 const parent = node.parentNode;
+
                 if (parent) {
                     parent.insertBefore(beforeTextNode, node);
                     parent.insertBefore(element, node);
                     parent.insertBefore(afterTextNode, node);
-
                     // 移除原始文本节点
                     parent.removeChild(node);
                 }
-
-                newRangeStartOffset = 0;
-                newRangeEndOffset = selectedText.length;
             }
-        } else if (node === startContainer) {
+        } else if (node === startContainer) {   //跨行第一行
             // 选中的文本在起始节点中，需要对起始节点进行拆分处理
             const selectedText = nodeText.substring(range.startOffset);
-
-            if (selectedText.length < nodeText.length) {
-                const element = document.createElement(tagName);
-                if (className) {
-                    element.classList.add(className);
-                }
-                element.textContent = selectedText;
-
-                nodeRange.setEnd(node, range.startOffset);
-                nodeRange.deleteContents();
-                nodeRange.insertNode(element);
-
-                newRangeStartOffset = 0;
-                newRangeEndOffset = selectedText.length;
-            }
-        } else if (node === endContainer) {
-            // 选中的文本在结束节点中，需要对结束节点进行拆分处理
-            const selectedText = nodeText.substring(0, range.endOffset);
-
-            if (selectedText.length < nodeText.length) {
-                const element = document.createElement(tagName);
-                if (className) {
-                    element.classList.add(className);
-                }
-                element.textContent = selectedText;
-
-                nodeRange.setStart(node, range.endOffset);
-                nodeRange.deleteContents();
-                nodeRange.insertNode(element);
-
-                const restText = nodeText.substring(range.endOffset);
-                if (restText.length > 0) {
-                    const restElement = document.createTextNode(restText);
-                    nodeRange.insertNode(restElement);
-                }
-
-                newRangeStartOffset = 0;
-                newRangeEndOffset = selectedText.length;
-
-                // 使用新节点替换旧节点
-                // 如果节点有父节点，才进行替换
-                if (node.parentNode) {
-                    node.parentNode.replaceChild(element, node);
-                }
-            }
-        } else {
-            // 选中的文本跨越多个节点，在中间节点处进行拆分处理
+            console.log(selectedText)
             const element = document.createElement(tagName);
             if (className) {
                 element.classList.add(className);
             }
-            element.textContent = nodeText;
-            // console.log(' // 选中的文本跨越多个节点，在中间节点处进行拆分处理')
-            // 获取选中范围的起始和结束节点
-            const startContainer = nodeRange.startContainer as ChildNode;
-            const endContainer = nodeRange.endContainer as ChildNode;
-            // 创建一个临时父节点
-            const parent = document.createElement(tagName);
-
-            // 在临时父节点中插入新创建的元素
-            parent.appendChild(element);
-
-            if (startContainer.parentNode === endContainer.parentNode && startContainer.parentNode) {
-                // 如果起始和结束节点的父节点相同，则直接替换选中范围的内容
-                startContainer.parentNode.replaceChild(parent, startContainer);
-            } else {
-                // 如果起始和结束节点的父节点不同，需要分别处理起始和结束节点的父节点
-                const startParent = startContainer.parentNode;
-                const endParent = endContainer.parentNode;
-
-                if (startParent && endParent) {
-                    // 查找起始和结束节点在父节点中的位置
-                    let startIndex = Array.from(startParent.childNodes).indexOf(startContainer);
-                    let endIndex = Array.from(endParent.childNodes).indexOf(endContainer);
-
-                    // 分别在起始和结束节点的父节点中进行替换操作
-                    startParent.replaceChild(parent, startContainer);
-                    endParent.replaceChild(parent.cloneNode(true), endContainer);
-
-                    // 处理每个父节点中位于起始和结束节点之间的节点
-                    for (let i = startIndex + 1; i < endIndex; i++) {
-                        parent.appendChild(startParent.childNodes[startIndex + 1]);
-                    }
-                }
-
+            element.textContent = selectedText;
+            nodeRange.setStart(node, range.startOffset)
+            nodeRange.deleteContents();
+            console.log(element)
+            nodeRange.insertNode(element);
+        } else if (endContainer.nodeValue !== '' && node === endContainer) {
+            // 选中的文本在结束节点中，需要对结束节点进行拆分处理
+            const selectedText = nodeText.substring(0, range.endOffset);
+            const element = document.createElement(tagName);
+            if (className) {
+                element.classList.add(className);
             }
+            element.textContent = selectedText;
+            nodeRange.setStart(node, range.endOffset);
+            nodeRange.deleteContents();
+            const restText = nodeText.substring(range.endOffset);
+            const restElement = document.createTextNode(restText);
+            nodeRange.insertNode(restElement);
+            // 使用新节点替换旧节点
+            node.parentNode?.replaceChild(element, node); //(新， 旧)
+        } else {
+            // 创建b标签
+            const element = document.createElement(tagName);
+            if (className) {
+                element.classList.add(className);
+            }
+            // 处理第一行
+            element.textContent = nodeText;
+            // 对选中范围的节点进行替换
+            node.parentNode?.insertBefore(element, node);  // 添加新的父节点到节点的末尾
+            node.parentNode?.removeChild(node)
         }
 
     }
+    // 清楚选中范围
+    selection.removeAllRanges();
 }
+
+
+
 
 </script>
 
@@ -493,7 +443,6 @@ section {
         display: flex;
         position: relative;
         padding: 16px;
-        // background-color: palegoldenrod;
 
         .toolList {
             display: flex;
@@ -639,7 +588,7 @@ section {
             position: absolute;
             right: 0;
             z-index: 2;
-            width: 280px;
+            width: 395px;
             height: 44px;
 
             button.share {
@@ -660,7 +609,8 @@ section {
             }
 
             button.import,
-            button.paging {
+            button.paging,
+            button.save {
                 position: relative;
                 display: flex;
                 align-items: center;
@@ -681,6 +631,11 @@ section {
                     background-color: #f5f5f5;
                     cursor: pointer;
                 }
+            }
+
+            .user{
+                margin-left: 20px;
+                margin-right: 30px;
             }
 
 
