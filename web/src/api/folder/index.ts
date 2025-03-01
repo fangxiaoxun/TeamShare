@@ -1,4 +1,11 @@
-import api from '@/utils/request'
+/*
+ * @Author: fangxiaoxun 1272449367@qq.com
+ * @Date: 2023-07-17 16:36:31
+ * @LastEditors: fangxiaoxun 1272449367@qq.com
+ * @LastEditTime: 2025-02-23 15:24:23
+ * 
+ */
+import api from '@/utils/request.ts'
 enum API {
     BASE_URL = 'http://localhost:3000',
     FOLDER_URL = BASE_URL+'/folder/getFolder',
@@ -9,11 +16,12 @@ enum API {
     DEL_URL = BASE_URL + '/folder/delFolder',
     REFOLDER_URL = BASE_URL + '/folder/recoverFolder',
     COLLECT_URL = BASE_URL + '/folder/getCollectFolder',
-    RENAME_URL = BASE_URL + '/folder/updateFolderName'
+    RENAME_URL = BASE_URL + '/folder/updateFolderName',
+    getFolderByParentId = BASE_URL + '/folder/getFolderByParentId'
     
 }
 
-export async function getFolder() {
+export async function getFolderList() {
     const response = await api.get(API.FOLDER_URL)
     return response.data
 }
@@ -24,9 +32,16 @@ export async function getFileList(data:any) {
     return response.data
 }
 
+// 根据parentId获取文件夹
+export async function getFolderByParentId(parentId:string) {
+    const response = await api.get(API.getFolderByParentId,{ params: { parentId } })
+    return response.data
+}
+
 // 添加文件夹
 export async function addFolder(data:any){
-    const response = await api.get(API.ADD_URL,data)
+    console.log(data, 'data 添加文件夹');
+    const response = await api.get(API.ADD_URL,{params:data})
     return response.data
 }
 

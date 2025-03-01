@@ -1,3 +1,10 @@
+/*
+ * @Author: fangxiaoxun 1272449367@qq.com
+ * @Date: 2025-02-23 15:19:40
+ * @LastEditors: fangxiaoxun 1272449367@qq.com
+ * @LastEditTime: 2025-02-23 15:19:52
+ * 
+ */
 import api from '@/utils/request'
 enum API {
     BASE_URL = 'http://localhost:3000',
@@ -86,7 +93,8 @@ export async function updateFile(data:any) {
 }
 // 新建文件
 export async function newsetFile(data:any) {
-    console.log(data)
+    // console.log(data)
+    console.log(data, 'data')
     const response = await api.post(API.NEWSET_URL, data)
     console.log(response)
 }
