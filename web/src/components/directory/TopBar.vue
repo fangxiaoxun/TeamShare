@@ -74,7 +74,6 @@ import User from '../common/User.vue'
 header {
     width: 100%;
     height: 70px;
-    background-color: @bgColorBase;
     display: flex;
     justify-content: space-around;
     align-items: center;
@@ -102,7 +101,7 @@ header {
 
         &:hover,
         &.active {
-            border: 1.5px solid @button-color;
+            border: 1.5px solid @primary-color;
         }
 
         .search-icon {
