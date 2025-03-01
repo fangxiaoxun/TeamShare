@@ -148,7 +148,7 @@ section {
             width: 36px;
             height: 36px;
             margin-right: 90px;
-            background-color: @button-color;
+            background-color: @primary-color;
             border-radius: 8px;
             z-index: 5;
 

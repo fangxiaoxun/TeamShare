@@ -1,7 +1,14 @@
+<!--
+ * @Author: fangxiaoxun 1272449367@qq.com
+ * @Date: 2023-07-13 02:49:58
+ * @LastEditors: fangxiaoxun 1272449367@qq.com
+ * @LastEditTime: 2025-02-21 21:28:00
+ * 
+-->
 <script lang='ts' setup>
-import frame from '@/components/common/frame.vue';
-import { useFileStore } from '@/store/files1';
-import { useFolderStore } from '@/store/folder1';
+import frame from '@/components/common/Frame.vue';
+import { useFileStore } from '@/store/files';
+import { useFolderStore } from '@/store/folder';
 import { ref, provide } from 'vue';
 const fileStore = useFileStore();
 const folderStore = useFolderStore()
@@ -31,13 +38,13 @@ fileStore.$onAction(({
 <template>
     <!-- 传入文件显示类型 -->
     <!-- 传入文件显示类型 -->
-    <frame :fileList="fileStore.deleteList" operate="恢复" :start="0" :isEmpty="fileStore.deleteList.length === 0? true: false">
+    <Frame :fileList="fileStore.deleteList" operate="恢复" :start="0" :isEmpty="fileStore.deleteList.length === 0? true: false">
         <template v-slot:title>回收站</template>
         <template v-slot:item1>文件位置</template>
         <template v-slot:item2>创建者</template>
         <template v-slot:item3>删除时间</template>
         <template v-slot:file>
         </template>
-    </frame>
+    </Frame>
 </template>
 <style lang='less' scope></style>

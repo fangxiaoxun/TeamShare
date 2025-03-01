@@ -479,7 +479,7 @@ section {
                     bottom: 7px;
                     height: 3px;
                     width: 14px;
-                    background-color: @button-color;
+                    background-color: @primary-color;
                 }
 
                 .high-light {
@@ -517,6 +517,7 @@ section {
                     width: 70px;
                     padding: 6px 0;
                     border: 1px solid rgba(0, 0, 0, .12);
+                    
                     box-shadow: 0 2px 12px 2px rgba(68, 73, 77, .16);
                     background-color: hsla(0, 0%, 100%, .92);
                     backdrop-filter: blur(16px);
@@ -593,18 +594,21 @@ section {
 
             button.share {
                 width: 78px;
-                background-color: @button-color;
+                background-color: @primary-color;
                 height: 36px;
                 line-height: 36px;
-                text-align: center;
+                text-align: center;;
                 margin-left: 22px;
                 color: #fff;
                 border-radius: 8px;
                 cursor: pointer;
+                display: flex;
+                align-items: center;
+                justify-content: center;
 
                 svg {
                     position: relative;
-                    top: 2px;
+                    margin-right: 6px;
                 }
             }
 

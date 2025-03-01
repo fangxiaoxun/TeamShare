@@ -1,6 +1,15 @@
+<!--
+ * @Author: fangxiaoxun 1272449367@qq.com
+ * @Date: 2023-07-13 02:49:58
+ * @LastEditors: fangxiaoxun 1272449367@qq.com
+ * @LastEditTime: 2025-02-24 17:22:44
+ * 
+-->
 <script lang='ts' setup>
-import frame from '@/components/common/frame.vue';
-import { useFileStore } from '@/store/files1';
+import Frame from '@/components/common/Frame.vue';
+import FileList from '@/components/directory/FileList.vue';
+
+import { useFileStore } from '@/store/files';
 import { ref, provide } from 'vue';
 
 interface docContent {
@@ -23,7 +32,7 @@ interface File {
 }
 
 const fileStore = useFileStore()
-fileStore.setLatesList()
+fileStore.setLateList()
 const latest = ref<any[]>([]);
 // fileStore.setLatesList();
 latest.value = fileStore.latestList;
@@ -37,7 +46,7 @@ fileStore.$onAction(({
     after(() => {
         console.log(name)
         if (name === 'delete') {
-            fileStore.setLatesList()
+            // fileStore.setLatesList()
         }
     })
 })
@@ -56,19 +65,34 @@ provide('operate', {
     DELETE
 })
 
+// const config = [
+//     {
+//         title: '最近',
+//         item1: '文件位置',
+//         item2: '创建者',
+//         item3: '最后修改',
+//     }
+// ]
+
+const config = {
+    tableItem: [
+        '文件位置',
+        '创建者',
+        '最后修改',
+    ],
+    isShowShare: true,
+    isShowDelete: true,
+    isShowRecycle: false,
+}
+
+
 </script>
 <template  @click="{leftMenu = false; rightMenu = false}">
+    <!-- <Frame :file-list="fileStore.latestList" :config="config"></Frame> -->
+    <FileList :fileList="fileStore.latestList" :config="config"></FileList>
+
     <!-- 传入文件显示类型 -->
-    <frame :fileList="fileStore.latestList" operate="分享" :fileCount="fileStore.latestList.length"
-        :isEmpty="fileStore.latestList.length === 0" :isCollect="true">
-        <template v-slot:title>最近</template>
-        <template v-slot:item1>文件位置</template>
-        <template v-slot:item2>创建者</template>
-        <template v-slot:item3>最后修改</template>
-        <template v-slot:file>
-        </template>
-
-
-    </frame>
+    <!-- <Frame :fileList="fileStore.latestList" :config="config">
+    </Frame> -->
 </template>
 <style lang='less' scope></style>
