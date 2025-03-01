@@ -1,3 +1,10 @@
+/*
+ * Author: fangxiaoxun 1272449367@qq.com
+ * Date: 2023-07-13 02:49:58
+ * LastEditors: fangxiaoxun 1272449367@qq.com
+ * LastEditTime: 2025-02-28 11:43:11
+ * 
+ */
 const express = require('express')
 const app = express()
 
@@ -16,6 +23,7 @@ const secret = 'login2023'
 
 const { ErrorModel } = require("./model/resModel")
 // 处理 x-www-form-urlencoded
+
 app.use(bodyParser.urlencoded({ extended: true }))
 
 
@@ -31,7 +39,7 @@ const whiteList = ['/user/login', '/user/register']
 app.use(
     jwt({
         secret,
-        algorithms: ['HS256'],//使用何种加密算法解析
+        algorithms: ['HS256'],
     })
         .unless({ path: whiteList })//登陆注册页无需校验
 )
@@ -44,13 +52,37 @@ app.use('/file', require('./router/file.router.js'))
 
 // token过期或不合法
 app.use((err, req, res, next) => {
-    if (err.name === 'UnauthorizedError'){
-        res.send(new ErrorModel({code:401,msg:'invalid token'}))
-    } 
+    console.log(err, 'token err', err.name === 'UnauthorizedError')
+    if (err.name === 'UnauthorizedError') {
+        res.send(new ErrorModel({ code: 401, msg: 'invalid token' }))
+    } else {
+        next()
+    }
 })
 
 
 // 监听node服务器的端口号
-app.listen(3000, () => {
+const expressServer = app.listen(3000, () => {
     console.log('服务器已启动！！');
+})
+
+
+// 导入websocket服务
+const WebSocket = require('ws')
+const wss = new WebSocket.Server({ server: expressServer })
+
+wss.on('connection', (ws) => {
+    console.log('启动 ws 连接');
+
+    // 监听连接事件
+    ws.on('message', (message) => {
+        wss.clients.forEach((client) => {
+            if (client !== ws && client.readyState === WebSocket.OPEN) {
+                client.send(message);
+            }
+        })
+    })
+    ws.on('close', () => {
+        console.log('disconnected');
+    })
 })
