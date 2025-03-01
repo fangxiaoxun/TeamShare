@@ -1,12 +1,18 @@
+/*
+ * Author: fangxiaoxun 1272449367@qq.com
+ * Date: 2023-07-13 02:49:58
+ * LastEditors: fangxiaoxun 1272449367@qq.com
+ * LastEditTime: 2025-02-22 15:14:32
+ * 
+ */
 const mysql = require('mysql')
 // 连接数据库的配置信息
 const db_config = {
-    host:'47.120.39.84',
-    user:'sharedocuments',
-    password:'3141592617F',
+    host:'127.0.0.1',
+    user:'root',
+    password:'123456789',
     port:'3306',
-    database:'sharedocuments',
-    timezone:'08:00'
+    database:'CollaborativeDoc',
 }
 
 
@@ -31,7 +37,6 @@ function conMysql(...sqlOption){
             }else{
                 let res = JSON.parse(JSON.stringify(result))
 				closeMysql(MyConnect)  //调用函数关闭mysql连接
-                console.log('Conres',res);
 				resolve(res)
             }
         })

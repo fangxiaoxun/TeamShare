@@ -2,73 +2,60 @@ const { conMysql } = require('../lib/db')
 
 
 // 获取最近文件列表
-const getLatest = async (creator) => {
-    let sql = `select * from file where creator = '${creator}' and deleteType = 0 order by lastDate desc`
-    return conMysql(sql)
-}
-
-// 最近根据文件类型分类的文件
-const getLatestType = async (creator,fileType) => {
-    let sql = `select * from file where creator = '${creator}' and fileType = ${fileType} and deleteType = 0 order by lastDate desc`
-    return conMysql(sql)
+const getLatest = async (ownerId) => {
+    const sql = `SELECT * FROM files WHERE ownerId = ? AND deleteType = '0' ORDER BY latestTime DESC`
+    try {
+        const res = await conMysql(sql, [ownerId])
+        return res
+    } catch (error) {
+        console.error('获取最近文件列表失败', error)
+        return []
+    }
 }
 
 // 根据文件夹查询对应文件
 const getFile = async (folderId) => {
-    let sql = `select * from file where folderId = ${folderId} and deleteType = 0 order by lastDate desc`
-    return conMysql(sql)
+    let SQL = `SELECT * FROM files WHERE folderId = ? AND deleteType = 0 `
+    const result = await conMysql(SQL, [folderId])
+    return result
 }
 
-// 指定文件夹下根据文件类型查询对应文件
-const getFileType = async (folderId,fileType) => {
-    let sql = `select * from file where folderId = ${folderId} and fileType = ${fileType} and deleteType = 0 order by lastDate desc`
-    return conMysql(sql)
-}
 
 // 新建文件
 const addFile = async (fileOption) => {
-    let sql = `insert into file set ?`
-    return conMysql(sql, fileOption).then(result => {
-        return {fileId:result.insertId}
-    })
+    let SQL = `INSERT INTO files set ?`
+    const result = await conMysql(SQL ,fileOption)
+    return {fileId:result.insertId}
 }
 
 // 修改文件
-const updateFile = async (fileId,fileName,lastDate,content) => {
-    let sql = `update file set fileName = '${fileName}',content = '${content}',lastDate = '${lastDate}' where fileId = ${fileId}`
-    return conMysql(sql)
+const updateFile = async (fileId,fileName,content) => {
+    let SQL = `UPDATE file SET fileName = ? , content = ? WHERE fileId = ?`
+    return conMysql(SQL, [fileName, content, fileId])
 }
 
 // 删除文件
-const delFile = (fileId,lastDate) => {
-    let sql = `update file set deleteType = 1,lastDate = '${lastDate}' where fileId = ${fileId}`
-    return conMysql(sql)
+const delFile = (fileId) => {
+    let SQL = `UPDATE files SET deleteType = 1 WHERE fileId = ? `
+    return conMysql(SQL, [fileId])
 }
 
 // 收藏文件
-const collectFile = (fileId,collectDate) => {
-    let sql = `update file set collectType = 1,collectDate = '${collectDate}' where fileId = ${fileId}`
-    return conMysql(sql)
+const collectFile = (fileId, userId) => {
+    const SQL = `UPDATE file SET collectType = 1 WHERE fileId = ? AND owner = ?`
+    return conMysql(SQL, [fileId, userId])
 }
 
 // 取消收藏文件 
-const cancelCollectFile = (fileId,collectDate) => {
-    let sql = `update file set collectType = 0,collectDate = '${collectDate}' where fileId = ${fileId}`
-    return conMysql(sql)
+const cancelCollectFile = (fileId) => {
+    const SQL = `UPDATE file SEY collectType = 0 WHERE fileId = ?`
+    return conMysql(SQL, [fileId])
 }
 
 // 获取收藏文件列表
-const getCollectFile = async (creator) => {
-    let sql = `select file.fileId,file.fileName,file.fileType,file.lastDate,file.content,folder.foldername from file,folder 
-    where file.creator = '${creator}' and file.collectType = 1 and file.deleteType = 0 and file.folderId = folder.folderId order by file.collectDate desc`
-    return conMysql(sql)
-}
-
-// 根据文件类型获取收藏文件列表
-const getCollectFileType = async (creator,fileType) => {
-    let sql = `select file.fileId,file.fileName,file.fileType,file.lastDate,file.content,folder.foldername from file,folder 
-    where file.creator = '${creator}' and file.collectType = 1 and file.deleteType = 0 and file.fileType = ${fileType} and file.folderId = folder.folderId order by file.collectDate desc`
-    return conMysql(sql)
+const getCollectFile = async (userId) => {
+    const SQL = `SELECT * FROM files WHERE collectBy = ? AND deleteType = 0`
+    return conMysql(SQL, [userId])
 }
 
 // 判断是否超七天
@@ -84,7 +71,7 @@ const deleteForever = async (nowDate,userId,username) =>{
 const getTrash = async (nowDate,userId,username) => {
     // 删除超过七天的文件
     deleteForever(nowDate,userId,username)
-    let sql = `select * from folder where deleteType = 1 and userId = ${userId}`
+    let sql = `select * from folders where deleteType = 1 and userId = ${userId}`
     return conMysql(sql).then(folderArr =>{
         let sql = `select * from file where deleteType = 1 and folderDelete = 0 and creator = '${username}'`
         return conMysql(sql).then(fileArr => {
@@ -97,9 +84,9 @@ const getTrash = async (nowDate,userId,username) => {
 }
 
 // 恢复删除文件
-const recoverFile = (fileId,lastDate) => {
-    let sql = `update file set deleteType = 0,lastDate = '${lastDate}' where fileId = ${fileId}`
-    return conMysql(sql)
+const recoverFile = (fileId) => {
+    const SQL = `UPDATE files set deleteType = 0 WHERE fileId = ?`
+    return conMysql(SQL, [fileId])
 }
 
 // 通过文件名搜索文件
@@ -109,4 +96,4 @@ const searchFile = async (keyword,creator) => {
 }
 
 
-module.exports = { getLatest, getFile, getFileType, getLatestType, addFile, updateFile, delFile, collectFile,cancelCollectFile, getCollectFile, getCollectFileType, getTrash, recoverFile,searchFile }
+module.exports = { getLatest, getFile, addFile, updateFile, delFile, collectFile,cancelCollectFile, getCollectFile, getTrash, recoverFile,searchFile }
