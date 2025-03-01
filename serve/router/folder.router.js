@@ -1,18 +1,30 @@
+/*
+ * Author: fangxiaoxun 1272449367@qq.com
+ * Date: 2023-08-07 16:08:56
+ * LastEditors: fangxiaoxun 1272449367@qq.com
+ * LastEditTime: 2025-02-23 15:18:06
+ * 
+ */
 // 导入数据模型
 const {SuccessModel,ErrorModel} = require("../model/resModel")
 const {getFolder,delFolder,addFolder,updateFolder,collectFolder,getCollectFolder, recoverFolder, cancelCollectFolder} = require("../controller/folder.controller")
 const Date = require('../utils/format')
 
 const folderRouterHandler = async(req,res) =>{
-    console.log('folderRouterHandler');
     const method = req.method
     const path = req.path
+    const {userId, userName} = req.auth
 
     // 查询文件夹列表
     if(method === 'GET' && path === '/getFolder'){
-        const userId = req.auth.userId
-        const $data = await getFolder(userId)
-        return res.send(new SuccessModel({msg:'OK',data:$data}))
+        const data = await getFolder(userId)
+        return res.send(new SuccessModel({msg:'OK',data}))
+    }
+    // 根据parentId查询文件夹列表
+    if(method === 'GET' && path === '/getFolderByParentId'){
+        const { parentId } = req.query
+        const data = await getFolderByParentId(parentId)
+        return res.send(new SuccessModel({msg:'OK',data}))
     }
 
     // 删除指定文件夹
@@ -25,10 +37,9 @@ const folderRouterHandler = async(req,res) =>{
 
     // 添加文件夹
     if(method === 'GET' && path === '/addFolder'){
-        const userId = req.auth.userId
-        const {folderName} = req.query
-        const $data = await addFolder(folderName,userId)
-        return res.send(new SuccessModel({msg:'OK，添加成功',data:$data}))
+        const {folderName, parentId} = req.query
+        const data = await addFolder(folderName,userId, parentId, userName)
+        return res.send(new SuccessModel({msg:'OK，添加成功',data}))
     }
 
     // 修改文件夹名字
@@ -56,9 +67,8 @@ const folderRouterHandler = async(req,res) =>{
 
     // 获取收藏文件夹列表
     if(method === 'GET' && path === '/getCollectFolder'){
-        const userId = req.auth.userId
-        const $data = await getCollectFolder(userId)
-        return res.send(new SuccessModel({msg:'OK',data:$data}))
+        const data = await getCollectFolder(userId)
+        return res.send(new SuccessModel({msg:'OK',data}))
     }
 
     // 恢复删除文件夹

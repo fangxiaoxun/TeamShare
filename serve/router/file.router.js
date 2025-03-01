@@ -7,6 +7,7 @@ const fileRouterHandler = async(req,res) => {
     console.log('fileRouterHandler');
     const method = req.method
     const path = req.path
+    const userId = req.auth.userId
 
     // 上传图片并获取图片路径
     if(method === 'POST' && path === '/uploadImage'){
@@ -20,45 +21,35 @@ const fileRouterHandler = async(req,res) => {
 
     // 获取最近文件列表
     if(method === 'GET' && path === '/getLatest'){
-        console.log('请求最近文件列表')
-        const creator = req.auth.username
-        console.log(creator)
-        const $data = await getLatest(creator)
-        return res.send(new SuccessModel({msg:'OK',data:$data}))
+        const data = await getLatest(userId)
+        return res.send(new SuccessModel({msg:'OK',data}))
     }
 
     // 最近根据文件类型分类的文件
     if(method === 'GET' && path === '/getLatestType'){
-        const creator = req.auth.username
         const fileType = req.query.fileType
-        const $data = await getLatestType(creator,fileType)
+        const $data = await getLatestType(userId,fileType)
         return res.send(new SuccessModel({msg:'OK',data:$data}))
     }
 
     // 根据文件夹查询对应文件
     if(method === 'GET' && path === '/getFile'){
         const folderId = req.query.folderId
-        const $data = await getFile(folderId)
-        return res.send(new SuccessModel({msg:'OK',data:$data}))
+        const data = await getFile(userId,folderId)
+        return res.send(new SuccessModel({msg:'OK',data}))
     }
 
-    // 指定文件夹下根据文件类型查询对应文件
-     if(method === 'GET' && path === '/getFileType'){
-        const {folderId,fileType} = req.query
-        const $data = await getFileType(folderId,fileType)
-        return res.send(new SuccessModel({msg:'OK',data:$data}))
-    }
 
     // 新建文件
     if(method === 'POST' && path === '/addFile'){
-        const {fileName,fileType,folderId,content} = req.body
-        const creator = req.auth.username
-        const createDate = new Date().Format("yyyy-MM-dd hh:mm:ss")
-        const lastDate = createDate 
-        let fileOption = {fileName,fileType,folderId,content,creator,createDate,lastDate}
-        const $data = await addFile(fileOption)
-        if($data){
-            return res.send(new SuccessModel({msg:'OK,添加成功',data:$data}))
+        console.log('新建文件', req.body, req.auth)
+        const {fileName,folderName,folderId,content} = req.body
+        const {userName, userId} = req.auth
+        const owner = req.auth.userId
+        let fileOption = {fileName,content,ownerId: owner, currentFolderId:folderId, currentFolderName:folderName,  path:null, ownerId:userId, ownerName:userName}
+        const data = await addFile(fileOption)
+        if(data){
+            return res.send(new SuccessModel({msg:'OK,添加成功',data}))
         }else{
             return res.send(new ErrorModel({msg:'添加失败，检查是否缺少参数'}))
         }   
@@ -67,16 +58,14 @@ const fileRouterHandler = async(req,res) => {
     // 修改文件
     if(method === 'POST' && path === '/updateFile'){
         const {fileId,fileName,content} = req.body
-        const lastDate = new Date().Format("yyyy-MM-dd hh:mm:ss")
-        updateFile(fileId,fileName,lastDate,content)
+        updateFile(fileId,fileName,userId,content)
         return res.send(new SuccessModel({msg:'OK，修改成功'}))
     }
 
     // 删除文件
     if(method === 'GET' && path === '/delFile'){
         const fileId = req.query.fileId
-        const lastDate = new Date().Format("yyyy-MM-dd hh:mm:ss")
-        delFile(fileId,lastDate)
+        delFile(fileId,userId)
         return res.send(new SuccessModel({msg:'OK，删除成功'}))
     }
 
@@ -91,7 +80,7 @@ const fileRouterHandler = async(req,res) => {
     if(method === 'GET' && path === '/cancelCollectFile'){
         const fileId = req.query.fileId
         const collectDate = new Date().Format("yyyy-MM-dd hh:mm:ss")
-        cancelCollectFile(fileId,collectDate)
+        cancelCollectFile(fileId)
         return res.send(new SuccessModel({msg:'OK，取消收藏成功'}))
     }
 
@@ -129,11 +118,9 @@ const fileRouterHandler = async(req,res) => {
 
     // 通过文件名搜索文件
     if(method === 'GET' && path === '/searchFile'){
-        const creator = req.auth.username
         const keyword = req.query.keyword
-        const $data = await searchFile(keyword,creator)
-        console.log($data);
-        res.send(new SuccessModel({msg:'OK',data:$data}))
+        const data = await searchFile(keyword,userId)
+        res.send(new SuccessModel({msg:'OK',data}))
     }
 
   

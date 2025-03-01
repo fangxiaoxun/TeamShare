@@ -4,40 +4,36 @@ const {createToken,regUser,refreshToken} = require('../controller/user.controlle
 const upload = require('../utils/upload')
 
 const userRouterHandler = async(req,res) =>{
-    console.log('userRouterHandler')
     const method = req.method
     const path = req.path
-    // const url = req.url
-    // const params = url.split('?')[1]
-    // 解析query
-    // req.query = querystring.parse(url.split('?')[1])
 
     // 用户登录
     if(method === 'POST' && path === '/login'){
-        const {account,password} = req.body
-        const $data = await createToken(account,password)
-        if($data){
-            return res.send(new SuccessModel({msg:'登录成功',data:$data}))
+        const {userId,password} = req.body
+        console.log(req.body, 'req.body')
+        const data = await createToken(userId,password)
+        if(data){
+            return res.send(new SuccessModel({msg:'登录成功', data}))
         }else{
             return res.send(new ErrorModel({msg:'用户名或密码错误'}))
         }
-       
     }
 
     // 用户注册
     if(method === 'POST' && path === '/register'){
-        const {username,account,password} = req.body
-        const $data = await regUser(username,account,password)
-        if($data){
-            return res.send(new SuccessModel({msg:'OK,注册成功'}))
+        const {userName, password, email} = req.body
+        const data = await regUser(userName,password, email)
+        if(data){
+            return res.send(new SuccessModel({msg:'用户注册成功', data}))
         }else{
-            return res.send(new ErrorModel({msg:'注册失败，该用户已存在'}))
+            return res.send(new ErrorModel({msg:'用户注册失败'}))
         }
     }
 
     // 获取用户信息
     if(method === 'GET' && path === '/getUser'){
-       return res.send(new SuccessModel({msg:'成功',data:req.auth}))
+        console.log(req.auth, 'req.auth')
+        return res.send(new SuccessModel({msg:'成功',data:req.auth}))
     }
 
     // 上传用户头像
@@ -49,8 +45,8 @@ const userRouterHandler = async(req,res) =>{
     if(method === 'GET' && path === '/refreshToken'){
         const {userId,username,headPortrait} = req.auth
         console.log(headPortrait)
-        const $data = refreshToken(userId,username,headPortrait)
-        return res.send(new SuccessModel({msg:'OK',data:$data}))
+        const data = refreshToken(userId,username,headPortrait)
+        return res.send(new SuccessModel({msg:'OK',data}))
     }
 }
 
