@@ -1,7 +1,7 @@
 // 存储文件信息
 import { defineStore } from "pinia";
-import { LatestFiles, getFiles, getDeleteFiles, recoverFile, deleteFile, getCollectFiles, collectFile, cancelCollectFile } from "@/api/files/files";
-import { recoverFolder } from '@/api/files/folder'
+import { LatestFiles, getFiles, getDeleteFiles, recoverFile, deleteFile, getCollectFiles, collectFile, cancelCollectFile } from "@/api/files/index.ts";
+import { recoverFolder } from '@/api/folder/index.ts'
 
 interface File {
     fileId: string;
@@ -46,7 +46,7 @@ export const useFileStore = defineStore('files', {
     state: (): State => ({
         // 最近文件列表
         latestList: [],
-        // 文件列表
+        // 文件列表, todo 改为文件夹列表
         filesList: [],
         // 回收站文件列表
         deleteList: [],
@@ -58,12 +58,10 @@ export const useFileStore = defineStore('files', {
         keyword: ''
     }),
     getters: {
-        getLasteList: (state) => {
-            console.log(state.latestList)
+        getLastList: (state) => {
             return state.latestList
         },
         getFileList: (state) => {
-            // console.log()
             return state.filesList
         },
         getDeleteList: (state) => {
@@ -75,9 +73,10 @@ export const useFileStore = defineStore('files', {
     },
     actions: {
         // 获取最近文件列表
-        async setLatesList() {
+        async setLateList() {
             try {
                 const response = await LatestFiles()
+                console.log(response, '最近文件')
                 this.latestList = response
             } catch (err) {
                 console.log(err)

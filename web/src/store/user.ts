@@ -1,3 +1,10 @@
+/*
+ * @Author: fangxiaoxun 1272449367@qq.com
+ * @Date: 2023-08-03 18:39:54
+ * @LastEditors: fangxiaoxun 1272449367@qq.com
+ * @LastEditTime: 2025-02-22 18:24:44
+ * 
+ */
 import { defineStore } from "pinia";
 import { reqUserInfo } from '@/api/user/index'
 import piniaPluginPersistedstate from 'pinia-plugin-persistedstate'
@@ -15,7 +22,7 @@ export const useInfo = defineStore('user', {
         username: '',
         userId: '',
         userAccount: '',
-        currContent: ''
+        // currContent: ''
     }),
     getters: {
         getUsername: (state) => {
@@ -30,8 +37,8 @@ export const useInfo = defineStore('user', {
 
 
         },
-        async setCurrConten(conten:any){
-            this.currContent = conten
-        }
+        // async setCurrConten(conten:any){
+        //     this.currContent = conten
+        // }
     }
 })
