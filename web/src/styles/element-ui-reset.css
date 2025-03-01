@@ -1,0 +1,25 @@
+/*
+ * @Author: fangxiaoxun 1272449367@qq.com
+ * @Date: 2023-07-13 02:49:58
+ * @LastEditors: fangxiaoxun 1272449367@qq.com
+ * @LastEditTime: 2025-02-22 18:29:20
+ * 
+ */
+
+:root {
+    --el-color-primary: #6965db;
+    --el-button-bg-color: #6965db;
+    --el-menu-active-color: #6965db;
+    --el-color-primary-light-9: #e3e2fe;
+    --el-dropdown-menuItem-hover-color: #f5f5f5;
+    --el-dropdown-menuItem-hover-color: #6965db;
+    --el-button-hover-bg-color: #5b57d1;
+    --el-button-hover-border-color:#e3e2fe;
+    --el-button-hover-border-color: #5b57d1;
+
+}
+
+/* .el-button:hover {
+    background-color: #5b57d1;
+    border-color: #5b57d1;
+} */
