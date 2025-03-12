@@ -2,11 +2,42 @@
  * Author: fangxiaoxun 1272449367@qq.com
  * Date: 2023-07-13 02:49:58
  * LastEditors: fangxiaoxun 1272449367@qq.com
- * LastEditTime: 2025-02-28 11:43:11
+ * LastEditTime: 2025-03-06 16:48:15
+ * 
+ */
+/*
+ * Author: fangxiaoxun 1272449367@qq.com
+ * Date: 2023-07-13 02:49:58
+ * LastEditors: fangxiaoxun 1272449367@qq.com
+ * LastEditTime: 2025-03-03 21:05:38
  * 
  */
 const express = require('express')
 const app = express()
+const Y = require('yjs')
+// console.log(Y)
+const sharedDoc = new Y.Doc('shared-document')
+const  Hocuspocus  = require('@hocuspocus/server')
+// const hocuspocus = Hocuspocus.Hocuspocus.createServer({
+//     appId: 'my-app',
+//     wsPort: 3000,
+//     cors: true,
+//     documentStore: (name) => {
+//         return name === 'shared-document' ? sharedDoc: new Y.Doc(name)
+//     },
+//     userJoin: (connection, userInfo ) => {
+//         console.log('user join room')
+//     }
+// })
+// hocuspocus.on('connection', (connection) => {
+//     connection.join('shared-doc') // 加入文档房间
+// })
+
+// hocuspocus.listen(3001, () => {
+//     console.log('ws server running')
+// })
+
+
 
 const path = require('path')
 
@@ -46,8 +77,10 @@ app.use(
 
 
 app.use('/user', require('./router/user.router.js'))
+
 app.use('/folder', require('./router/folder.router.js'))
 app.use('/file', require('./router/file.router.js'))
+app.use('/space', require('./router/space.router.js'))
 
 
 // token过期或不合法
@@ -69,20 +102,21 @@ const expressServer = app.listen(3000, () => {
 
 // 导入websocket服务
 const WebSocket = require('ws')
+const { connect } = require('http2')
+const { userInfo } = require('os')
 const wss = new WebSocket.Server({ server: expressServer })
 
-wss.on('connection', (ws) => {
-    console.log('启动 ws 连接');
+// wss.on('connection', (ws) => {
+//     console.log('启动 ws 连接');
 
-    // 监听连接事件
-    ws.on('message', (message) => {
-        wss.clients.forEach((client) => {
-            if (client !== ws && client.readyState === WebSocket.OPEN) {
-                client.send(message);
-            }
-        })
-    })
-    ws.on('close', () => {
-        console.log('disconnected');
-    })
-})
+//     ws.send(sharedDoc.toJSON())
+//     // 监听连接事件
+//     ws.on('message', (message) => {
+//         sharedDoc.apply(message)
+//         wss.clients.forEach(client => client.send(message))
+//     })
+//     ws.on('close', () => {
+//         console.log('disconnected');
+//     })
+// })
+
