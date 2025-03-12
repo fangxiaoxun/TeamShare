@@ -2,7 +2,7 @@
  * @Author: fangxiaoxun 1272449367@qq.com
  * @Date: 2023-07-13 02:49:58
  * @LastEditors: fangxiaoxun 1272449367@qq.com
- * @LastEditTime: 2025-02-22 18:29:20
+ * @LastEditTime: 2025-03-07 22:26:59
  * 
  */
 
@@ -14,9 +14,11 @@
     --el-dropdown-menuItem-hover-color: #f5f5f5;
     --el-dropdown-menuItem-hover-color: #6965db;
     --el-button-hover-bg-color: #5b57d1;
-    --el-button-hover-border-color:#e3e2fe;
-    --el-button-hover-border-color: #5b57d1;
-
+    --el-button-hover-border-color:#e3e2fe!important;
+    /* --el-button-hover-border-color: #5b57d1; */
+    --text-color: #454D5A;
+    --black: #2E2B29;
+    --gray-3 :rgba(61, 37, 20, .12);
 }
 
 /* .el-button:hover {
