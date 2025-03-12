@@ -1,13 +1,17 @@
-<script lang="ts" setup>
+ <script lang="ts" setup>
 import { ref, inject, Ref } from 'vue';
 import { vClickOutside } from '@/hooks/clickOutside';
-import file from '../directory/file.vue'
-import { useFileStore } from '@/store/files1'
+import FileList from '../directory/FileList.vue'
+import { useFileStore } from '@/store/files'
 import { useInfo } from '@/store/user';
 import router from '@/router/index';
 
 const { rightMenu } = inject('showMenu') as { rightMenu: Ref<boolean> };
-const props = defineProps(["fileList", "operate", "isEmpty", "folderName", "fileCount", "start", "isCollect"]);
+// const props = defineProps(["fileList", "operate", "isEmpty", "folderName", "fileCount", "start", "isCollect"]);
+const props = defineProps<{
+    fileList: any[],
+    config: any
+}>();
 const fileStore = useFileStore()
 const userInfo = useInfo()
 const count = ref<number>(0)
@@ -92,20 +96,20 @@ const menuLeft = ref<number>(0);
 const menuTop = ref<number>(0)
 // const showMenu = ref<boolean>(false)
 const rightClickHandler = (e: MouseEvent) => {
-    if (e.clientX >= wrapper.value?.offsetWidth! + 100 && e.clientY >= wrapper.value?.offsetHeight! - 100) {
-        menuLeft.value = wrapper.value?.offsetWidth! + 100
-        menuTop.value = wrapper.value?.offsetHeight! - 100
-    } else if (e.clientX >= wrapper.value?.offsetWidth! && e.clientY <= wrapper.value?.offsetHeight!) {
-        menuLeft.value = wrapper.value?.offsetWidth! + 100
-        menuTop.value = e.clientY + 40
-    } else if (e.clientY >= wrapper.value?.offsetHeight! - 100 && e.clientX <= wrapper.value?.offsetWidth!) {
-        menuTop.value = wrapper.value?.offsetHeight! - 40
-        menuLeft.value = e.clientX + 20
-    } else {
-        menuTop.value = e.clientY + 20
-        menuLeft.value = e.clientX
-    }
-    rightMenu.value = true
+    // if (e.clientX >= wrapper.value?.offsetWidth! + 100 && e.clientY >= wrapper.value?.offsetHeight! - 100) {
+    //     menuLeft.value = wrapper.value?.offsetWidth! + 100
+    //     menuTop.value = wrapper.value?.offsetHeight! - 100
+    // } else if (e.clientX >= wrapper.value?.offsetWidth! && e.clientY <= wrapper.value?.offsetHeight!) {
+    //     menuLeft.value = wrapper.value?.offsetWidth! + 100
+    //     menuTop.value = e.clientY + 40
+    // } else if (e.clientY >= wrapper.value?.offsetHeight! - 100 && e.clientX <= wrapper.value?.offsetWidth!) {
+    //     menuTop.value = wrapper.value?.offsetHeight! - 40
+    //     menuLeft.value = e.clientX + 20
+    // } else {
+    //     menuTop.value = e.clientY + 20
+    //     menuLeft.value = e.clientX
+    // }
+    // rightMenu.value = true
     // 做边界判断
 }
 
@@ -118,7 +122,7 @@ const handleMenu = (key:number) =>{
             // 清空store 的存储内容
             fileStore.currFile.fileId = ''
             fileStore.currFile.fileName =''
-            userInfo.setCurrConten('')
+            // userInfo.setCurrConten('')
             router.push('/docView')
             break;
         }
@@ -141,11 +145,6 @@ const handleMenu = (key:number) =>{
         </ul>
     </div>
     <div class="wrapper" ref="wrapper" @contextmenu.prevent="rightClickHandler" >
-        <div class="title">
-            <h3>
-                <slot name="title"></slot>
-            </h3><i class="icon"></i>
-        </div>
         <div class="file-list">
             <div class="desc">
                 <div class="type">
@@ -185,35 +184,14 @@ const handleMenu = (key:number) =>{
                     </span>
 
                 </div>
-                <div class="position"><span>
-                        <slot name="item1"></slot>
-                    </span></div>
-                <div class="author"><span>
-                        <slot name="item2"></slot>
-                    </span></div>
-                <div class="latest"><span>
-                        <slot name="item3"></slot>
-                    </span></div>
+                <div v-for="item in props.config.tableItem" class="table-item flex-1">
+                    <span>{{ item }}</span>
+                </div>
+                <div v-if="props.config.share" class="flex-1"></div>
+                <div class="operate flex-1"></div>
             </div>
             <!-- 动态渲染 -->
-            <ul v-infinite-scroll="load" infinite-scroll-distance=1 class="list" style="overflow: auto">
-                <div class="inner">
-
-                    <el-empty description="文件夹是空的" v-if="props.isEmpty"></el-empty>
-                    <file v-else v-for="item in props.fileList" :folderId="item.folderId" :fileId="item.fileId" :filename="item.fileName"
-                        :isCollect="props.isCollect" :collectType="item.collectType" >
-                        <!-- <template v-slot:li1>{{ FileStore.getFolderName(item.folderId) ?
-                            FileStore.getFolderName(item.folderId) : '我的云文档' }}</template> -->
-                        <template v-slot:fileName>{{ item.fileName ? item.fileName : item.folderName }}</template>
-                        <template v-slot:li2>{{ item.creator }}</template>
-                        <template v-slot:li3>{{ item.lastDate.slice(0, 16) }}</template>
-                        <template v-slot:operate>{{ props.operate }}</template>
-
-
-                    </file>
-                </div>
-            </ul>
-
+            <FileList :file-list="props.fileList" :config="props.config"></FileList>
 
         </div>
     </div>
@@ -243,24 +221,6 @@ const handleMenu = (key:number) =>{
 
     li.active {
         background-color: @bgColorBase;
-    }
-}
-
-
-span {
-    font-size: 14px;
-    color: rgba(13, 13, 13, .9);
-}
-
-.wrapper {
-    padding: 24px 2px 0 48px;
-}
-
-.title {
-    padding-bottom: 18px;
-
-    h3 {
-        line-height: 32px;
     }
 }
 
@@ -301,18 +261,6 @@ span {
         >span:hover {
             background-color: rgba(13, 13, 13, .06);
         }
-    }
-
-    .position,
-    .author {
-        flex: 1;
-        margin-left: -10px;
-    }
-
-    .latest {
-        flex: 2;
-        margin-left: -10px;
-
     }
 }
 
@@ -374,50 +322,4 @@ span {
     background-color: rgba(13, 13, 13, .06);
 }
 
-.list {
-    height: calc(~"100vh - @{list-top}");
-    overflow-y: scroll;
-    // height: 300px;//不是这个高度导致溢出
-    padding: 0;
-    margin: 0;
-    list-style: none;
-
-    // 滚动条整体部分
-    &::-webkit-scrollbar {
-        width: 6px;
-        height: 6px;
-    }
-
-    // 滚动条的轨道的两端按钮，允许通过点击微调小方块的位置。
-    &::-webkit-scrollbar-button {
-        display: none;
-    }
-
-    // 滚动条的轨道（里面装有Thumb）
-    &::-webkit-scrollbar-track {
-        background: transparent;
-    }
-
-    // 滚动条的轨道（里面装有Thumb）
-    &::-webkit-scrollbar-track-piece {
-        background-color: transparent;
-    }
-
-    // 滚动条里面的小方块，能向上向下移动（或往左往右移动，取决于是垂直滚动条还是水平滚动条）
-    &::-webkit-scrollbar-thumb {
-        background: rgba(144, 147, 153, 0.3);
-        cursor: pointer;
-        border-radius: 4px;
-    }
-
-    // 边角，即两个滚动条的交汇处
-    &::-webkit-scrollbar-corner {
-        display: none;
-    }
-
-    // 两个滚动条的交汇处上用于通过拖动调整元素大小的小控件
-    &::-webkit-resizer {
-        display: none;
-    }
-}
 </style>

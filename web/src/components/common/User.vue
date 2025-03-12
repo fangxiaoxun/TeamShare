@@ -16,13 +16,17 @@
                         </svg>
                     </span>
                 </div>
-                <h3 class="user-name">
-                    {{ userInfo.getUsername }}
-                </h3>
+                <div>
+
+                    <div class="user-name text-slate-600">
+                       用户名： {{ userInfo.getUserName }}
+                    </div>
+                    <div class="text-sm	text-slate-500	">账号：{{ userInfo.getUserId }}</div>
+                </div>
             </div>
             <ul class="user-body">
                 <li>意见反馈</li>
-                <li>切换账号</li>
+                <!-- <li>切换账号</li> -->
                 <li @click="handleLoginout">退出登录</li>
             </ul>
         </div>
@@ -36,6 +40,9 @@ import { useInfo } from '@/store/user';
 const userInfo = useInfo()
 // 初始化用户信息
 userInfo.setUserInfo()
+
+
+
 
 // 退出登录
 const handleLoginout = () => {
@@ -67,7 +74,7 @@ const handleLoginout = () => {
 }
 </script>
           
-<style lang="less">
+<style lang="less" scoped>
 .user {
     position: relative;
     top: 3px;
@@ -90,18 +97,16 @@ const handleLoginout = () => {
         right: 0px;
         top: 34px;
         width: 250px;
-        height: 300px;
         background-color: #fff;
         border-radius: 8px;
         box-shadow: 0 2px 12px 2px rgba(68, 73, 77, 0.16);
         border: solid 1px rgba(0, 0, 0, 0.12);
         z-index: 5000;
-
+        padding-bottom: 10px;
         .user-header {
             display: flex;
             align-items: center;
             padding: 20px;
-            margin-bottom: 30px;
 
             .user-profile {
                 position: relative;
@@ -139,8 +144,7 @@ const handleLoginout = () => {
             font-size: 15px;
             text-align: left;
             color: rgba(0, 0, 0, 0.88);
-            height: 52px;
-            line-height: 52px;
+            line-height: 44px;
             margin: 0 auto;
             border-radius: 6px;
             text-align: center;

@@ -1,3 +1,10 @@
+/*
+ * @Author: fangxiaoxun 1272449367@qq.com
+ * @Date: 2023-07-13 02:49:58
+ * @LastEditors: fangxiaoxun 1272449367@qq.com
+ * @LastEditTime: 2025-03-09 17:57:54
+ * 
+ */
 //axios 二次封装
 import axios from 'axios'
 import { AxiosRequestHeaders } from 'axios'
@@ -28,12 +35,12 @@ api.interceptors.response.use(
         if (response.data.code === 401) {
             console.log(response)
             return axios.get('http://localhost:3000/user/refreshToken', { headers: { Authorization: localStorage.getItem('refresh_token') } }).then(res => {
-                console.log(res)
+                console.log(res, 'res token')
                 if (res.data.code === 401) {
                     // message = 'TOKEN无效，请重新登录！'
                     setTimeout(() => {
-                        localStorage.clear()
-                        router.push('/login')
+                        // localStorage.clear()
+                        // router.push('/login')
                     }, 1000)
                 } else {
                     localStorage.setItem('access_token', res.data.data.access_token)
@@ -53,7 +60,7 @@ api.interceptors.response.use(
         // 处理 http 网络错误
         let message = ''
         // 状态码处理
-        const status = err.response.status
+        const status = err.response?.status
 
         switch (status) {
             case 401: {

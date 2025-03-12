@@ -23,8 +23,9 @@
                     <h1 class="title">Welcome!</h1>
                     <div class="input-field">
                         <svg-icon class="username" name="username" width="25px" height="25px" fill="#acacac"></svg-icon>
-                        <input type="text" name="username" autocomplete="off" placeholder="请输入用户账号"
-                            v-model="loginInfo.account">
+                        <input type="text"
+                         name="userId" autocomplete="off" placeholder="请输入用户账号"
+                            v-model="loginInfo.userId">
                     </div>
                     <div class="input-field">
                         <svg-icon class="password" name="password" width="25px" height="25px" fill="#acacac"></svg-icon>
@@ -39,12 +40,12 @@
                     <div class="input-field">
                         <svg-icon class="username" name="username" width="25px" height="25px" fill="#acacac"></svg-icon>
                         <input type="text" name="username" autocomplete="off" placeholder="请输入用户名"
-                            v-model="registerInfo.username">
+                            v-model="registerInfo.userName">
                     </div>
                     <div class="input-field">
-                        <svg-icon class="account" name="account" width="25px" height="25px" fill="#acacac"></svg-icon>
-                        <input type="email" name="account" autocomplete="off" placeholder="请输入邮箱"
-                            v-model="registerInfo.account">
+                        <svg-icon class="userId" name="userId" width="25px" height="25px" fill="#acacac"></svg-icon>
+                        <input type="email" name="userId" autocomplete="off" placeholder="请输入邮箱"
+                            v-model="registerInfo.email">
                     </div>
                     <div class="input-field">
                         <svg-icon class="password" name="password" width="25px" height="25px" fill="#acacac"></svg-icon>
@@ -76,32 +77,36 @@ const handleClickLogin = () => {
     container.value?.classList.remove('inRight')
 }
 interface REGISTER {
-    username: string,
-    account: string,
-    password: string
+    userName: string,
+    userId: string,
+    password: string,
+    email: string,
 }
 const password = ref<string>('')
 const registerInfo = reactive<REGISTER>({
-    username: '',
-    account: '',
-    password: ''
+    userName: '',
+    userId: '',
+    password: '',
+    email:''
 })
 
 // 登录
 interface LOGIN {
-    account: string,
+    userId: string,
     password: string
 }
 const loginInfo = reactive<LOGIN>({
-    account: '',
+    userId: '',
     password: ''
 })
 const handleRegister = () => {
     if (password.value === registerInfo.password) {
+        console.log(registerInfo, 'registerInfo')
         reqRegister(registerInfo)
-        .then(()=>{
+        .then((res)=>{
+            console.log(res.data?.userId, '用户注册')
             // 跳转登录
-            loginInfo.account = registerInfo.account
+            loginInfo.userId = res.data?.userId
             loginInfo.password = registerInfo.password
             handleLogin()
         })
@@ -111,21 +116,24 @@ const handleRegister = () => {
     }
 }
 
+// todo: 登录逻辑优化
+
 const handleLogin = () => {
+    // console.log('handle 登录')
     reqLogin(loginInfo)
         .then((res) => {
-            if (res.data) { //登录成功
-                console.log(res)
+            console.log(res, 'reqLogin')
+            if (res.code === 200) { //登录成功
                 localStorage.setItem('access_token', res.data.access_token)
                 localStorage.setItem('refresh_token', res.data.refresh_token)
                 router.push('/desktop')
-            }else if(!loginInfo.account){
+            }else if(!loginInfo.userId){
                 ElMessage.warning('请输入账号！')
             }else if(!loginInfo.password){
                 ElMessage.warning('请输入密码！')
             }else {  //登录失败
                 ElMessage.error('账号或密码错误，请重新输入！')
-                loginInfo.account = ''
+                loginInfo.userId = ''
                 loginInfo.password = ''
             }
 
@@ -196,7 +204,7 @@ const handleLogin = () => {
                     position: relative;
 
                     .username,
-                    .account,
+                    .userId,
                     .password {
                         display: flex;
                         justify-content: space-around;

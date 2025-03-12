@@ -1,3 +1,10 @@
+/*
+ * @Author: fangxiaoxun 1272449367@qq.com
+ * @Date: 2023-08-03 19:34:52
+ * @LastEditors: fangxiaoxun 1272449367@qq.com
+ * @LastEditTime: 2025-03-01 22:21:28
+ * 
+ */
 // 按需引入，如果全部引入的话是引入VueRouter
 import { createRouter, createWebHashHistory, RouteLocationNormalized, NavigationGuardNext } from 'vue-router'
 // 引入路由组件
@@ -9,13 +16,13 @@ import Directory from '../views/Directory.vue'
 import DocView from '../views/DocView.vue'
 
 import DeskTop from '../views/DeskTop.vue'
-import Mydoc from '../views/MyDoc.vue'
+import MyDoc from '../views/MyDoc.vue'
+import Folder from '../views/FolderPage.vue'
+import Me from '../views/Me.vue'
 import Trash from '../views/Trash.vue'
-import App from '../App.vue'
-import path from 'path'
 
-import { setCookie, getCookie, delCookie } from '../hooks/cookie'
-
+import TestDemo from '../components/Editor/TestDemo.vue'
+import Tiptap from '../components/Editor/Tiptap.vue'
 
 
 
@@ -52,17 +59,44 @@ const router = createRouter({
                     path: '/desktop',
                     name: 'desktop',
                     component: DeskTop,
+                    meta:{
+                        title:'桌面',
+                    }
                 },
                 {
-                    path: '/mydoc',
-                    name: 'mydoc',
-                    component: Mydoc,
+                    path: '/myDoc',
+                    name: 'myDoc',
+                    component: MyDoc,
+                    meta:{
+                        title:'我的空间',
+                    },
+                    redirect:'/myDoc/all',
+                    children:[
+                        {
+                            path: '/myDoc/all',
+                            name: 'all',
+                            component: Me,
+                        }
+                    ]
+                },
+                {
+                    path: '/myDoc/folder/:spaceId',
+                    name: 'space',
+                    component: Folder,
                 },
                 {
                     path: '/trash',
                     name: 'trash',
                     component: Trash,
+                    meta:{
+                        title:'回收站',
+                    }
                 },
+                {
+                    path: '/test',
+                    name: 'test',
+                    component: TestDemo,
+                }
 
             ]
         },
@@ -71,7 +105,14 @@ const router = createRouter({
             path: '/docView',
             name: 'docView',
             component: DocView,
-            meta:{data:{fileId:''}}
+            // 
+            meta:{data:{spaceId: '', fileId:''}}
+        },
+        {
+            path: '/tiptap',
+            name: 'Tiptap',
+            component: Tiptap
+
         }
     ]
 })

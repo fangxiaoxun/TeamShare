@@ -1,46 +1,54 @@
-const { conMysql } = require('../lib/db')
-// 生成token的包
+const { select, insert, update } = require('../lib/db')
 const jWT = require('jsonwebtoken')
-// 定义Secret密钥
+const bcrypt = require('bcrypt')
+
 const secret = 'login2023'
 
-// 生成token
-const createToken = (account, password) => {
-    let sql = `select * from user where account = '${account}' and password = '${password}'`
-    return conMysql(sql).then(result => {
-        // 生成token
-        const access_token = jWT.sign({
-            userId: result[0].userId,
-            username: result[0].username,
-            headPortrait: result[0].headPortrait
-        },
-            secret,//密钥进行加密
-            { expiresIn: "8h" } //token有效时间 
+const createToken = async (userId, password) => {
+    try {
+        const [user] = await select('*').from('users').where('userId', userId)
+
+        if (!user) {
+            throw new Error('用户不存在')
+        }
+        const isMatch = await bcrypt.compare(password, user.password)
+        if (!isMatch) {
+            throw new Error('用户密码错误')
+        }
+
+        const access_token = jWT.sign(
+            {
+                userId: user.userId,
+                userName: user.userName,
+            },
+            secret,
+            { expiresIn: '8h' }
         )
 
-        const refresh_token = jWT.sign({
-            userId: result[0].userId,
-            username: result[0].username,
-            headPortrait: result[0].headPortrait
-        },
-            secret,//密钥进行加密
-            { expiresIn: "3d" } //token有效时间
+        const refresh_token = jWT.sign(
+            {
+                userId: user.userId,
+                userName: user.userName,
+            },
+            secret,
+            { expiresIn: '3d' }
         )
-
         return {
             access_token: 'Bearer ' + access_token,
             refresh_token: 'Bearer ' + refresh_token
         }
-    }).catch(_ => result = undefined)
+    } catch (error) {
+        console.error('token 生成失败', error)
+        return result = undefined
+    }
 }
 
 // 更新token
-const refreshToken = (userId, username, headPortrait) => {
+const refreshToken = (userId, userName, headPortrait) => {
     // 生成token
     const access_token = jWT.sign({
         userId,
-        username,
-        headPortrait,
+        userName,
     },
         secret,//密钥进行加密
         { expiresIn: "8h" } //token有效时间
@@ -51,31 +59,21 @@ const refreshToken = (userId, username, headPortrait) => {
     }
 }
 
-// 用户注册
-const regUser = (username, account, password) => {
-    let sql = `select * from user where username = '${username}' or account = '${account}'`
-
-    return conMysql(sql).then(result => {
-        // 有返回结果说明改用户已存在
-        if (result.length > 0) {
-            return result = undefined
-        } else {
-            // 无返回结果才可以注册
-            console.log('catch', result);
-            let sql = `insert into user set ?`
-            return conMysql(sql, { username, account, password }).then(result => {
-                let sql = `insert into folder set folderName = '我的云文档',userId = ${result.insertId}`
-                // 默认新建我的云文档文件夹
-                return conMysql(sql).then(_ => {
-                    return { msg: '成功' }
-                })
-
-            })
-        }
-    })
-
+const regUser = async (userName, password, email = null) => {
+    try {
+        const hashPassword = await bcrypt.hash(password, 10)
+        
+        const [result] = await insert('user').values({
+            userName,
+            password: hashPassword,
+            email
+        })
+        return { userId: result.insertId}
+        
+    } catch (error) {
+        console.error('用户注册失败', error)
+        return undefined
+    }
 }
 
-
-
-module.exports = { createToken, regUser, refreshToken }
+module.exports = { createToken, regUser, refreshToken}

@@ -1,5 +1,13 @@
+/*
+ * @Author: fangxiaoxun 1272449367@qq.com
+ * @Date: 2023-07-13 02:49:58
+ * @LastEditors: fangxiaoxun 1272449367@qq.com
+ * @LastEditTime: 2025-02-19 19:20:40
+ * 
+ */
 import { createApp } from 'vue'
 import { createPinia } from 'pinia'
+import './index.css'
 // import piniaPluginPersistedState from 'pinia-plugin-persistedstate'
 import App from './App.vue'
 import router from './router/index'
@@ -11,14 +19,13 @@ import { vClickOutside } from './hooks/clickOutside'
 import ElementPlus from 'element-plus'
 import 'element-plus/dist/index.css'
 // import '../node_modules/element-plus/theme-chalk/index.css'
-import './styles/element-ui-reset.less'
+import './styles/element-ui-reset.css'
 //  @ts-expect-error   注释 ts 忽略，跳过类型检测
 import zhCn from 'element-plus/dist/locale/zh-cn.mjs'
 // 引入 svg插件
 import 'virtual:svg-icons-register'
 
 import EventBus from './hooks/eventBus'
-
 
 const app = createApp(App)
 

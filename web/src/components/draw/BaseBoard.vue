@@ -11,7 +11,7 @@
     //  import {useMouse} from 'src/hooks/mouse'
 </script>
           
-<style lang="less">
+<style lang="less" scoped>
     .board{
         position: absolute;
         width: 100%;

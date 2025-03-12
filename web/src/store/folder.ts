@@ -1,5 +1,12 @@
+/*
+ * @Author: fangxiaoxun 1272449367@qq.com
+ * @Date: 2023-07-24 23:17:50
+ * @LastEditors: fangxiaoxun 1272449367@qq.com
+ * @LastEditTime: 2025-02-22 21:54:47
+ * 
+ */
 import { defineStore } from "pinia";
-import { getFolder, addFolder, delFolder,  } from "@/api/files/folder";
+import { getFolderList, addFolder, delFolder } from "@/api/folder/index.ts";
 
 
 // 定义 store 的 state 类型
@@ -22,18 +29,7 @@ interface folder {
 
 export const useFolderStore = defineStore("folders", {
     state: (): State => ({
-        data: [
-            {
-                name: "我的云文档",
-                list: [],
-                tag: "1"
-            },
-            {
-                name: "我的收藏",
-                list: [],
-                tag: "2"
-            }
-        ]
+        data: []
     }),
     getters: {
         getAllFolder(): Folder[] {
@@ -42,36 +38,22 @@ export const useFolderStore = defineStore("folders", {
     },
     actions: {
         // 删除文件夹
-        async deleteFolder(index: number, folderId: any) {
-            console.log(index, folderId)
+        async deleteFolder( folderId: any) {
             // 需要调用删除新建文件接口，使用返回的响应信息
             const response = await delFolder(folderId)
-            console.log(response)
-            // this.data[index].list = this.data[index].list.filter(item => item.folderId !== folderId)
-            // this.data[index].list = this.data[index].list.filter(item => item != folderName)
+            
         },
         // 添加文件夹
-        async addFolder(folderName: string) {
-            const response = await addFolder(folderName)
-            // 需要调用新建文件接口，使用返回的响应信息
-            // this.data[0].list.push({folderName:folderName})
-        },
 
-        async initMyDocData() {  //初始化文件夹数据
+        async getFolderInfo() {  //初始化文件夹数据
             try {
-                const response = await getFolder();
-                for (const folder of response) {
-                    const folderInfo = {
-                        folderName: folder.foldername,
-                        folderId: folder.folderId
-                    }
-                    this.data[0].list.push(folderInfo)
-                    
-                }
+                const response = await getFolderList();
+                this.data = response
             } catch (error) {
                 console.error("Error:", error);
             }
         },
+        
     },
 
 })

@@ -87,16 +87,14 @@ function changeTab():void {
           
 <style lang="less" scoped>
 section.part-1 {
-    width: 100vw;
+    width: 100%;
     height: 100vh;
     background-color: #f5faff;
 
     header {
         width: 100%;
         height: 70px;
-        // background-color: @bgColorBase;
         display: flex;
-        // justify-content: space-around;
         align-items: center;
         z-index: 3000;
 
