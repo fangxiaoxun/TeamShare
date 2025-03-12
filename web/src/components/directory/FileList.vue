@@ -1,292 +1,143 @@
 <template>
-
-    <div class="table w-full pr-[55px]">
-        <div class="table-header w-full flex">
-            <div class="flex-4">
-                <div class="type">
-                    <span v-click-outside="showType" ref="TYPE">
-                        <i class="icon"><svg-icon :name="iconName"></svg-icon></i>
-                        <span id="keyword" ref="typeContent">全部</span>
-                        <i class="icon"><svg-icon name="arrowdown" width="12px" height="12px"></svg-icon></i>
-                        <div class="option">
-                            <h4>文件类型</h4>
-                            <div class="typeList" ref="CHECK">
-                                <div class="item active" id="default" @click="TypeSelect($event)">
-                                    <div class="icon selected"><svg-icon name="selected" width="16px" height="16px"
-                                            color="#0A6CFF"></svg-icon></div>
-                                    <div class="icon"><svg-icon name="doc" width="16px" height="16px"></svg-icon></div>
-                                    <span>全部</span>
-                                </div>
-                                <div class="item" id="doc" @click="TypeSelect($event)">
-                                    <div class="icon selected"><svg-icon name="selected" width="16px" height="16px"
-                                            color="#0A6CFF"></svg-icon></div>
-                                    <div class="icon"><svg-icon name="doc" width="16px" height="16px"></svg-icon></div>
-                                    <span>轻文档</span>
-                                </div>
-                                <div class="item" id="word" @click="TypeSelect($event)">
-                                    <div class="icon selected"><svg-icon name="selected" width="16px" height="16px"
-                                            color="#0A6CFF"></svg-icon></div>
-                                    <div class="icon"><svg-icon name="word" width="16px" height="16px"></svg-icon></div>
-                                    <span>word</span>
-                                </div>
-                                <div class="item" id="map" @click="TypeSelect($event)">
-                                    <div class="icon selected"><svg-icon name="selected" width="16px" height="16px"
-                                            color="#0A6CFF"></svg-icon></div>
-                                    <div class="icon"><svg-icon name="map" width="16px" height="16px"></svg-icon></div>
-                                    <span>map</span>
-                                </div>
-                            </div>
+    <div>
+        <el-empty v-if="props.fileList.length === 0"></el-empty>
+        <el-table :data="props.fileList" row-key="id" style="width: 100%;" class="table-height" v-else>
+            <el-table-column fixed type="selection" width="55"></el-table-column>
+            <el-table-column label="文件名" width="220">
+                <template #default="scope">
+                    <div class="flex">
+                        <div class="cursor-pointer" @click="() => handleEnterFile(scope.row.id)">{{ scope.row.name }}
                         </div>
-                    </span>
-                </div>
+                        <div class="star flex items-center" v-show="true" @click.stop="handleCancelCollect(scope.row.id)"
+                            v-if="scope.row?.is_collected">
+                            <svg-icon name="collect"></svg-icon>
+                        </div>
+                        <div class="star flex items-center" @click.stop="() => handleCollect(scope.row.id)"
+                            v-show="true" v-if="!scope.row?.is_collected">
+                            <svg-icon name="star">
 
-            </div>
-            <div v-for="item in props.config.tableItem" class="table-item flex-1">
-                <span>{{ item }}</span>
-            </div>
-            <div class="table-item flex-1" v-show="props.config.isShowShare"></div>
-            <div class="table-item flex-1" v-show="props.config.isShowDelete"></div>
-            <div class="table-item flex-1" v-show="props.config.isShowRecycle"></div>
-        </div>
-        <div class="data-list list overflow-auto " v-infinite-scroll="load" infinite-scroll-distance=1>
-            <el-empty description="文件夹是空的" v-if="props.fileList.length === 0"></el-empty>
-            <div class="filepart" @click="handleSelected" :class="{ selected: isCheck }" ref="FILE"
-                :collectType="collectType" v-for="file in props.fileList" :key="file.fileId">
-                <div class="filename flex-4">
-                    <div class="checkBox">
-                        <div class="border" v-show="isCheck">
-                            <div class="label"></div>
+                            </svg-icon>
                         </div>
                     </div>
-                    <div class="file-icon">
-                        <svg-icon name="doc" width="24px" height="24px"></svg-icon>
-                    </div>
-                    <span>
-                        <span @click="handleEnter">
-                            {{ file.fileName }}
-                        </span>
-                    </span>
-                    <div class="star" v-show="true" @click.stop ="handleCollect" v-if="collectType">
-                        <svg-icon name="collect"></svg-icon>
-                    </div>
-                    <div class="star" @click.stop="handleCollect" v-show="true" v-if="!collectType">
-                        <svg-icon name="star"></svg-icon>
-                    </div>
-                </div>
 
-                <!-- 需要传一个配置项 -->
-                <div class="flex-1">
-                    <span>
-                        nnjdslja
+                </template>
+            </el-table-column>
+            <el-table-column label="创建者" width="80">
+                <template #default="scope">{{ scope.row.userName }}</template>
+            </el-table-column>
+            <el-table-column label="最后修改">
+                <template #default="scope">{{ scope.row.updated_at }}</template>
+            </el-table-column>
+            <el-table-column label="文件位置">
+                <template #default="scope">{{ scope.row.path }}</template>
+            </el-table-column>
+            <el-table-column width="100">
+                <div
+                    class="operate btn w-[60px] text-center h-[36px] rounded-md text-[#fff] opacity-0	hover:opacity-100 transition cursor-pointer ml-[20px]">
+                    <span class="text-[#fff] leading-9	">分享
                     </span>
                 </div>
-                <div class="flex-1">
-                    <span>
-                        udsjkldsa
-                    </span>
-                </div>
-                <div class="flex-1">
-                    <span>
-                        ndjksandklal;k
-                    </span>
-                </div>
+            </el-table-column>
+            <el-table-column width="100">
+                <template #default="scope">
 
-                <div class="flex-1" v-if="props.config.isShowShare">
-                    <div class="operate btn w-[60px] text-center h-[36px] rounded-md text-[#fff] opacity-0	hover:opacity-100 transition cursor-pointer ml-[20px]" @click="handleRecover">
-                        <span class="text-[#fff] leading-9	">分享
-                        </span>
+                    <div class="delete btn w-[36px] text-center h-[36px] rounded-md text-[#fff] opacity-0	hover:opacity-100 transition cursor-pointer ml-[10px]"
+                        @click="handleDelFile(scope.row.id)">
+                        <svg-icon name="delete" width="24px" height="24px"></svg-icon>
                     </div>
 
-                </div>
-                <div class="flex-1 " v-if="props.config.isShowDelete">
-                    <div class="delete btn w-[36px] text-center h-[36px] rounded-md text-[#fff] opacity-0	hover:opacity-100 transition cursor-pointer ml-[10px]" @click="handleDelete">
-                        <!-- <span> -->
-                            <svg-icon name="delete" width="24px" height="24px"></svg-icon>
-                        <!-- </span> -->
-                    </div>
-                </div>
-            </div>
-        </div>
-
+                </template>
+            </el-table-column>
+        </el-table>
     </div>
-
-    <ul v-infinite-scroll="load" infinite-scroll-distance=1 class="list" style="overflow: auto">
-    </ul>
-
 
 
 </template>
 <script lang="ts" setup>
-import { ref, inject } from 'vue'
+import { ref } from 'vue'
 import router from '@/router/index'
-import { ElEmpty } from 'element-plus'
-let isCheck = ref<boolean>(false)
-const FILE = ref<HTMLElement>(document.createElement('div'))
-import { useFileStore } from '@/store/files'
-import { useInfo } from '@/store/user'
-const userInfo = useInfo()
-const fileStore = useFileStore()
-// const props = defineProps(['isCollect', 'collectType'])
-const collectType = ref<boolean>()
-const handleSelected = (): void => {
-    isCheck.value = !isCheck.value
-}
-
-interface FileItem {
-    folderId: string
-    fileId: string
-    fileName: string
-    folderName?: string
-    owner: string
-}
-
-const props = defineProps<{
-    fileList: any[],
-    config: any,
-}>()
-
-const handleEnter = () => {
-    fileStore.setFileInfo(
-        FILE.value.getAttribute('folderid')!,
-        FILE.value.getAttribute('fileid')!,
-        FILE.value.getAttribute('filename')!,
-    )
-    const content = fileStore.getFileContent(FILE.value.getAttribute('fileid')!)
-    // if(content?.length){
-    // userInfo.setCurrConten(content)
-    // }
-    // todo:需要获取文件id进行内容查询
-    router.push('/docView')
-}
-
-interface injectData {
-    RECOVER: (id: string | null, type: string) => void
-    SHARE: () => void
-    DELETE: (fileId: string, folderId?: string) => void
-}
-
-// 接收来自父组件的 recover 对象
-const OPERATE: injectData | undefined = inject('operate')
-const handleRecover = (): void => {
-    const id = FILE.value.getAttribute('fileId')
-        ? FILE.value.getAttribute('fileId')
-        : FILE.value.getAttribute('folderId')
-    const type = FILE.value.getAttribute('fileId') ? 'file' : 'folder'
-    if (OPERATE?.RECOVER) {
-        OPERATE.RECOVER(id, type)
-    } else if (OPERATE?.SHARE) {
-        OPERATE.SHARE()
-    }
-}
-
-const handleDelete = (): void => {
-    const fileId = FILE.value.getAttribute('fileId')!
-    const folderId = FILE.value.getAttribute('folderId')!
-    if (OPERATE?.DELETE) {
-        OPERATE.DELETE(fileId, folderId)
-    }
-}
-// todo:文件收藏逻辑需要修改
-const handleCollect = (e: MouseEvent): void => {
-    collectType.value = !collectType.value
-    const fileId = FILE.value.getAttribute('fileId')!
-    if (
-        FILE.value.getAttribute('collectType') === 'false' ||
-        FILE.value.getAttribute('collectType') === '0'
-    ) {
-        fileStore.addCollect(fileId)
-    } else {
-        fileStore.deleteCollect(fileId)
-    }
-}
+import { ElEmpty, ElTable, ElTableColumn, ElMessage, ElMessageBox } from 'element-plus'
+import { collectFile, getCollectFiles, cancelCollectFile, deleteFile } from '@/api/files/index'
+// const collectType = ref<boolean>()
+const currentAddId = ref(null)
+const currentCancelId = ref(null)
 
 
-
-
-const count = ref<number>(0)
-const load = (): void => {
-    if (count.value >= props.fileList.length) {
-        count.value = props.fileList.length;
-        return
-    } else {
-        count.value += 2
-    }
-}
-
-const showType = (element: HTMLElement) => {
-    element.classList.contains('active') && element.classList.remove('active')
-}
-// 类型变化
-interface Type {
-    [key: string]: {
-        iconName: string,
-        type: string
-    }
-}
-
-const typeObj: Type = {
-    default: {
-        iconName: 'doc',
-        type: "全部"
+const props = defineProps({
+    fileList: {
+        type: Array,
+        default: [],
     },
-    doc: {
-        iconName: 'doc',
-        type: '轻文档'
-    },
-    word: {
-        iconName: 'word',
-        type: 'word'
-    },
-    map: {
-        iconName: 'map',
-        type: 'map'
+    spaceId: {
+        type: String,
+        required: false,
+        default: ''
     }
 
+})
+
+
+const emits = defineEmits(['updateTableList'])
+const handleEnterFile = (fileId: string) => {
+    router.push({ name: 'docView', params: { fileId }, query: { spaceId: props.spaceId } })
 }
-const TYPE = ref<HTMLElement>(document.createElement('span'))
-const CHECK = ref<HTMLElement>(document.createElement('div'))
 
-const typeContent = ref<HTMLElement>(document.createElement('span'))
-const iconName = ref<string>('doc');
-
-
-function TypeSelect(e: MouseEvent) {
-    let type: string = (<HTMLElement>e.target).id;
-    // 变化背景色
-    if (typeObj[type] != typeObj['default']) {
-        TYPE.value.style.backgroundColor = "rgba(50,100,252,.1)"
-    } else {
-        TYPE.value.style.backgroundColor = ""
+const handleDelFile = async (fileId: string) => {
+    ElMessageBox.confirm(
+        '确定删除文件？',
+        'Warning', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
     }
-    TYPE.value.classList.remove('active')
-
-
-    // 更新内容
-    typeContent.value.innerHTML = typeObj[type].type
-    iconName.value = typeObj[type].iconName;
-
-    handleClick(type)
-}
-// 实现点击切换类名
-function handleClick(id: string): void {
-    const LIST = CHECK.value.querySelectorAll('.item');
-    LIST.forEach(item => {
-        item.classList.remove('active')
-        if (item.id == id) {
-            item.classList.add('active')
-        }
+    ).then(async () => {
+        await deleteFile(fileId)
+        emits('updateTableList', props.spaceId)
+        ElMessage.success('删除成功！')
+    }).catch(() => {
+        ElMessage.info('取消操作')
     })
+
 }
+
+
+// todo:文件收藏逻辑需要修改
+const handleCollect = async (fileId: string): Promise<void> => {
+    try {
+        await collectFile(fileId)
+        ElMessage.success('收藏成功')
+        emits('updateTableList', '')
+
+    } catch (error) {
+        ElMessage.error('操作失败')
+    }
+
+}
+
+const handleCancelCollect = async (fileId: string) => {
+    try {
+        await cancelCollectFile(fileId)
+        emits('updateTableList', '')
+    } catch (error) {
+        ElMessage.error('操作失败')
+    }
+}
+
 
 
 
 
 </script>
-<style scope lang="less" scoped>
+<style lang="less" scoped>
 @list-top: 185px;
 @top-offset: 60px;
 
-span{
+.table-height {
+    height: calc(100vh - 180px);
+}
+
+
+span {
     font-size: 14px;
 }
 
@@ -300,11 +151,12 @@ span{
     opacity: 1;
 }
 
-.filepart:hover{
-    .delete{
+.filepart:hover {
+    .delete {
         opacity: 1;
     }
-    .operate{
+
+    .operate {
         opacity: 1;
     }
 }
@@ -344,7 +196,7 @@ span{
     width: 24px;
     height: 24px;
     border-radius: 6px;
-    opacity: 0;
+    opacity: 1;
     margin-left: 12px;
     padding: 2px 4px;
     box-sizing: border-box;
@@ -447,7 +299,8 @@ span{
 .delete {
     padding: 8px 10px;
     background-color: transparent;
-    div{
+
+    div {
         transform: translate(-4px, -2px);
     }
 }
@@ -515,37 +368,37 @@ span{
 
 
 
-    #keyword {
-        margin: 0 5px;
-    }
+#keyword {
+    margin: 0 5px;
+}
 
-    .type {
-        cursor: pointer;
+.type {
+    cursor: pointer;
+    position: relative;
+    flex: 4;
+
+    >span {
         position: relative;
-        flex: 4;
+        transition: .1s all;
+        height: 28px;
+        display: flex;
+        flex-wrap: nowrap;
+        border-radius: 6px;
+        width: 110px;
+        box-sizing: border-box;
+        padding-left: 12px;
+        line-height: 28px;
+        white-space: nowrap;
 
-        >span {
-            position: relative;
-            transition: .1s all;
-            height: 28px;
-            display: flex;
-            flex-wrap: nowrap;
-            border-radius: 6px;
-            width: 110px;
-            box-sizing: border-box;
-            padding-left: 12px;
-            line-height: 28px;
-            white-space: nowrap;
-
-            .icon {
-                margin: 2px 2px 2px 2px;
-            }
-        }
-
-        >span:hover {
-            background-color: rgba(13, 13, 13, .06);
+        .icon {
+            margin: 8px 2px 2px 2px;
         }
     }
+
+    >span:hover {
+        background-color: rgba(13, 13, 13, .06);
+    }
+}
 
 
 
@@ -607,5 +460,17 @@ span{
 
 .item:hover {
     background-color: rgba(13, 13, 13, .06);
+}
+
+
+
+.el-table__row:hover {
+    .operate {
+        opacity: 1;
+    }
+
+    .delete {
+        opacity: 1;
+    }
 }
 </style>

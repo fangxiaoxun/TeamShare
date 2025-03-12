@@ -40,6 +40,5 @@ const cursorStyle = computed(() => {
       {{ props.userName }}
     </div>
   </div>
-  {{ cursorStyle }}
 </template>
 <style scoped lang="less"></style>

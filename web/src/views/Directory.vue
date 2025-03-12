@@ -2,11 +2,11 @@
  * @Author: fangxiaoxun 1272449367@qq.com
  * @Date: 2023-07-13 02:49:58
  * @LastEditors: fangxiaoxun 1272449367@qq.com
- * @LastEditTime: 2025-02-18 22:08:02
+ * @LastEditTime: 2025-03-09 10:58:28
  * 
 -->
 <template>
-    <div class="w-full h-[100vh] bg-[#F5F6F7]">
+    <div class="w-full h-full bg-[#F5F6F7]">
         <TopBar></TopBar>
         <Main></Main>
     </div>      

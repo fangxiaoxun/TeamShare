@@ -2,7 +2,7 @@
  * @Author: fangxiaoxun 1272449367@qq.com
  * @Date: 2023-07-13 02:49:58
  * @LastEditors: fangxiaoxun 1272449367@qq.com
- * @LastEditTime: 2025-02-23 11:48:32
+ * @LastEditTime: 2025-03-10 22:16:36
  * 
 -->
 <script lang="ts" setup>
@@ -26,7 +26,7 @@ const route = useRoute()
 .outer {
     width: 100%;
     // 高度待定
-    height: 90vh;
+    height: calc(100vh - 70px);
     display: flex;
 }
 

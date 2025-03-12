@@ -2,7 +2,7 @@
  * @Author: fangxiaoxun 1272449367@qq.com
  * @Date: 2023-07-13 02:49:58
  * @LastEditors: fangxiaoxun 1272449367@qq.com
- * @LastEditTime: 2025-02-23 15:23:02
+ * @LastEditTime: 2025-03-10 16:40:17
  * 
 -->
 <script lang="ts" setup>
@@ -20,11 +20,18 @@ import { addFolder, getFolderList } from '@/api/folder/index'
 import { useFolderStore } from '@/store/folder'
 const folderStore = useFolderStore()
 const router = useRouter()
+
+const { spaceId } = router.currentRoute.value?.params
+
 const routes = router
   .getRoutes()
   .filter((route) => route.meta && route.meta.title)
+
+
+  
 const handleNewset = () => {
-  router.push('/docView')
+//   router.push('/docView')
+router.push({name: 'docView', query: { spaceId }})
 }
 const handleAddFolder = async (folderName:string, parentId = null) => {
     try{
@@ -106,7 +113,7 @@ const handleCreate = () => {
   </div>
 </template>
 
-<style scope lang="less" scoped>
+<style lang="less" scoped>
 .menu {
   cursor: pointer;
   position: absolute;
