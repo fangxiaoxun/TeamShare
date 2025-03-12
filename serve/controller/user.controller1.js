@@ -1,19 +1,34 @@
-const { select, insert, update } = require('../lib/db')
+/*
+ * Author: fangxiaoxun 1272449367@qq.com
+ * Date: 2023-08-07 16:08:56
+ * LastEditors: fangxiaoxun 1272449367@qq.com
+ * LastEditTime: 2025-02-17 18:07:53
+ * 
+ */
+const { conMysql } = require('../lib/db')
+// 生成token的包
 const jWT = require('jsonwebtoken')
+
+// 定义Secret密钥
+const secret = 'login2023'
 const bcrypt = require('bcrypt')
 
-const secret = 'login2023'
 
+// 生成token
 const createToken = async (userId, password) => {
     try {
-        const [user] = await select('*').from('users').where('userId', userId)
-
-        if (!user) {
+        let sql = `SELECT * FROM user WHERE userId = ?`
+        const result = await conMysql(sql, [userId])
+        if (!result.length) {
             throw new Error('用户不存在')
         }
-        const isMatch = await bcrypt.compare(password, user.password)
-        if (!isMatch) {
-            throw new Error('用户密码错误')
+
+
+        const user = result[0]
+        const isPasswordValid = await bcrypt.compare(password, user.password)
+        console.log(user, 'user 登录信息')
+        if (!isPasswordValid) {
+            throw new Error('密码错误')
         }
 
         const access_token = jWT.sign(
@@ -33,6 +48,7 @@ const createToken = async (userId, password) => {
             secret,
             { expiresIn: '3d' }
         )
+
         return {
             access_token: 'Bearer ' + access_token,
             refresh_token: 'Bearer ' + refresh_token
@@ -59,21 +75,19 @@ const refreshToken = (userId, userName, headPortrait) => {
     }
 }
 
+// 用户注册
 const regUser = async (userName, password, email = null) => {
     try {
-        const hashPassword = await bcrypt.hash(password, 10)
-        
-        const [result] = await insert('user').values({
-            userName,
-            password: hashPassword,
-            email
-        })
-        return { userId: result.insertId}
-        
+        const saltRounds = 10;
+        password = await bcrypt.hash(password, saltRounds);
+        let sql = `INSERT INTO user (userName, password, email) VALUES (?, ?, ?)`
+        const result = await conMysql(sql, [userName, password, email])
+        const userId = result.insertId
+        return {userId}
     } catch (error) {
         console.error('用户注册失败', error)
         return undefined
     }
 }
 
-module.exports = { createToken, regUser, refreshToken}
+module.exports = { createToken, regUser, refreshToken }
