@@ -2,6 +2,8 @@
 import { defineStore } from "pinia";
 import { LatestFiles, getFiles, getDeleteFiles, recoverFile, deleteFile, getCollectFiles, collectFile, cancelCollectFile } from "@/api/files/index.ts";
 import { recoverFolder } from '@/api/folder/index.ts'
+import moment from 'moment'
+
 
 interface File {
     fileId: string;
@@ -76,8 +78,12 @@ export const useFileStore = defineStore('files', {
         async setLateList() {
             try {
                 const response = await LatestFiles()
-                console.log(response, '最近文件')
-                this.latestList = response
+                const res = response.map((item:any) => ({
+                    ...item,
+                    updated_at: moment(item.updated_at).format('YYYY-MM-DD HH:mm:ss')
+                }))
+                this.latestList = res
+
             } catch (err) {
                 console.log(err)
             }
