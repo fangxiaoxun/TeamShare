@@ -12,6 +12,7 @@ const userRouterHandler = async(req,res) =>{
         const {userId,password} = req.body
         console.log(req.body, 'req.body')
         const data = await createToken(userId,password)
+        console.log('login 登录')
         if(data){
             return res.send(new SuccessModel({msg:'登录成功', data}))
         }else{
@@ -32,7 +33,6 @@ const userRouterHandler = async(req,res) =>{
 
     // 获取用户信息
     if(method === 'GET' && path === '/getUser'){
-        console.log(req.auth, 'req.auth')
         return res.send(new SuccessModel({msg:'成功',data:req.auth}))
     }
 
