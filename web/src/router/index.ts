@@ -2,7 +2,7 @@
  * @Author: fangxiaoxun 1272449367@qq.com
  * @Date: 2023-08-03 19:34:52
  * @LastEditors: fangxiaoxun 1272449367@qq.com
- * @LastEditTime: 2025-02-23 15:20:57
+ * @LastEditTime: 2025-03-01 22:21:28
  * 
  */
 // 按需引入，如果全部引入的话是引入VueRouter
@@ -22,6 +22,7 @@ import Me from '../views/Me.vue'
 import Trash from '../views/Trash.vue'
 
 import TestDemo from '../components/Editor/TestDemo.vue'
+import Tiptap from '../components/Editor/Tiptap.vue'
 
 
 
@@ -79,8 +80,8 @@ const router = createRouter({
                     ]
                 },
                 {
-                    path: '/myDoc/folder/:folderId',
-                    name: 'folder',
+                    path: '/myDoc/folder/:spaceId',
+                    name: 'space',
                     component: Folder,
                 },
                 {
@@ -105,7 +106,13 @@ const router = createRouter({
             name: 'docView',
             component: DocView,
             // 
-            meta:{data:{fileId:''}}
+            meta:{data:{spaceId: '', fileId:''}}
+        },
+        {
+            path: '/tiptap',
+            name: 'Tiptap',
+            component: Tiptap
+
         }
     ]
 })
